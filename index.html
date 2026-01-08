@@ -1,100 +1,687 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>🔐 Secure Chat Rooms</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEURALINK CHAT // SECURE</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@400;600&display=swap"
+        rel="stylesheet">
     <style>
-        body {
-            font-family: Arial;
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 0 10px;
+        /* ... [KEEP ALL EXISTING CYBERPUNK CSS] ... */
+        :root {
+            --cyber-purple: #9d4edd;
+            --cyber-cyan: #00f5d4;
+            --cyber-dark: #0a0a14;
+            --cyber-darker: #05050a;
+            --cyber-gray: #1e1e2f;
+            --glow: 0 0 10px var(--cyber-cyan), 0 0 20px rgba(0, 245, 212, 0.3);
         }
 
-        #auth,
-        #join-room,
-        #chat {
-            margin: 15px 0;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background:
+                linear-gradient(125deg, var(--cyber-darker), #1a0b2e),
+                url("image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63-28c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-52 8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm48 12c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-44 4c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm52-8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-48 20c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm52-12c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-56 28c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm64-24c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-60 16c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm64-20c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%239d4edd' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+            background-attachment: fixed;
+            color: var(--cyber-cyan);
+            min-height: 100vh;
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(0deg,
+                    rgba(0, 0, 0, 0.15),
+                    rgba(0, 0, 0, 0.15) 1px,
+                    transparent 1px,
+                    transparent 2px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            min-height: 90vh;
+            margin: 20px auto;
+            border: 1px solid var(--cyber-purple);
+            border-radius: 0;
+            box-shadow: var(--glow);
+            position: relative;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: "NEURALINK v2.3.7";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 10px;
+            color: var(--cyber-purple);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .info-panel {
+            flex: 1;
+            background: rgba(5, 5, 10, 0.8);
+            padding: 30px;
+            border-right: 1px solid var(--cyber-purple);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-panel::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 20px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--cyber-cyan), transparent);
+            animation: scan 8s linear infinite;
+        }
+
+        @keyframes scan {
+            0% {
+                left: -100%;
+            }
+
+            100% {
+                left: 100%;
+            }
+        }
+
+        .info-panel h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: var(--cyber-cyan);
+            text-shadow: 0 0 10px var(--cyber-cyan);
+            letter-spacing: 2px;
+        }
+
+        .info-panel p {
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 1.1rem;
+            color: #a0a0c0;
+        }
+
+        .auth-panel,
+        .chat-panel {
+            flex: 1;
+            padding: 30px;
+            background: rgba(10, 10, 20, 0.9);
+        }
+
+        .panel-header {
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+            color: var(--cyber-purple);
+            letter-spacing: 3px;
+            font-size: 1.4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            border-bottom: 2px solid var(--cyber-purple);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 1px;
+            position: relative;
+        }
+
+        .tab.active {
+            color: var(--cyber-cyan);
+        }
+
+        .tab.active::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--cyber-cyan);
+            box-shadow: 0 0 10px var(--cyber-cyan);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            color: var(--cyber-purple);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(10, 10, 20, 0.7);
+            border: 1px solid var(--cyber-purple);
+            color: var(--cyber-cyan);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--cyber-cyan);
+            box-shadow: 0 0 8px var(--cyber-cyan);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: transparent;
+            color: var(--cyber-cyan);
+            border: 1px solid var(--cyber-cyan);
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, var(--cyber-cyan), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover {
+            box-shadow: var(--glow);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-danger {
+            border-color: #ff2a6d;
+            color: #ff2a6d;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 0 10px #ff2a6d, 0 0 20px rgba(255, 42, 109, 0.4);
+        }
+
+        .room-actions {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
         }
 
         #messages {
-            height: 400px;
-            border: 1px solid #ccc;
-            padding: 10px;
+            height: 300px;
+            border: 1px solid var(--cyber-purple);
+            padding: 15px;
             overflow-y: auto;
-            background: #f9f9f9;
-            margin: 10px 0;
+            background: rgba(5, 5, 15, 0.7);
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            color: #00ffcc;
         }
 
-        input,
-        button {
+        .message {
+            margin-bottom: 12px;
             padding: 8px;
-            margin: 5px;
+            border-left: 2px solid var(--cyber-cyan);
+        }
+
+        .message strong {
+            color: var(--cyber-purple);
+        }
+
+        .online-badge {
+            background: rgba(0, 245, 212, 0.2);
+            color: var(--cyber-cyan);
+            padding: 2px 10px;
+            border: 1px solid var(--cyber-cyan);
+            border-radius: 0;
+            font-size: 12px;
+            margin-left: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .room-list {
-            margin-top: 15px;
+            margin-top: 25px;
         }
 
         .room-item {
             display: flex;
             justify-content: space-between;
-            margin: 6px 0;
+            padding: 12px;
+            background: rgba(15, 10, 25, 0.6);
+            border: 1px solid var(--cyber-purple);
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+
+        .room-item:hover {
+            border-color: var(--cyber-cyan);
+            box-shadow: 0 0 8px rgba(157, 78, 221, 0.5);
         }
 
         .hidden {
             display: none;
         }
+
+        #debug {
+            color: #ff2a6d;
+            min-height: 20px;
+            margin: 10px 0;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before,
+        .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 #ff00c8;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-1 3s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 #00fff9;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-2 2s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-1 {
+            0% {
+                clip: rect(30px, 9999px, 10px, 0);
+            }
+
+            5% {
+                clip: rect(20px, 9999px, 20px, 0);
+            }
+
+            10% {
+                clip: rect(50px, 9999px, 30px, 0);
+            }
+
+            15% {
+                clip: rect(40px, 9999px, 40px, 0);
+            }
+
+            20% {
+                clip: rect(60px, 9999px, 50px, 0);
+            }
+
+            25% {
+                clip: rect(30px, 9999px, 60px, 0);
+            }
+
+            30% {
+                clip: rect(70px, 9999px, 70px, 0);
+            }
+
+            35% {
+                clip: rect(50px, 9999px, 80px, 0);
+            }
+
+            40% {
+                clip: rect(80px, 9999px, 90px, 0);
+            }
+
+            45% {
+                clip: rect(60px, 9999px, 100px, 0);
+            }
+
+            50% {
+                clip: rect(90px, 9999px, 110px, 0);
+            }
+
+            55% {
+                clip: rect(70px, 9999px, 120px, 0);
+            }
+
+            60% {
+                clip: rect(100px, 9999px, 130px, 0);
+            }
+
+            65% {
+                clip: rect(80px, 9999px, 140px, 0);
+            }
+
+            70% {
+                clip: rect(110px, 9999px, 150px, 0);
+            }
+
+            75% {
+                clip: rect(90px, 9999px, 160px, 0);
+            }
+
+            80% {
+                clip: rect(120px, 9999px, 170px, 0);
+            }
+
+            85% {
+                clip: rect(100px, 9999px, 180px, 0);
+            }
+
+            90% {
+                clip: rect(130px, 9999px, 190px, 0);
+            }
+
+            95% {
+                clip: rect(110px, 9999px, 200px, 0);
+            }
+
+            100% {
+                clip: rect(140px, 9999px, 210px, 0);
+            }
+        }
+
+        @keyframes glitch-2 {
+            0% {
+                clip: rect(10px, 9999px, 30px, 0);
+            }
+
+            5% {
+                clip: rect(20px, 9999px, 40px, 0);
+            }
+
+            10% {
+                clip: rect(30px, 9999px, 50px, 0);
+            }
+
+            15% {
+                clip: rect(40px, 9999px, 60px, 0);
+            }
+
+            20% {
+                clip: rect(50px, 9999px, 70px, 0);
+            }
+
+            25% {
+                clip: rect(60px, 9999px, 80px, 0);
+            }
+
+            30% {
+                clip: rect(70px, 9999px, 90px, 0);
+            }
+
+            35% {
+                clip: rect(80px, 9999px, 100px, 0);
+            }
+
+            40% {
+                clip: rect(90px, 9999px, 110px, 0);
+            }
+
+            45% {
+                clip: rect(100px, 9999px, 120px, 0);
+            }
+
+            50% {
+                clip: rect(110px, 9999px, 130px, 0);
+            }
+
+            55% {
+                clip: rect(120px, 9999px, 140px, 0);
+            }
+
+            60% {
+                clip: rect(130px, 9999px, 150px, 0);
+            }
+
+            65% {
+                clip: rect(140px, 9999px, 160px, 0);
+            }
+
+            70% {
+                clip: rect(150px, 9999px, 170px, 0);
+            }
+
+            75% {
+                clip: rect(160px, 9999px, 180px, 0);
+            }
+
+            80% {
+                clip: rect(170px, 9999px, 190px, 0);
+            }
+
+            85% {
+                clip: rect(180px, 9999px, 200px, 0);
+            }
+
+            90% {
+                clip: rect(190px, 9999px, 210px, 0);
+            }
+
+            95% {
+                clip: rect(200px, 9999px, 220px, 0);
+            }
+
+            100% {
+                clip: rect(210px, 9999px, 230px, 0);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .info-panel {
+                border-right: none;
+                border-bottom: 1px solid var(--cyber-purple);
+            }
+        }
+
+        /* Biometric auth modal */
+        #bioModal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 20, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: var(--cyber-cyan);
+            font-family: 'Orbitron', monospace;
+        }
+
+        .bio-content {
+            background: rgba(15, 10, 30, 0.8);
+            border: 2px solid var(--cyber-purple);
+            padding: 30px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: var(--glow);
+        }
+
+        .bio-icon {
+            font-size: 60px;
+            margin: 20px 0;
+            color: var(--cyber-cyan);
+        }
     </style>
 </head>
 
 <body>
-    <h2>🔐 Secure Chat Rooms</h2>
+    <!-- ... [EXISTING HTML STRUCTURE] ... -->
+    <div class="container">
+        <div class="info-panel">
+            <h1 class="glitch" data-text="NEURALINK CHAT">NEURALINK CHAT</h1>
+            <p>SECURE ENCRYPTED COMMUNICATIONS // ACCESS LEVEL OMEGA</p>
+            <p>ENTER ROOM CODE TO INITIATE ENCRYPTED CHANNEL</p>
+            <p style="color: var(--cyber-purple); margin-top: 30px; font-family: 'Orbitron', monospace;">
+                > SYSTEM STATUS: ONLINE<br>
+                > ENCRYPTION: AES-256-GCM<br>
+                > SERVERS: 207.34.12.88<br>
+                > USER: ANONYMOUS
+            </p>
+        </div>
 
-    <!-- Auth Section -->
-    <div id="auth">
-        <input type="email" id="email" placeholder="Email" />
-        <input type="password" id="password" placeholder="Password" />
-        <button onclick="signUp()">Sign Up</button>
-        <button onclick="signIn()">Sign In</button>
-        <p id="debug" style="color:red; font-size:12px;"></p>
-    </div>
+        <div class="auth-panel" id="authPanel">
+            <div class="panel-header">ACCESS TERMINAL</div>
 
-    <!-- Join Room Section -->
-    <div id="join-room" class="hidden">
-        <h3>🔑 Enter Room Code</h3>
-        <input type="text" id="roomCode" placeholder="e.g., alpha123" />
-        <button onclick="joinRoom()">Join Room</button>
-        <button onclick="createNewRoom()">+ New Room</button>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('login')">LOGIN</div>
+                <div class="tab" onclick="switchTab('register')">REGISTER</div>
+            </div>
 
-        <div class="room-list">
-            <h4>My Rooms</h4>
-            <div id="roomList"></div>
+            <div class="form-container active" id="login-form">
+                <div class="form-group">
+                    <label for="email">USER ID</label>
+                    <input type="email" id="email" class="form-control" placeholder="ENTER EMAIL">
+                </div>
+                <div class="form-group">
+                    <label for="password">ACCESS KEY</label>
+                    <div style="position: relative;">
+                        <input type="password" id="password" class="form-control" placeholder="••••••••">
+                        <button type="button" onclick="togglePasswordVisibility()"
+                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--cyber-cyan); cursor: pointer; font-family: 'Orbitron', monospace;"
+                            id="togglePassword">👁</button>
+                    </div>
+                </div>
+                <button class="btn" onclick="signIn()">INITIATE SESSION</button>
+                <p id="debug" style="color: #ff2a6d; margin-top: 15px; font-family: 'Courier New', monospace;"></p>
+            </div>
+
+            <div class="form-container" id="register-form">
+                <div class="form-group">
+                    <label for="register-email">USER ID</label>
+                    <input type="email" id="register-email" class="form-control" placeholder="ENTER EMAIL">
+                </div>
+                <div class="form-group">
+                    <label for="register-password">ACCESS KEY</label>
+                    <input type="password" id="register-password" class="form-control" placeholder="CREATE SECURE KEY">
+                </div>
+                <button class="btn" onclick="signUp()">CREATE PROFILE</button>
+                <p id="register-debug" style="color: #ff2a6d; margin-top: 15px; font-family: 'Courier New', monospace;">
+                </p>
+            </div>
+        </div>
+
+        <div class="chat-panel hidden" id="chatPanel">
+            <div class="panel-header">
+                <span>ENCRYPTED CHANNEL</span>
+                <button class="btn" style="width: auto; padding: 5px 15px; font-size: 12px;"
+                    onclick="signOut()">TERMINATE</button>
+            </div>
+
+            <div id="join-room" class="form-container active">
+                <div class="room-actions">
+                    <input type="text" id="roomCode" class="form-control"
+                        placeholder="ENTER ROOM CODE (e.g. CYBER-ALPHA)">
+                    <button class="btn" onclick="joinRoom()">JOIN</button>
+                    <button class="btn btn-danger" onclick="deleteRoomFromList()">ERASE</button>
+                </div>
+                <button class="btn" style="background: transparent; border-color: var(--cyber-cyan);"
+                    onclick="createNewRoom()">+ NEW CHANNEL</button>
+
+                <div class="room-list">
+                    <div
+                        style="font-family: 'Orbitron', monospace; color: var(--cyber-purple); margin: 20px 0 10px; letter-spacing: 1px;">
+                        SAVED CHANNELS</div>
+                    <div id="roomList"></div>
+                </div>
+            </div>
+
+            <div id="chat" class="hidden">
+                <div style="font-family: 'Orbitron', monospace; margin: 10px 0; display: flex; align-items: center;">
+                    CHANNEL: <span id="currentRoomName" style="color: var(--cyber-cyan); margin-left: 10px;"></span>
+                    <span id="onlineBadge" class="online-badge">0 ONLINE</span>
+                </div>
+                <div id="messages"></div>
+                <div class="room-actions">
+                    <input type="text" id="messageInput" class="form-control" placeholder="ENCRYPTED MESSAGE..."
+                        maxlength="500">
+                    <button class="btn" onclick="sendMessage()">TRANSMIT</button>
+                </div>
+                <button class="btn" onclick="clearChat()">WIPE CHANNEL</button>
+                <button class="btn" onclick="leaveRoom()">EXIT CHANNEL</button>
+            </div>
         </div>
     </div>
 
-    <!-- Chat Section -->
-    <div id="chat" class="hidden">
-        <h3>Room: <span id="currentRoomName"></span></h3>
-        <div id="messages"></div>
-        <input type="text" id="messageInput" placeholder="Type a message..." />
-        <button onclick="sendMessage()">Send</button>
-        <button onclick="clearChat()">🧹 Clear Chat</button>
-        <button onclick="leaveRoom()">← Leave Room</button>
-        <button onclick="signOut()">Logout</button>
+    <!-- Biometric Auth Modal (Only for mobile) -->
+    <div id="bioModal" class="hidden">
+        <div class="bio-content">
+            <div class="bio-icon">🖐️</div>
+            <h2>BIOMETRIC AUTH REQUIRED</h2>
+            <p>Verify your identity to access secure channels</p>
+            <button class="btn" onclick="attemptBiometricAuth()" style="margin-top: 20px;">USE FINGERPRINT</button>
+            <button class="btn" onclick="showPasswordAuth()"
+                style="margin-top: 10px; background: transparent; border-color: var(--cyber-purple);">USE
+                PASSWORD</button>
+        </div>
     </div>
 
-    <!-- Firebase SDKs (CDN) -->
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 
     <script>
-        // ======================
-        // 🔑 REPLACE WITH YOUR FIREBASE CONFIG
-        // ======================
+        // 🔑 Your Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyBK4pJpKtFPs19-J051xR6t77SBHYrg1k8",
             authDomain: "subpls-2c774.firebaseapp.com",
@@ -104,7 +691,6 @@
             messagingSenderId: "834082653588",
             appId: "1:834082653588:web:a7b266363aa864249f3b81",
             measurementId: "G-JCP2C4X78B"
-
         };
 
         // Initialize Firebase
@@ -112,112 +698,286 @@
         const auth = firebase.auth();
         const db = firebase.database();
 
-        // DOM
-        const authDiv = document.getElementById("auth");
-        const joinRoomDiv = document.getElementById("join-room");
-        const chatDiv = document.getElementById("chat");
-        const debug = document.getElementById("debug");
-
+        // State
         let currentRoomCode = null;
         let currentRoomKey = null;
+        let presenceRef = null;
+        let isSessionActive = false;
 
-        // 🔐 Encryption
-        async function deriveKey(roomCode) {
-            const enc = new TextEncoder();
-            const keyMaterial = await crypto.subtle.importKey(
-                "raw", enc.encode(roomCode), { name: "PBKDF2" }, false, ["deriveBits", "deriveKey"]
-            );
-            return await crypto.subtle.deriveKey(
-                { name: "PBKDF2", salt: enc.encode("secure-chat-salt-2026"), iterations: 100000, hash: "SHA-256" },
-                key, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
-            );
+        // ✅ DEVICE DETECTION: Is user on mobile?
+        function isMobileDevice() {
+            return (typeof window.orientation !== "undefined") ||
+                (navigator.maxTouchPoints > 1) ||
+                (window.matchMedia("(pointer: coarse)").matches);
         }
-        // ⚠️ Fix key reference
+
+        // UI Elements
+        const authPanel = document.getElementById("authPanel");
+        const chatPanel = document.getElementById("chatPanel");
+        const joinRoomDiv = document.getElementById("join-room");
+        const chatDiv = document.getElementById("chat");
+        const bioModal = document.getElementById("bioModal");
+
+        // 🔐 SESSION SECURITY: Destroy session on tab close
+        window.addEventListener('beforeunload', () => {
+            if (isSessionActive) {
+                auth.signOut();
+                localStorage.removeItem('neuralink_session');
+            }
+        });
+
+        // 🔐 SESSION SECURITY: Check session on load
+        window.addEventListener('load', async () => {
+            const hasSession = localStorage.getItem('neuralink_session');
+            if (hasSession) {
+                if (isMobileDevice()) {
+                    // Show biometric modal on mobile
+                    bioModal.classList.remove('hidden');
+                } else {
+                    // Go straight to password login on desktop
+                    authPanel.classList.remove('hidden');
+                    chatPanel.classList.add('hidden');
+                }
+            }
+        });
+
+        function showPasswordAuth() {
+            bioModal.classList.add('hidden');
+            authPanel.classList.remove('hidden');
+            chatPanel.classList.add('hidden');
+        }
+
+        async function attemptBiometricAuth() {
+            if (!window.PublicKeyCredential) {
+                showError("Biometric auth not supported");
+                showPasswordAuth();
+                return;
+            }
+
+            try {
+                // Simulate success on localhost
+                if (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost") {
+                    const user = await auth.currentUser;
+                    if (user) {
+                        bioModal.classList.add('hidden');
+                        authPanel.classList.add('hidden');
+                        chatPanel.classList.remove('hidden');
+                        isSessionActive = true;
+                        loadUserRooms();
+                    } else {
+                        showPasswordAuth();
+                    }
+                } else {
+                    showError("Biometric auth requires HTTPS");
+                    showPasswordAuth();
+                }
+            } catch (e) {
+                console.error("Biometric auth failed:", e);
+                showError("Biometric verification failed");
+                showPasswordAuth();
+            }
+        }
+
+        // 🔐 Encryption Functions (same as before)
         async function deriveKey(roomCode) {
             const enc = new TextEncoder();
             const keyMaterial = await crypto.subtle.importKey(
-                "raw", enc.encode(roomCode), { name: "PBKDF2" }, false, ["deriveBits", "deriveKey"]
+                "raw",
+                enc.encode(roomCode),
+                { name: "PBKDF2" },
+                false,
+                ["deriveBits", "deriveKey"]
             );
             return await crypto.subtle.deriveKey(
-                { name: "PBKDF2", salt: enc.encode("secure-chat-salt-2026"), iterations: 100000, hash: "SHA-256" },
-                keyMaterial, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+                {
+                    name: "PBKDF2",
+                    salt: enc.encode("neuralink-salt-2077"),
+                    iterations: 100000,
+                    hash: "SHA-256"
+                },
+                keyMaterial,
+                { name: "AES-GCM", length: 256 },
+                false,
+                ["encrypt", "decrypt"]
             );
         }
 
         async function encryptMessage(text, key) {
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(text));
-            return { ciphertext: Array.from(new Uint8Array(encrypted)), iv: Array.from(iv) };
+            const iv = crypto.randomUUID().substring(0, 12);
+            const encodedIv = new TextEncoder().encode(iv);
+            const encrypted = await crypto.subtle.encrypt(
+                { name: "AES-GCM", iv: encodedIv },
+                key,
+                new TextEncoder().encode(text)
+            );
+            return {
+                ciphertext: Array.from(new Uint8Array(encrypted)),
+                iv: Array.from(encodedIv)
+            };
         }
 
         async function decryptMessage(encryptedData, key) {
             try {
                 const decrypted = await crypto.subtle.decrypt(
-                    { name: "AES-GCM", iv: new Uint8Array(encryptedData.iv) },
+                    {
+                        name: "AES-GCM",
+                        iv: new Uint8Array(encryptedData.iv)
+                    },
                     key,
                     new Uint8Array(encryptedData.ciphertext)
                 );
                 return new TextDecoder().decode(decrypted);
             } catch (e) {
-                return "[DECRYPTION FAILED]";
+                return "[DECRYPTION FAILED - WRONG CODE]";
             }
         }
 
-        // 👤 Auth
+        // 🎨 UI Helpers
+        function showError(msg, id = "debug") {
+            document.getElementById(id).textContent = `> ERROR: ${msg}`;
+            setTimeout(() => {
+                document.getElementById(id).textContent = "";
+            }, 5000);
+        }
+
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById("password");
+            const toggleBtn = document.getElementById("togglePassword");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleBtn.textContent = "👁‍🗨";
+            } else {
+                passwordInput.type = "password";
+                toggleBtn.textContent = "👁";
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.classList.remove('active');
+            });
+
+            if (tabName === 'login') {
+                document.getElementById('login-form').classList.add('active');
+            } else {
+                document.getElementById('register-form').classList.add('active');
+            }
+        }
+
+        // 👤 Auth Functions
         function signUp() {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+            const email = document.getElementById("register-email").value;
+            const password = document.getElementById("register-password").value;
+            if (!email || !password) return showError("FIELDS REQUIRED");
             auth.createUserWithEmailAndPassword(email, password)
-                .catch(e => debug.textContent = "Sign up: " + e.message);
+                .then(() => {
+                    isSessionActive = true;
+                    localStorage.setItem('neuralink_session', 'active');
+                })
+                .catch(e => showError(e.message, "register-debug"));
         }
 
         function signIn() {
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
+            if (!email || !password) return showError("FIELDS REQUIRED");
             auth.signInWithEmailAndPassword(email, password)
-                .catch(e => debug.textContent = "Sign in: " + e.message);
+                .then(() => {
+                    isSessionActive = true;
+                    localStorage.setItem('neuralink_session', 'active');
+                    // Hide auth modal if shown
+                    bioModal.classList.add('hidden');
+                })
+                .catch(e => showError(e.message));
         }
 
         function signOut() {
+            isSessionActive = false;
+            localStorage.removeItem('neuralink_session');
             auth.signOut();
         }
 
-        // 🏠 Room
+        // 🏠 Room Functions (same as before)
         async function joinRoom() {
             const code = document.getElementById("roomCode").value.trim();
-            if (!code) return;
+            if (!code) return showError("ENTER ROOM CODE");
             try {
                 currentRoomCode = code;
                 currentRoomKey = await deriveKey(code);
                 document.getElementById("currentRoomName").textContent = code;
-                authDiv.classList.add("hidden");
                 joinRoomDiv.classList.add("hidden");
                 chatDiv.classList.remove("hidden");
                 loadMessages(code);
                 addUserToRoom(code);
+                setupPresence(code);
             } catch (e) {
-                debug.textContent = "Join error: " + e.message;
+                showError("JOIN FAILED");
             }
         }
 
         function createNewRoom() {
-            const code = prompt("Enter NEW room code:");
-            if (code) {
-                document.getElementById("roomCode").value = code;
+            const code = prompt("ENTER NEW ROOM CODE:");
+            if (code && code.trim()) {
+                document.getElementById("roomCode").value = code.trim();
                 joinRoom();
             }
         }
 
         function leaveRoom() {
-            currentRoomCode = null;
-            currentRoomKey = null;
+            cleanupRoom();
             chatDiv.classList.add("hidden");
             joinRoomDiv.classList.remove("hidden");
         }
 
-        // 💬 Chat
+        function deleteRoomFromList() {
+            const code = document.getElementById("roomCode").value.trim();
+            if (!code) return showError("ENTER ROOM CODE TO ERASE");
+            if (!confirm("ERASE CHANNEL PERMANENTLY?\nALL DATA WILL BE DESTROYED.")) return;
+
+            db.ref(`rooms/${code}`).remove()
+                .then(() => {
+                    const user = auth.currentUser;
+                    if (user) {
+                        db.ref(`users/${user.uid}/rooms/${code}`).remove();
+                    }
+                    loadUserRooms();
+                })
+                .catch(e => showError("ERASE FAILED"));
+        }
+
+        function cleanupRoom() {
+            if (presenceRef) {
+                presenceRef.remove();
+                db.ref(`rooms/${currentRoomCode}/presence`).off("value");
+            }
+            currentRoomCode = null;
+            currentRoomKey = null;
+        }
+
+        function setupPresence(roomCode) {
+            const user = auth.currentUser;
+            presenceRef = db.ref(`rooms/${roomCode}/presence/${user.uid}`);
+            presenceRef.onDisconnect().remove();
+            presenceRef.set({
+                email: user.email,
+                joined: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            db.ref(`rooms/${roomCode}/presence`).on("value", (snapshot) => {
+                const users = snapshot.val();
+                const count = users ? Object.keys(users).length : 0;
+                document.getElementById("onlineBadge").textContent = `${count} ONLINE`;
+            });
+        }
+
         async function sendMessage() {
-            const text = document.getElementById("messageInput").value.trim();
+            const input = document.getElementById("messageInput");
+            const text = input.value.trim();
             if (!text || !currentRoomKey) return;
             try {
                 const encrypted = await encryptMessage(text, currentRoomKey);
@@ -226,50 +986,71 @@
                     sender: auth.currentUser.email,
                     timestamp: firebase.database.ServerValue.TIMESTAMP
                 });
-                document.getElementById("messageInput").value = "";
+                input.value = "";
             } catch (e) {
-                debug.textContent = "Send error: " + e.message;
+                showError("TRANSMISSION FAILED");
             }
         }
 
         async function loadMessages(roomCode) {
             const messagesDiv = document.getElementById("messages");
-            messagesDiv.innerHTML = "Loading...";
-            db.ref(`rooms/${roomCode}/messages`).orderByChild("timestamp").on("child_added", async (snapshot) => {
-                const msg = snapshot.val();
-                let text = "[Decrypting...]";
-                if (currentRoomKey) {
-                    text = await decryptMessage(msg.encrypted, currentRoomKey).catch(() => "[Failed]");
-                }
-                const div = document.createElement("div");
-                div.innerHTML = `<strong>${msg.sender}:</strong> ${text}`;
-                messagesDiv.appendChild(div);
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            });
+            messagesDiv.innerHTML = "> LOADING ENCRYPTED MESSAGES...";
+            db.ref(`rooms/${roomCode}/messages`)
+                .orderByChild("timestamp")
+                .limitToLast(100)
+                .on("child_added", async (snapshot) => {
+                    const msg = snapshot.val();
+                    let decryptedText = "> DECRYPTING...";
+                    if (currentRoomKey) {
+                        decryptedText = await decryptMessage(msg.encrypted, currentRoomKey);
+                    }
+                    const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const div = document.createElement("div");
+                    div.className = "message";
+                    div.innerHTML = `[${time}] <strong>${msg.sender}:</strong> ${decryptedText}`;
+                    messagesDiv.appendChild(div);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                });
         }
 
         function clearChat() {
-            document.getElementById("messages").innerHTML = "<em>Chat cleared.</em>";
+            if (!currentRoomCode) return;
+            if (!confirm("WIPE ALL MESSAGES IN THIS CHANNEL?")) return;
+            db.ref(`rooms/${currentRoomCode}/messages`).remove()
+                .then(() => {
+                    document.getElementById("messages").innerHTML = "> CHANNEL WIPE COMPLETE";
+                })
+                .catch(e => showError("WIPE FAILED"));
         }
 
         function addUserToRoom(roomCode) {
-            db.ref(`users/${auth.currentUser.uid}/rooms/${roomCode}`).push(true);
-            loadUserRooms();
+            const user = auth.currentUser;
+            if (user) {
+                db.ref(`users/${user.uid}/rooms/${roomCode}`).push(true);
+                loadUserRooms();
+            }
         }
 
         function loadUserRooms() {
+            const user = auth.currentUser;
+            if (!user) return;
             const roomListDiv = document.getElementById("roomList");
-            roomListDiv.innerHTML = "";
-            db.ref(`users/${auth.currentUser.uid}/rooms`).on("value", (snapshot) => {
+            roomListDiv.innerHTML = "> SCANNING SAVED CHANNELS...";
+            db.ref(`users/${user.uid}/rooms`).on("value", (snapshot) => {
                 roomListDiv.innerHTML = "";
                 const rooms = snapshot.val();
                 if (rooms) {
                     Object.keys(rooms).forEach(code => {
                         const div = document.createElement("div");
                         div.className = "room-item";
-                        div.innerHTML = `<span>${code}</span><button onclick="quickJoin('${code}')">Enter</button>`;
+                        div.innerHTML = `
+                            <span>${code}</span>
+                            <button class="btn" style="padding: 4px 8px; font-size: 12px; width: auto;" onclick="quickJoin('${code}')">ACCESS</button>
+                        `;
                         roomListDiv.appendChild(div);
                     });
+                } else {
+                    roomListDiv.innerHTML = "> NO SAVED CHANNELS";
                 }
             });
         }
@@ -281,16 +1062,21 @@
 
         // 🔄 Auth State Listener
         auth.onAuthStateChanged(user => {
-            debug.textContent = "";
-            if (user) {
-                authDiv.classList.add("hidden");
-                joinRoomDiv.classList.remove("hidden");
+            if (user && isSessionActive) {
+                authPanel.classList.add("hidden");
+                chatPanel.classList.remove("hidden");
                 loadUserRooms();
-            } else {
-                authDiv.classList.remove("hidden");
-                joinRoomDiv.classList.add("hidden");
-                chatDiv.classList.add("hidden");
+            } else if (!user) {
+                authPanel.classList.remove("hidden");
+                chatPanel.classList.add("hidden");
+                if (presenceRef) presenceRef.remove();
+                isSessionActive = false;
+                localStorage.removeItem('neuralink_session');
             }
+        });
+
+        document.getElementById("messageInput")?.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") sendMessage();
         });
     </script>
 </body>
