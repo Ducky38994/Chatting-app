@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>🔐 Secure Chat Rooms</title>
+    <style>
+        body {
+            font-family: Arial;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+
+        #auth,
+        #join-room,
+        #chat {
+            margin: 15px 0;
+        }
+
+        #messages {
+            height: 400px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            overflow-y: auto;
+            background: #f9f9f9;
+            margin: 10px 0;
+        }
+
+        input,
+        button {
+            padding: 8px;
+            margin: 5px;
+        }
+
+        .room-list {
+            margin-top: 15px;
+        }
+
+        .room-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 6px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>🔐 Secure Chat Rooms</h2>
+
+    <!-- Auth Section -->
+    <div id="auth">
+        <input type="email" id="email" placeholder="Email" />
+        <input type="password" id="password" placeholder="Password" />
+        <button onclick="signUp()">Sign Up</button>
+        <button onclick="signIn()">Sign In</button>
+        <p id="debug" style="color:red; font-size:12px;"></p>
+    </div>
+
+    <!-- Join Room Section -->
+    <div id="join-room" class="hidden">
+        <h3>🔑 Enter Room Code</h3>
+        <input type="text" id="roomCode" placeholder="e.g., alpha123" />
+        <button onclick="joinRoom()">Join Room</button>
+        <button onclick="createNewRoom()">+ New Room</button>
+
+        <div class="room-list">
+            <h4>My Rooms</h4>
+            <div id="roomList"></div>
+        </div>
+    </div>
+
+    <!-- Chat Section -->
+    <div id="chat" class="hidden">
+        <h3>Room: <span id="currentRoomName"></span></h3>
+        <div id="messages"></div>
+        <input type="text" id="messageInput" placeholder="Type a message..." />
+        <button onclick="sendMessage()">Send</button>
+        <button onclick="clearChat()">🧹 Clear Chat</button>
+        <button onclick="leaveRoom()">← Leave Room</button>
+        <button onclick="signOut()">Logout</button>
+    </div>
+
+    <!-- Firebase SDKs (CDN) -->
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
+
+    <script>
+        // ======================
+        // 🔑 REPLACE WITH YOUR FIREBASE CONFIG
+        // ======================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBK4pJpKtFPs19-J051xR6t77SBHYrg1k8",
+            authDomain: "subpls-2c774.firebaseapp.com",
+            databaseURL: "https://subpls-2c774-default-rtdb.firebaseio.com",
+            projectId: "subpls-2c774",
+            storageBucket: "subpls-2c774.firebasestorage.app",
+            messagingSenderId: "834082653588",
+            appId: "1:834082653588:web:a7b266363aa864249f3b81",
+            measurementId: "G-JCP2C4X78B"
+
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.database();
+
+        // DOM
+        const authDiv = document.getElementById("auth");
+        const joinRoomDiv = document.getElementById("join-room");
+        const chatDiv = document.getElementById("chat");
+        const debug = document.getElementById("debug");
+
+        let currentRoomCode = null;
+        let currentRoomKey = null;
+
+        // 🔐 Encryption
+        async function deriveKey(roomCode) {
+            const enc = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey(
+                "raw", enc.encode(roomCode), { name: "PBKDF2" }, false, ["deriveBits", "deriveKey"]
+            );
+            return await crypto.subtle.deriveKey(
+                { name: "PBKDF2", salt: enc.encode("secure-chat-salt-2026"), iterations: 100000, hash: "SHA-256" },
+                key, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+            );
+        }
+        // ⚠️ Fix key reference
+        async function deriveKey(roomCode) {
+            const enc = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey(
+                "raw", enc.encode(roomCode), { name: "PBKDF2" }, false, ["deriveBits", "deriveKey"]
+            );
+            return await crypto.subtle.deriveKey(
+                { name: "PBKDF2", salt: enc.encode("secure-chat-salt-2026"), iterations: 100000, hash: "SHA-256" },
+                keyMaterial, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+            );
+        }
+
+        async function encryptMessage(text, key) {
+            const iv = crypto.getRandomValues(new Uint8Array(12));
+            const encrypted = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, new TextEncoder().encode(text));
+            return { ciphertext: Array.from(new Uint8Array(encrypted)), iv: Array.from(iv) };
+        }
+
+        async function decryptMessage(encryptedData, key) {
+            try {
+                const decrypted = await crypto.subtle.decrypt(
+                    { name: "AES-GCM", iv: new Uint8Array(encryptedData.iv) },
+                    key,
+                    new Uint8Array(encryptedData.ciphertext)
+                );
+                return new TextDecoder().decode(decrypted);
+            } catch (e) {
+                return "[DECRYPTION FAILED]";
+            }
+        }
+
+        // 👤 Auth
+        function signUp() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            auth.createUserWithEmailAndPassword(email, password)
+                .catch(e => debug.textContent = "Sign up: " + e.message);
+        }
+
+        function signIn() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            auth.signInWithEmailAndPassword(email, password)
+                .catch(e => debug.textContent = "Sign in: " + e.message);
+        }
+
+        function signOut() {
+            auth.signOut();
+        }
+
+        // 🏠 Room
+        async function joinRoom() {
+            const code = document.getElementById("roomCode").value.trim();
+            if (!code) return;
+            try {
+                currentRoomCode = code;
+                currentRoomKey = await deriveKey(code);
+                document.getElementById("currentRoomName").textContent = code;
+                authDiv.classList.add("hidden");
+                joinRoomDiv.classList.add("hidden");
+                chatDiv.classList.remove("hidden");
+                loadMessages(code);
+                addUserToRoom(code);
+            } catch (e) {
+                debug.textContent = "Join error: " + e.message;
+            }
+        }
+
+        function createNewRoom() {
+            const code = prompt("Enter NEW room code:");
+            if (code) {
+                document.getElementById("roomCode").value = code;
+                joinRoom();
+            }
+        }
+
+        function leaveRoom() {
+            currentRoomCode = null;
+            currentRoomKey = null;
+            chatDiv.classList.add("hidden");
+            joinRoomDiv.classList.remove("hidden");
+        }
+
+        // 💬 Chat
+        async function sendMessage() {
+            const text = document.getElementById("messageInput").value.trim();
+            if (!text || !currentRoomKey) return;
+            try {
+                const encrypted = await encryptMessage(text, currentRoomKey);
+                db.ref(`rooms/${currentRoomCode}/messages`).push({
+                    encrypted,
+                    sender: auth.currentUser.email,
+                    timestamp: firebase.database.ServerValue.TIMESTAMP
+                });
+                document.getElementById("messageInput").value = "";
+            } catch (e) {
+                debug.textContent = "Send error: " + e.message;
+            }
+        }
+
+        async function loadMessages(roomCode) {
+            const messagesDiv = document.getElementById("messages");
+            messagesDiv.innerHTML = "Loading...";
+            db.ref(`rooms/${roomCode}/messages`).orderByChild("timestamp").on("child_added", async (snapshot) => {
+                const msg = snapshot.val();
+                let text = "[Decrypting...]";
+                if (currentRoomKey) {
+                    text = await decryptMessage(msg.encrypted, currentRoomKey).catch(() => "[Failed]");
+                }
+                const div = document.createElement("div");
+                div.innerHTML = `<strong>${msg.sender}:</strong> ${text}`;
+                messagesDiv.appendChild(div);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            });
+        }
+
+        function clearChat() {
+            document.getElementById("messages").innerHTML = "<em>Chat cleared.</em>";
+        }
+
+        function addUserToRoom(roomCode) {
+            db.ref(`users/${auth.currentUser.uid}/rooms/${roomCode}`).push(true);
+            loadUserRooms();
+        }
+
+        function loadUserRooms() {
+            const roomListDiv = document.getElementById("roomList");
+            roomListDiv.innerHTML = "";
+            db.ref(`users/${auth.currentUser.uid}/rooms`).on("value", (snapshot) => {
+                roomListDiv.innerHTML = "";
+                const rooms = snapshot.val();
+                if (rooms) {
+                    Object.keys(rooms).forEach(code => {
+                        const div = document.createElement("div");
+                        div.className = "room-item";
+                        div.innerHTML = `<span>${code}</span><button onclick="quickJoin('${code}')">Enter</button>`;
+                        roomListDiv.appendChild(div);
+                    });
+                }
+            });
+        }
+
+        function quickJoin(code) {
+            document.getElementById("roomCode").value = code;
+            joinRoom();
+        }
+
+        // 🔄 Auth State Listener
+        auth.onAuthStateChanged(user => {
+            debug.textContent = "";
+            if (user) {
+                authDiv.classList.add("hidden");
+                joinRoomDiv.classList.remove("hidden");
+                loadUserRooms();
+            } else {
+                authDiv.classList.remove("hidden");
+                joinRoomDiv.classList.add("hidden");
+                chatDiv.classList.add("hidden");
+            }
+        });
+    </script>
+</body>
+
+</html>
