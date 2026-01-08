@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEURALINK CHAT // SECURE</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@400;600&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* ... [KEEP ALL EXISTING CYBERPUNK CSS] ... */
         :root {
             --cyber-purple: #9d4edd;
             --cyber-cyan: #00f5d4;
@@ -18,17 +14,17 @@
             --cyber-gray: #1e1e2f;
             --glow: 0 0 10px var(--cyber-cyan), 0 0 20px rgba(0, 245, 212, 0.3);
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         body {
-            background:
+            background: 
                 linear-gradient(125deg, var(--cyber-darker), #1a0b2e),
-                url("image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63-28c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-52 8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm48 12c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-44 4c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm52-8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-48 20c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm52-12c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-56 28c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm64-24c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-60 16c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm64-20c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%239d4edd' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63-28c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-52 8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm48 12c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-44 4c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm52-8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-48 20c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm52-12c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-56 28c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm64-24c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-60 16c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm64-20c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%239d4edd' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
             background-attachment: fixed;
             color: var(--cyber-cyan);
             min-height: 100vh;
@@ -36,7 +32,7 @@
             overflow-x: hidden;
             position: relative;
         }
-
+        
         body::before {
             content: "";
             position: absolute;
@@ -44,15 +40,17 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: repeating-linear-gradient(0deg,
-                    rgba(0, 0, 0, 0.15),
-                    rgba(0, 0, 0, 0.15) 1px,
-                    transparent 1px,
-                    transparent 2px);
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
             pointer-events: none;
             z-index: 1;
         }
-
+        
         .container {
             display: flex;
             width: 100%;
@@ -66,7 +64,7 @@
             z-index: 2;
             overflow: hidden;
         }
-
+        
         .container::before {
             content: "NEURALINK v2.3.7";
             position: absolute;
@@ -78,7 +76,7 @@
             letter-spacing: 2px;
             font-family: 'Orbitron', monospace;
         }
-
+        
         .info-panel {
             flex: 1;
             background: rgba(5, 5, 10, 0.8);
@@ -87,7 +85,7 @@
             position: relative;
             overflow: hidden;
         }
-
+        
         .info-panel::after {
             content: "";
             position: absolute;
@@ -98,17 +96,12 @@
             background: linear-gradient(90deg, transparent, var(--cyber-cyan), transparent);
             animation: scan 8s linear infinite;
         }
-
+        
         @keyframes scan {
-            0% {
-                left: -100%;
-            }
-
-            100% {
-                left: 100%;
-            }
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
-
+        
         .info-panel h1 {
             font-family: 'Orbitron', monospace;
             font-size: 2.2rem;
@@ -117,21 +110,20 @@
             text-shadow: 0 0 10px var(--cyber-cyan);
             letter-spacing: 2px;
         }
-
+        
         .info-panel p {
             margin-bottom: 25px;
             line-height: 1.6;
             font-size: 1.1rem;
             color: #a0a0c0;
         }
-
-        .auth-panel,
-        .chat-panel {
+        
+        .auth-panel, .chat-panel {
             flex: 1;
             padding: 30px;
             background: rgba(10, 10, 20, 0.9);
         }
-
+        
         .panel-header {
             font-family: 'Orbitron', monospace;
             text-transform: uppercase;
@@ -143,13 +135,13 @@
             justify-content: space-between;
             align-items: center;
         }
-
+        
         .tabs {
             display: flex;
             margin-bottom: 25px;
             border-bottom: 2px solid var(--cyber-purple);
         }
-
+        
         .tab {
             padding: 10px 20px;
             cursor: pointer;
@@ -157,11 +149,11 @@
             letter-spacing: 1px;
             position: relative;
         }
-
+        
         .tab.active {
             color: var(--cyber-cyan);
         }
-
+        
         .tab.active::after {
             content: "";
             position: absolute;
@@ -172,11 +164,11 @@
             background: var(--cyber-cyan);
             box-shadow: 0 0 10px var(--cyber-cyan);
         }
-
+        
         .form-group {
             margin-bottom: 20px;
         }
-
+        
         .form-group label {
             display: block;
             margin-bottom: 8px;
@@ -186,7 +178,7 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
+        
         .form-control {
             width: 100%;
             padding: 12px 15px;
@@ -197,13 +189,13 @@
             font-size: 16px;
             transition: all 0.3s;
         }
-
+        
         .form-control:focus {
             outline: none;
             border-color: var(--cyber-cyan);
             box-shadow: 0 0 8px var(--cyber-cyan);
         }
-
+        
         .btn {
             width: 100%;
             padding: 14px;
@@ -220,7 +212,7 @@
             position: relative;
             overflow: hidden;
         }
-
+        
         .btn::before {
             content: "";
             position: absolute;
@@ -231,30 +223,30 @@
             background: linear-gradient(90deg, transparent, var(--cyber-cyan), transparent);
             transition: 0.5s;
         }
-
+        
         .btn:hover {
             box-shadow: var(--glow);
         }
-
+        
         .btn:hover::before {
             left: 100%;
         }
-
+        
         .btn-danger {
             border-color: #ff2a6d;
             color: #ff2a6d;
         }
-
+        
         .btn-danger:hover {
             box-shadow: 0 0 10px #ff2a6d, 0 0 20px rgba(255, 42, 109, 0.4);
         }
-
+        
         .room-actions {
             display: flex;
             gap: 10px;
             margin: 20px 0;
         }
-
+        
         #messages {
             height: 300px;
             border: 1px solid var(--cyber-purple);
@@ -265,17 +257,17 @@
             font-family: 'Courier New', monospace;
             color: #00ffcc;
         }
-
+        
         .message {
             margin-bottom: 12px;
             padding: 8px;
             border-left: 2px solid var(--cyber-cyan);
         }
-
+        
         .message strong {
             color: var(--cyber-purple);
         }
-
+        
         .online-badge {
             background: rgba(0, 245, 212, 0.2);
             color: var(--cyber-cyan);
@@ -287,11 +279,11 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
+        
         .room-list {
             margin-top: 25px;
         }
-
+        
         .room-item {
             display: flex;
             justify-content: space-between;
@@ -301,16 +293,16 @@
             margin-bottom: 10px;
             transition: all 0.3s;
         }
-
+        
         .room-item:hover {
             border-color: var(--cyber-cyan);
             box-shadow: 0 0 8px rgba(157, 78, 221, 0.5);
         }
-
+        
         .hidden {
             display: none;
         }
-
+        
         #debug {
             color: #ff2a6d;
             min-height: 20px;
@@ -318,13 +310,12 @@
             font-size: 14px;
             font-family: 'Courier New', monospace;
         }
-
+        
         .glitch {
             position: relative;
         }
-
-        .glitch::before,
-        .glitch::after {
+        
+        .glitch::before, .glitch::after {
             content: attr(data-text);
             position: absolute;
             top: 0;
@@ -332,241 +323,83 @@
             width: 100%;
             height: 100%;
         }
-
+        
         .glitch::before {
             left: 2px;
             text-shadow: -2px 0 #ff00c8;
             clip: rect(44px, 450px, 56px, 0);
             animation: glitch-1 3s infinite linear alternate-reverse;
         }
-
+        
         .glitch::after {
             left: -2px;
             text-shadow: -2px 0 #00fff9;
             clip: rect(44px, 450px, 56px, 0);
             animation: glitch-2 2s infinite linear alternate-reverse;
         }
-
+        
         @keyframes glitch-1 {
-            0% {
-                clip: rect(30px, 9999px, 10px, 0);
-            }
-
-            5% {
-                clip: rect(20px, 9999px, 20px, 0);
-            }
-
-            10% {
-                clip: rect(50px, 9999px, 30px, 0);
-            }
-
-            15% {
-                clip: rect(40px, 9999px, 40px, 0);
-            }
-
-            20% {
-                clip: rect(60px, 9999px, 50px, 0);
-            }
-
-            25% {
-                clip: rect(30px, 9999px, 60px, 0);
-            }
-
-            30% {
-                clip: rect(70px, 9999px, 70px, 0);
-            }
-
-            35% {
-                clip: rect(50px, 9999px, 80px, 0);
-            }
-
-            40% {
-                clip: rect(80px, 9999px, 90px, 0);
-            }
-
-            45% {
-                clip: rect(60px, 9999px, 100px, 0);
-            }
-
-            50% {
-                clip: rect(90px, 9999px, 110px, 0);
-            }
-
-            55% {
-                clip: rect(70px, 9999px, 120px, 0);
-            }
-
-            60% {
-                clip: rect(100px, 9999px, 130px, 0);
-            }
-
-            65% {
-                clip: rect(80px, 9999px, 140px, 0);
-            }
-
-            70% {
-                clip: rect(110px, 9999px, 150px, 0);
-            }
-
-            75% {
-                clip: rect(90px, 9999px, 160px, 0);
-            }
-
-            80% {
-                clip: rect(120px, 9999px, 170px, 0);
-            }
-
-            85% {
-                clip: rect(100px, 9999px, 180px, 0);
-            }
-
-            90% {
-                clip: rect(130px, 9999px, 190px, 0);
-            }
-
-            95% {
-                clip: rect(110px, 9999px, 200px, 0);
-            }
-
-            100% {
-                clip: rect(140px, 9999px, 210px, 0);
-            }
+            0% { clip: rect(30px, 9999px, 10px, 0); }
+            5% { clip: rect(20px, 9999px, 20px, 0); }
+            10% { clip: rect(50px, 9999px, 30px, 0); }
+            15% { clip: rect(40px, 9999px, 40px, 0); }
+            20% { clip: rect(60px, 9999px, 50px, 0); }
+            25% { clip: rect(30px, 9999px, 60px, 0); }
+            30% { clip: rect(70px, 9999px, 70px, 0); }
+            35% { clip: rect(50px, 9999px, 80px, 0); }
+            40% { clip: rect(80px, 9999px, 90px, 0); }
+            45% { clip: rect(60px, 9999px, 100px, 0); }
+            50% { clip: rect(90px, 9999px, 110px, 0); }
+            55% { clip: rect(70px, 9999px, 120px, 0); }
+            60% { clip: rect(100px, 9999px, 130px, 0); }
+            65% { clip: rect(80px, 9999px, 140px, 0); }
+            70% { clip: rect(110px, 9999px, 150px, 0); }
+            75% { clip: rect(90px, 9999px, 160px, 0); }
+            80% { clip: rect(120px, 9999px, 170px, 0); }
+            85% { clip: rect(100px, 9999px, 180px, 0); }
+            90% { clip: rect(130px, 9999px, 190px, 0); }
+            95% { clip: rect(110px, 9999px, 200px, 0); }
+            100% { clip: rect(140px, 9999px, 210px, 0); }
         }
-
+        
         @keyframes glitch-2 {
-            0% {
-                clip: rect(10px, 9999px, 30px, 0);
-            }
-
-            5% {
-                clip: rect(20px, 9999px, 40px, 0);
-            }
-
-            10% {
-                clip: rect(30px, 9999px, 50px, 0);
-            }
-
-            15% {
-                clip: rect(40px, 9999px, 60px, 0);
-            }
-
-            20% {
-                clip: rect(50px, 9999px, 70px, 0);
-            }
-
-            25% {
-                clip: rect(60px, 9999px, 80px, 0);
-            }
-
-            30% {
-                clip: rect(70px, 9999px, 90px, 0);
-            }
-
-            35% {
-                clip: rect(80px, 9999px, 100px, 0);
-            }
-
-            40% {
-                clip: rect(90px, 9999px, 110px, 0);
-            }
-
-            45% {
-                clip: rect(100px, 9999px, 120px, 0);
-            }
-
-            50% {
-                clip: rect(110px, 9999px, 130px, 0);
-            }
-
-            55% {
-                clip: rect(120px, 9999px, 140px, 0);
-            }
-
-            60% {
-                clip: rect(130px, 9999px, 150px, 0);
-            }
-
-            65% {
-                clip: rect(140px, 9999px, 160px, 0);
-            }
-
-            70% {
-                clip: rect(150px, 9999px, 170px, 0);
-            }
-
-            75% {
-                clip: rect(160px, 9999px, 180px, 0);
-            }
-
-            80% {
-                clip: rect(170px, 9999px, 190px, 0);
-            }
-
-            85% {
-                clip: rect(180px, 9999px, 200px, 0);
-            }
-
-            90% {
-                clip: rect(190px, 9999px, 210px, 0);
-            }
-
-            95% {
-                clip: rect(200px, 9999px, 220px, 0);
-            }
-
-            100% {
-                clip: rect(210px, 9999px, 230px, 0);
-            }
+            0% { clip: rect(10px, 9999px, 30px, 0); }
+            5% { clip: rect(20px, 9999px, 40px, 0); }
+            10% { clip: rect(30px, 9999px, 50px, 0); }
+            15% { clip: rect(40px, 9999px, 60px, 0); }
+            20% { clip: rect(50px, 9999px, 70px, 0); }
+            25% { clip: rect(60px, 9999px, 80px, 0); }
+            30% { clip: rect(70px, 9999px, 90px, 0); }
+            35% { clip: rect(80px, 9999px, 100px, 0); }
+            40% { clip: rect(90px, 9999px, 110px, 0); }
+            45% { clip: rect(100px, 9999px, 120px, 0); }
+            50% { clip: rect(110px, 9999px, 130px, 0); }
+            55% { clip: rect(120px, 9999px, 140px, 0); }
+            60% { clip: rect(130px, 9999px, 150px, 0); }
+            65% { clip: rect(140px, 9999px, 160px, 0); }
+            70% { clip: rect(150px, 9999px, 170px, 0); }
+            75% { clip: rect(160px, 9999px, 180px, 0); }
+            80% { clip: rect(170px, 9999px, 190px, 0); }
+            85% { clip: rect(180px, 9999px, 200px, 0); }
+            90% { clip: rect(190px, 9999px, 210px, 0); }
+            95% { clip: rect(200px, 9999px, 220px, 0); }
+            100% { clip: rect(210px, 9999px, 230px, 0); }
         }
-
+        
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
             }
-
             .info-panel {
                 border-right: none;
                 border-bottom: 1px solid var(--cyber-purple);
             }
         }
-
-        /* Biometric auth modal */
-        #bioModal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 5, 20, 0.95);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            color: var(--cyber-cyan);
-            font-family: 'Orbitron', monospace;
-        }
-
-        .bio-content {
-            background: rgba(15, 10, 30, 0.8);
-            border: 2px solid var(--cyber-purple);
-            padding: 30px;
-            text-align: center;
-            max-width: 500px;
-            box-shadow: var(--glow);
-        }
-
-        .bio-icon {
-            font-size: 60px;
-            margin: 20px 0;
-            color: var(--cyber-cyan);
-        }
     </style>
 </head>
-
 <body>
-    <!-- ... [EXISTING HTML STRUCTURE] ... -->
     <div class="container">
+        <!-- Info Panel -->
         <div class="info-panel">
             <h1 class="glitch" data-text="NEURALINK CHAT">NEURALINK CHAT</h1>
             <p>SECURE ENCRYPTED COMMUNICATIONS // ACCESS LEVEL OMEGA</p>
@@ -578,15 +411,16 @@
                 > USER: ANONYMOUS
             </p>
         </div>
-
+        
+        <!-- Auth/Chat Panel -->
         <div class="auth-panel" id="authPanel">
             <div class="panel-header">ACCESS TERMINAL</div>
-
+            
             <div class="tabs">
                 <div class="tab active" onclick="switchTab('login')">LOGIN</div>
                 <div class="tab" onclick="switchTab('register')">REGISTER</div>
             </div>
-
+            
             <div class="form-container active" id="login-form">
                 <div class="form-group">
                     <label for="email">USER ID</label>
@@ -596,15 +430,16 @@
                     <label for="password">ACCESS KEY</label>
                     <div style="position: relative;">
                         <input type="password" id="password" class="form-control" placeholder="••••••••">
-                        <button type="button" onclick="togglePasswordVisibility()"
-                            style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--cyber-cyan); cursor: pointer; font-family: 'Orbitron', monospace;"
-                            id="togglePassword">👁</button>
+                        <button type="button" 
+                                onclick="togglePasswordVisibility()" 
+                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--cyber-cyan); cursor: pointer; font-family: 'Orbitron', monospace;"
+                                id="togglePassword">👁</button>
                     </div>
                 </div>
                 <button class="btn" onclick="signIn()">INITIATE SESSION</button>
                 <p id="debug" style="color: #ff2a6d; margin-top: 15px; font-family: 'Courier New', monospace;"></p>
             </div>
-
+            
             <div class="form-container" id="register-form">
                 <div class="form-group">
                     <label for="register-email">USER ID</label>
@@ -615,36 +450,30 @@
                     <input type="password" id="register-password" class="form-control" placeholder="CREATE SECURE KEY">
                 </div>
                 <button class="btn" onclick="signUp()">CREATE PROFILE</button>
-                <p id="register-debug" style="color: #ff2a6d; margin-top: 15px; font-family: 'Courier New', monospace;">
-                </p>
+                <p id="register-debug" style="color: #ff2a6d; margin-top: 15px; font-family: 'Courier New', monospace;"></p>
             </div>
         </div>
-
+        
         <div class="chat-panel hidden" id="chatPanel">
             <div class="panel-header">
                 <span>ENCRYPTED CHANNEL</span>
-                <button class="btn" style="width: auto; padding: 5px 15px; font-size: 12px;"
-                    onclick="signOut()">TERMINATE</button>
+                <button class="btn" style="width: auto; padding: 5px 15px; font-size: 12px;" onclick="signOut()">TERMINATE</button>
             </div>
-
+            
             <div id="join-room" class="form-container active">
                 <div class="room-actions">
-                    <input type="text" id="roomCode" class="form-control"
-                        placeholder="ENTER ROOM CODE (e.g. CYBER-ALPHA)">
+                    <input type="text" id="roomCode" class="form-control" placeholder="ENTER ROOM CODE (e.g. CYBER-ALPHA)">
                     <button class="btn" onclick="joinRoom()">JOIN</button>
                     <button class="btn btn-danger" onclick="deleteRoomFromList()">ERASE</button>
                 </div>
-                <button class="btn" style="background: transparent; border-color: var(--cyber-cyan);"
-                    onclick="createNewRoom()">+ NEW CHANNEL</button>
-
+                <button class="btn" style="background: transparent; border-color: var(--cyber-cyan);" onclick="createNewRoom()">+ NEW CHANNEL</button>
+                
                 <div class="room-list">
-                    <div
-                        style="font-family: 'Orbitron', monospace; color: var(--cyber-purple); margin: 20px 0 10px; letter-spacing: 1px;">
-                        SAVED CHANNELS</div>
+                    <div style="font-family: 'Orbitron', monospace; color: var(--cyber-purple); margin: 20px 0 10px; letter-spacing: 1px;">SAVED CHANNELS</div>
                     <div id="roomList"></div>
                 </div>
             </div>
-
+            
             <div id="chat" class="hidden">
                 <div style="font-family: 'Orbitron', monospace; margin: 10px 0; display: flex; align-items: center;">
                     CHANNEL: <span id="currentRoomName" style="color: var(--cyber-cyan); margin-left: 10px;"></span>
@@ -652,26 +481,12 @@
                 </div>
                 <div id="messages"></div>
                 <div class="room-actions">
-                    <input type="text" id="messageInput" class="form-control" placeholder="ENCRYPTED MESSAGE..."
-                        maxlength="500">
+                    <input type="text" id="messageInput" class="form-control" placeholder="ENCRYPTED MESSAGE..." maxlength="500">
                     <button class="btn" onclick="sendMessage()">TRANSMIT</button>
                 </div>
                 <button class="btn" onclick="clearChat()">WIPE CHANNEL</button>
                 <button class="btn" onclick="leaveRoom()">EXIT CHANNEL</button>
             </div>
-        </div>
-    </div>
-
-    <!-- Biometric Auth Modal (Only for mobile) -->
-    <div id="bioModal" class="hidden">
-        <div class="bio-content">
-            <div class="bio-icon">🖐️</div>
-            <h2>BIOMETRIC AUTH REQUIRED</h2>
-            <p>Verify your identity to access secure channels</p>
-            <button class="btn" onclick="attemptBiometricAuth()" style="margin-top: 20px;">USE FINGERPRINT</button>
-            <button class="btn" onclick="showPasswordAuth()"
-                style="margin-top: 10px; background: transparent; border-color: var(--cyber-purple);">USE
-                PASSWORD</button>
         </div>
     </div>
 
@@ -702,83 +517,14 @@
         let currentRoomCode = null;
         let currentRoomKey = null;
         let presenceRef = null;
-        let isSessionActive = false;
-
-        // ✅ DEVICE DETECTION: Is user on mobile?
-        function isMobileDevice() {
-            return (typeof window.orientation !== "undefined") ||
-                (navigator.maxTouchPoints > 1) ||
-                (window.matchMedia("(pointer: coarse)").matches);
-        }
 
         // UI Elements
         const authPanel = document.getElementById("authPanel");
         const chatPanel = document.getElementById("chatPanel");
         const joinRoomDiv = document.getElementById("join-room");
         const chatDiv = document.getElementById("chat");
-        const bioModal = document.getElementById("bioModal");
 
-        // 🔐 SESSION SECURITY: Destroy session on tab close
-        window.addEventListener('beforeunload', () => {
-            if (isSessionActive) {
-                auth.signOut();
-                localStorage.removeItem('neuralink_session');
-            }
-        });
-
-        // 🔐 SESSION SECURITY: Check session on load
-        window.addEventListener('load', async () => {
-            const hasSession = localStorage.getItem('neuralink_session');
-            if (hasSession) {
-                if (isMobileDevice()) {
-                    // Show biometric modal on mobile
-                    bioModal.classList.remove('hidden');
-                } else {
-                    // Go straight to password login on desktop
-                    authPanel.classList.remove('hidden');
-                    chatPanel.classList.add('hidden');
-                }
-            }
-        });
-
-        function showPasswordAuth() {
-            bioModal.classList.add('hidden');
-            authPanel.classList.remove('hidden');
-            chatPanel.classList.add('hidden');
-        }
-
-        async function attemptBiometricAuth() {
-            if (!window.PublicKeyCredential) {
-                showError("Biometric auth not supported");
-                showPasswordAuth();
-                return;
-            }
-
-            try {
-                // Simulate success on localhost
-                if (window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost") {
-                    const user = await auth.currentUser;
-                    if (user) {
-                        bioModal.classList.add('hidden');
-                        authPanel.classList.add('hidden');
-                        chatPanel.classList.remove('hidden');
-                        isSessionActive = true;
-                        loadUserRooms();
-                    } else {
-                        showPasswordAuth();
-                    }
-                } else {
-                    showError("Biometric auth requires HTTPS");
-                    showPasswordAuth();
-                }
-            } catch (e) {
-                console.error("Biometric auth failed:", e);
-                showError("Biometric verification failed");
-                showPasswordAuth();
-            }
-        }
-
-        // 🔐 Encryption Functions (same as before)
+        // 🔐 Encryption Functions
         async function deriveKey(roomCode) {
             const enc = new TextEncoder();
             const keyMaterial = await crypto.subtle.importKey(
@@ -803,16 +549,15 @@
         }
 
         async function encryptMessage(text, key) {
-            const iv = crypto.randomUUID().substring(0, 12);
-            const encodedIv = new TextEncoder().encode(iv);
+            const iv = crypto.getRandomValues(new Uint8Array(12));
             const encrypted = await crypto.subtle.encrypt(
-                { name: "AES-GCM", iv: encodedIv },
+                { name: "AES-GCM", iv: iv },
                 key,
                 new TextEncoder().encode(text)
             );
             return {
                 ciphertext: Array.from(new Uint8Array(encrypted)),
-                iv: Array.from(encodedIv)
+                iv: Array.from(iv)
             };
         }
 
@@ -857,12 +602,12 @@
                 tab.classList.remove('active');
             });
             event.target.classList.add('active');
-
+            
             document.querySelectorAll('.form-container').forEach(form => {
                 form.classList.remove('active');
             });
-
-            if (tabName === 'login') {
+            
+            if(tabName === 'login') {
                 document.getElementById('login-form').classList.add('active');
             } else {
                 document.getElementById('register-form').classList.add('active');
@@ -875,10 +620,6 @@
             const password = document.getElementById("register-password").value;
             if (!email || !password) return showError("FIELDS REQUIRED");
             auth.createUserWithEmailAndPassword(email, password)
-                .then(() => {
-                    isSessionActive = true;
-                    localStorage.setItem('neuralink_session', 'active');
-                })
                 .catch(e => showError(e.message, "register-debug"));
         }
 
@@ -887,22 +628,14 @@
             const password = document.getElementById("password").value;
             if (!email || !password) return showError("FIELDS REQUIRED");
             auth.signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    isSessionActive = true;
-                    localStorage.setItem('neuralink_session', 'active');
-                    // Hide auth modal if shown
-                    bioModal.classList.add('hidden');
-                })
                 .catch(e => showError(e.message));
         }
 
         function signOut() {
-            isSessionActive = false;
-            localStorage.removeItem('neuralink_session');
             auth.signOut();
         }
 
-        // 🏠 Room Functions (same as before)
+        // 🏠 Room Functions
         async function joinRoom() {
             const code = document.getElementById("roomCode").value.trim();
             if (!code) return showError("ENTER ROOM CODE");
@@ -934,11 +667,12 @@
             joinRoomDiv.classList.remove("hidden");
         }
 
+        // 🗑️ Delete Room (Anyone can delete entire room)
         function deleteRoomFromList() {
             const code = document.getElementById("roomCode").value.trim();
             if (!code) return showError("ENTER ROOM CODE TO ERASE");
             if (!confirm("ERASE CHANNEL PERMANENTLY?\nALL DATA WILL BE DESTROYED.")) return;
-
+            
             db.ref(`rooms/${code}`).remove()
                 .then(() => {
                     const user = auth.currentUser;
@@ -959,6 +693,7 @@
             currentRoomKey = null;
         }
 
+        // 👥 Presence
         function setupPresence(roomCode) {
             const user = auth.currentUser;
             presenceRef = db.ref(`rooms/${roomCode}/presence/${user.uid}`);
@@ -975,6 +710,7 @@
             });
         }
 
+        // 💬 Chat
         async function sendMessage() {
             const input = document.getElementById("messageInput");
             const text = input.value.trim();
@@ -1004,7 +740,7 @@
                     if (currentRoomKey) {
                         decryptedText = await decryptMessage(msg.encrypted, currentRoomKey);
                     }
-                    const time = new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    const time = new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
                     const div = document.createElement("div");
                     div.className = "message";
                     div.innerHTML = `[${time}] <strong>${msg.sender}:</strong> ${decryptedText}`;
@@ -1023,6 +759,7 @@
                 .catch(e => showError("WIPE FAILED"));
         }
 
+        // 📋 Room List
         function addUserToRoom(roomCode) {
             const user = auth.currentUser;
             if (user) {
@@ -1062,23 +799,21 @@
 
         // 🔄 Auth State Listener
         auth.onAuthStateChanged(user => {
-            if (user && isSessionActive) {
+            if (user) {
                 authPanel.classList.add("hidden");
                 chatPanel.classList.remove("hidden");
                 loadUserRooms();
-            } else if (!user) {
+            } else {
                 authPanel.classList.remove("hidden");
                 chatPanel.classList.add("hidden");
                 if (presenceRef) presenceRef.remove();
-                isSessionActive = false;
-                localStorage.removeItem('neuralink_session');
             }
         });
 
+        // ⌨️ Enter to send
         document.getElementById("messageInput")?.addEventListener("keypress", (e) => {
             if (e.key === "Enter") sendMessage();
         });
     </script>
 </body>
-
 </html>
