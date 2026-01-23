@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL // ACCESS_HUB</title>
+    <title>TERMINAL // NEURAL_LINK_V4</title>
     <style>
         :root {
             --bg: #000;
@@ -24,87 +24,98 @@
             background-size: 100% 3px, 3px 100%;
         }
 
-        /* Sidebar Drawer */
+        /* Side Menu (Drawer) for Personal Profile Only */
         .sidebar {
             position: fixed; left: -350px; top: 0; width: 320px; height: 100%;
             background: #000; border-right: var(--border); z-index: 1000;
-            transition: 0.3s ease; padding: 20px; display: flex; flex-direction: column;
+            transition: 0.3s ease; padding: 20px;
         }
         .sidebar.open { left: 0; }
 
-        /* Screen Wrapper */
-        .screen { width: 100%; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        .terminal-box { width: 100%; max-width: 500px; border: var(--border); padding: 25px; background: #000; }
+        /* Main Layout - Split Screen like your first program */
+        .main-layout { display: grid; grid-template-columns: 300px 1fr; height: 100vh; width: 100vw; }
 
-        /* Chat Layout */
-        .chat-container { display: flex; flex-direction: column; height: 100vh; width: 100%; max-width: 900px; margin: 0 auto; border-left: var(--border); border-right: var(--border); }
-        .header { padding: 15px; border-bottom: var(--border); display: flex; justify-content: space-between; align-items: center; }
-        #messages { flex: 1; padding: 20px; overflow-y: auto; background: #050505; }
+        .side-panel { border-right: var(--border); display: flex; flex-direction: column; padding: 15px; background: #000; }
+        .chat-panel { display: flex; flex-direction: column; background: #050505; }
+
+        /* Components */
+        .header { padding: 10px; border-bottom: var(--border); display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+        #messages { flex: 1; padding: 15px; overflow-y: auto; }
         .footer { padding: 15px; border-top: var(--border); display: flex; gap: 10px; }
 
-        /* Inputs & Buttons */
-        .input-line { width: 100%; padding: 10px; background: transparent; border: 1px solid #444; color: #fff; margin-bottom: 15px; outline: none; }
-        .input-line:focus { border-color: #fff; }
-        .btn { padding: 10px 15px; background: transparent; color: #fff; border: 1px solid #fff; cursor: pointer; text-transform: uppercase; font-weight: bold; font-size: 0.7rem; }
+        .input-line { width: 100%; padding: 8px; background: transparent; border: 1px solid #444; color: #fff; margin-bottom: 10px; outline: none; font-size: 0.8rem; }
+        .btn { padding: 8px 12px; background: transparent; color: #fff; border: 1px solid #fff; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; }
         .btn:hover { background: #fff; color: #000; }
-        
-        /* Room List UI */
-        .room-list { margin-top: 20px; border-top: 1px solid #333; padding-top: 15px; max-height: 200px; overflow-y: auto; }
-        .room-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border: 1px solid #222; margin-bottom: 5px; cursor: pointer; }
-        .room-item:hover { border-color: #fff; }
 
-        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 10px 0; }
-        .avatar-grid img { width: 100%; border: 1px solid #333; cursor: pointer; }
+        /* Room & User Lists */
+        .scroll-area { flex: 1; overflow-y: auto; margin: 10px 0; border: 1px solid #222; padding: 5px; }
+        .list-item { padding: 8px; border-bottom: 1px solid #111; font-size: 0.75rem; cursor: pointer; display: flex; justify-content: space-between; }
+        .list-item:hover { background: #111; }
+
+        /* Profile Inspector (The "See anyone's info" box) */
+        .inspector { border: 1px solid #fff; padding: 10px; margin-top: 10px; background: #000; min-height: 150px; }
+        .ins-avatar { width: 50px; height: 50px; border: 1px solid #fff; float: left; margin-right: 10px; }
+
+        .screen { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; }
         .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
     <div id="sidebar" class="sidebar">
-        <h3 style="margin-bottom: 15px;">PROFILE SETTINGS</h3>
-        <img id="myAvatarDisplay" src="https://api.dicebear.com/7.x/pixel-art/svg?seed=1" style="width: 70px; border: 1px solid #fff;">
-        <div id="avatarPicker" class="avatar-grid"></div>
+        <h3>MY IDENTITY</h3>
+        <img id="myAvatarDisplay" src="" style="width: 60px; border: 1px solid #fff; margin: 10px 0;">
+        <div id="avatarPicker" style="display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 10px;"></div>
         <input type="text" id="profileName" class="input-line" placeholder="Display Name">
         <input type="text" id="profileBio" class="input-line" placeholder="Bio">
         <input type="text" id="profileLink" class="input-line" placeholder="Social Link">
-        <button class="btn" onclick="saveProfile()">SAVE</button>
-        <div style="margin-top: auto;">
-            <button class="btn" onclick="wipeText()" style="width: 100%; margin-bottom: 5px;">WIPE TEXT</button>
-            <button class="btn" onclick="toggleSidebar()" style="width: 100%;">CLOSE</button>
-        </div>
+        <button class="btn" onclick="saveProfile()" style="width: 100%;">SAVE PROFILE</button>
+        <button class="btn" onclick="toggleSidebar()" style="width: 100%; margin-top: 20px;">CLOSE</button>
     </div>
 
     <div id="page-login" class="screen">
-        <div class="terminal-box">
-            <h2 style="text-align:center; margin-bottom: 20px;">ACCESS_TERMINAL</h2>
+        <div style="border: var(--border); padding: 30px; width: 350px;">
+            <h2 style="text-align: center; margin-bottom: 20px;">[LOGIN]</h2>
             <input type="email" id="email" class="input-line" placeholder="EMAIL">
             <input type="password" id="password" class="input-line" placeholder="PASSWORD">
-            <button class="btn" style="width: 100%" onclick="signIn()">LOGIN</button>
+            <button class="btn" style="width: 100%" onclick="signIn()">ACCESS</button>
             <button class="btn" style="width: 100%; margin-top: 10px; border-style: dotted;" onclick="signUp()">REGISTER</button>
         </div>
     </div>
 
-    <div id="page-lobby" class="screen hidden">
-        <div class="terminal-box">
-            <h2 style="margin-bottom: 15px;">ROOM_HUB</h2>
-            <input type="text" id="roomCode" class="input-line" placeholder="ENTER NEW ROOM CODE">
+    <div id="page-main" class="main-layout hidden">
+        
+        <div class="side-panel">
+            <p style="font-size: 0.6rem; color: #666;">// JOIN_NEW_ROOM</p>
+            <input type="text" id="roomCode" class="input-line" placeholder="Room Code...">
             <button class="btn" style="width: 100%" onclick="joinRoom()">JOIN / CREATE</button>
-            
-            <div class="room-list">
-                <p style="font-size: 0.6rem; color: #666; margin-bottom: 10px;">MY ACCESS LIST:</p>
-                <div id="myRooms"></div>
+
+            <p style="font-size: 0.6rem; color: #666; margin-top: 15px;">// MY_ACCESS_LIST</p>
+            <div id="myRooms" class="scroll-area"></div>
+
+            <p style="font-size: 0.6rem; color: #666;">// WHO_IS_ONLINE</p>
+            <div id="onlineUsers" class="scroll-area"></div>
+
+            <div id="inspector" class="inspector hidden">
+                <p style="font-size: 0.5rem; color: #666; margin-bottom: 5px;">[DATA_INSPECTION]</p>
+                <img id="insAvatar" src="" class="ins-avatar">
+                <div style="font-size: 0.75rem;">
+                    <b id="insName"></b><br>
+                    <span id="insBio" style="font-size: 0.65rem; color: #888;"></span><br>
+                    <a id="insLink" href="#" target="_blank" style="color: #fff; font-size: 0.6rem;">LINK</a>
+                </div>
             </div>
-
-            <button class="btn" style="width: 100%; margin-top: 20px; color: #444;" onclick="signOut()">LOGOUT</button>
+            
+            <button class="btn" onclick="toggleSidebar()" style="margin-top: 10px;">MY SETTINGS</button>
         </div>
-    </div>
 
-    <div id="page-chat" class="hidden">
-        <div class="chat-container">
+        <div class="chat-panel">
             <div class="header">
-                <button class="btn" onclick="toggleSidebar()">☰ MENU</button>
-                <span id="nodeDisplay">ROOM: ---</span>
-                <button class="btn" onclick="leaveRoom()">BACK</button>
+                <span id="nodeDisplay">NODE: ---</span>
+                <div>
+                    <button class="btn" onclick="wipeText()" style="border-color: #444; color: #444;">WIPE</button>
+                    <button class="btn" onclick="signOut()">LOGOUT</button>
+                </div>
             </div>
             <div id="messages"></div>
             <div class="footer">
@@ -138,36 +149,38 @@
 
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
     function showPage(id) {
-        ['page-login', 'page-lobby', 'page-chat'].forEach(p => document.getElementById(p).classList.add('hidden'));
-        document.getElementById('page-' + id).classList.remove('hidden');
+        document.getElementById('page-login').classList.add('hidden');
+        document.getElementById('page-main').classList.remove('hidden');
     }
 
     // Avatar Picker
     const picker = document.getElementById("avatarPicker");
     for(let i=1; i<=8; i++) {
-        const url = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${i * 88}`;
+        const url = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${i * 77}`;
         const img = document.createElement("img");
-        img.src = url;
+        img.src = url; img.style.width="100%"; img.style.border="1px solid #222"; img.style.cursor="pointer";
         img.onclick = () => { selectedAvatar = url; document.getElementById("myAvatarDisplay").src = url; };
         picker.appendChild(img);
     }
 
-    // Auth Actions
+    // Auth
     function signUp() { auth.createUserWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(alert); }
     function signIn() { auth.signInWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(alert); }
     function signOut() { auth.signOut().then(() => location.reload()); }
 
     auth.onAuthStateChanged(user => {
         if (user) { 
-            showPage('lobby'); 
+            document.getElementById('page-login').classList.add('hidden');
+            document.getElementById('page-main').classList.remove('hidden');
             loadMyProfile(); 
             loadMyAccessList(); 
         } else { 
-            showPage('login'); 
+            document.getElementById('page-login').classList.remove('hidden');
+            document.getElementById('page-main').classList.add('hidden');
         }
     });
 
-    // Profile
+    // Profile & Inspector
     function saveProfile() {
         db.ref('profiles/' + auth.currentUser.uid).set({
             name: document.getElementById("profileName").value || "User",
@@ -175,7 +188,7 @@
             avatar: selectedAvatar,
             link: document.getElementById("profileLink").value || "#"
         });
-        alert("PROFILE UPDATED");
+        alert("UPDATED");
     }
 
     function loadMyProfile() {
@@ -191,19 +204,29 @@
         });
     }
 
-    // "My Access" Logic
+    function inspect(uid) {
+        db.ref('profiles/' + uid).once('value', snap => {
+            const d = snap.val();
+            if(!d) return;
+            document.getElementById("inspector").classList.remove("hidden");
+            document.getElementById("insName").innerText = d.name;
+            document.getElementById("insBio").innerText = d.bio;
+            document.getElementById("insAvatar").src = d.avatar;
+            document.getElementById("insLink").href = d.link;
+        });
+    }
+
+    // Room Logic
     function loadMyAccessList() {
-        const listDiv = document.getElementById("myRooms");
         db.ref(`user_access/${auth.currentUser.uid}`).on('value', snap => {
-            listDiv.innerHTML = "";
-            if(!snap.exists()) { listDiv.innerHTML = "<p style='color:#333; font-size:10px;'>NO ROOMS JOINED</p>"; return; }
-            snap.forEach(child => {
-                const roomName = child.key;
+            const list = document.getElementById("myRooms");
+            list.innerHTML = "";
+            snap.forEach(c => {
                 const div = document.createElement("div");
-                div.className = "room-item";
-                div.innerHTML = `<span>${roomName}</span> <button class="btn" style="padding:2px 5px; font-size:10px;">ENTER</button>`;
-                div.onclick = () => { document.getElementById("roomCode").value = roomName; joinRoom(); };
-                listDiv.appendChild(div);
+                div.className = "list-item";
+                div.innerHTML = `<span>${c.key}</span> <span>[ENTER]</span>`;
+                div.onclick = () => { document.getElementById("roomCode").value = c.key; joinRoom(); };
+                list.appendChild(div);
             });
         });
     }
@@ -212,17 +235,33 @@
         const code = document.getElementById("roomCode").value.toUpperCase();
         if(!code) return;
         currentRoom = code;
-        
-        // Save room to user's access list
         db.ref(`user_access/${auth.currentUser.uid}/${code}`).set(true);
+        document.getElementById("nodeDisplay").innerText = "NODE: " + code;
         
-        document.getElementById("nodeDisplay").innerText = "ROOM: " + code;
-        showPage('chat');
+        // Presence
+        const pRef = db.ref(`presence/${code}/${auth.currentUser.uid}`);
+        pRef.set({ name: document.getElementById("profileName").value || "User" });
+        pRef.onDisconnect().remove();
+
         loadMessages(code);
+        syncOnline(code);
     }
 
-    function leaveRoom() { currentRoom = null; showPage('lobby'); }
-    function wipeText() { if(confirm("Wipe all text?")) db.ref(`rooms/${currentRoom}/messages`).remove(); }
+    function syncOnline(code) {
+        db.ref(`presence/${code}`).on('value', snap => {
+            const list = document.getElementById("onlineUsers");
+            list.innerHTML = "";
+            snap.forEach(c => {
+                const div = document.createElement("div");
+                div.className = "list-item";
+                div.innerHTML = `<span>> ${c.val().name}</span>`;
+                div.onclick = () => inspect(c.key);
+                list.appendChild(div);
+            });
+        });
+    }
+
+    function wipeText() { if(confirm("Purge messages?")) db.ref(`rooms/${currentRoom}/messages`).remove(); }
 
     function loadMessages(code) {
         const mDiv = document.getElementById("messages");
@@ -231,8 +270,8 @@
             snap.forEach(m => {
                 const d = m.val();
                 const div = document.createElement("div");
-                div.style.marginBottom = "10px";
-                div.innerHTML = `<b style="text-decoration:underline;">${d.name}</b>: ${d.text}`;
+                div.innerHTML = `<b style="text-decoration:underline; cursor:pointer;" onclick="inspect('${d.uid}')">${d.name}</b>: ${d.text}`;
+                div.style.marginBottom = "8px";
                 mDiv.appendChild(div);
             });
             mDiv.scrollTop = mDiv.scrollHeight;
