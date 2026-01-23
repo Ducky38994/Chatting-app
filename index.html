@@ -1,179 +1,435 @@
-:root {
-    --bg-color: #000000;
-    --text-color: #ffffff;
-    --dim-text: #888888;
-    --border-style: 2px solid #ffffff;
-    --scanline: rgba(255, 255, 255, 0.05);
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMINAL // NEURALINK_SECURE</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --dim-text: #666666;
+            --border: 2px solid #ffffff;
+            --flicker: rgba(255, 255, 255, 0.02);
+        }
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    border-radius: 0 !important; /* Force retro sharp edges */
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            border-radius: 0 !important;
+        }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: 'Courier New', Courier, monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
-    /* CRT Scanline Effect */
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-    background-size: 100% 2px, 3px 100%;
-}
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Courier New', Courier, monospace;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            /* Scanline Overlay */
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%;
+        }
 
-/* Add a flickering animation to the whole body for realism */
-body::after {
-    content: " ";
-    display: block;
-    position: fixed;
-    top: 0; left: 0; bottom: 0; right: 0;
-    background: rgba(18, 16, 16, 0.1);
-    opacity: 0;
-    z-index: 2;
-    pointer-events: none;
-    animation: flicker 0.15s infinite;
-}
+        /* CRT Flicker effect */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: rgba(255, 255, 255, 0.03);
+            opacity: 0;
+            z-index: 10;
+            pointer-events: none;
+            animation: flicker 0.1s infinite;
+        }
 
-@keyframes flicker {
-    0% { opacity: 0.27861; }
-    5% { opacity: 0.34769; }
-    10% { opacity: 0.23604; }
-    100% { opacity: 0.25; }
-}
+        @keyframes flicker {
+            0% { opacity: 0.1; }
+            50% { opacity: 0.2; }
+            100% { opacity: 0.1; }
+        }
 
-.container {
-    max-width: 1000px;
-    margin: 40px auto;
-    border: var(--border-style);
-    background: var(--bg-color);
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 0 20px rgba(255,255,255,0.1);
-}
+        .container {
+            width: 95%;
+            max-width: 900px;
+            border: var(--border);
+            background: var(--bg-color);
+            position: relative;
+            z-index: 5;
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
 
-.info-panel {
-    padding: 20px;
-    border-bottom: var(--border-style);
-    text-align: center;
-}
+        .header-bar {
+            background: var(--text-color);
+            color: var(--bg-color);
+            padding: 5px 15px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+        }
 
-.info-panel h1 {
-    font-size: 2.5rem;
-    letter-spacing: 5px;
-    text-transform: uppercase;
-    border-bottom: 1px solid var(--text-color);
-    display: inline-block;
-    margin-bottom: 10px;
-}
+        .info-section {
+            padding: 20px;
+            border-bottom: 1px solid var(--text-color);
+        }
 
-.auth-panel, .chat-panel {
-    padding: 30px;
-}
+        .info-section h1 {
+            font-size: 2rem;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            letter-spacing: 4px;
+        }
 
-.panel-header {
-    background: var(--text-color);
-    color: var(--bg-color);
-    padding: 5px 10px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-}
+        .main-content {
+            display: flex;
+            min-height: 400px;
+        }
 
-.form-control {
-    width: 100%;
-    padding: 10px;
-    background: transparent;
-    border: 1px solid var(--text-color);
-    color: var(--text-color);
-    font-family: inherit;
-    margin-bottom: 15px;
-}
+        @media (max-width: 700px) {
+            .main-content { flex-direction: column; }
+        }
 
-.form-control:focus {
-    outline: none;
-    background: #111;
-}
+        .side-panel {
+            flex: 1;
+            padding: 20px;
+            border-right: 1px solid var(--text-color);
+        }
 
-.btn {
-    padding: 10px 20px;
-    background: transparent;
-    color: var(--text-color);
-    border: 1px solid var(--text-color);
-    cursor: pointer;
-    font-family: inherit;
-    text-transform: uppercase;
-    transition: 0.2s;
-}
+        .chat-area {
+            flex: 2;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
 
-.btn:hover {
-    background: var(--text-color);
-    color: var(--bg-color);
-}
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border: 1px solid var(--text-color);
+        }
 
-.btn-danger {
-    border-style: dotted;
-}
+        .tab {
+            flex: 1;
+            padding: 8px;
+            text-align: center;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
 
-.tabs {
-    display: flex;
-    gap: 0;
-    margin-bottom: 20px;
-}
+        .tab.active {
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
 
-.tab {
-    padding: 10px;
-    border: 1px solid var(--text-color);
-    cursor: pointer;
-    flex: 1;
-    text-align: center;
-}
+        .form-group { margin-bottom: 15px; }
+        
+        label { 
+            display: block; 
+            font-size: 0.8rem; 
+            margin-bottom: 5px; 
+            color: var(--dim-text);
+        }
 
-.tab.active {
-    background: var(--text-color);
-    color: var(--bg-color);
-}
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid var(--text-color);
+            color: var(--text-color);
+            font-family: inherit;
+        }
 
-#messages {
-    height: 350px;
-    border: 1px solid var(--text-color);
-    margin: 20px 0;
-    padding: 15px;
-    overflow-y: scroll;
-    background: #050505;
-}
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--text-color);
+            cursor: pointer;
+            font-family: inherit;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-top: 10px;
+        }
 
-.message {
-    margin-bottom: 10px;
-    border-bottom: 1px solid #222;
-    padding-bottom: 5px;
-}
+        .btn:hover {
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
 
-.online-badge {
-    border: 1px solid var(--text-color);
-    padding: 2px 8px;
-    font-size: 0.8rem;
-}
+        #messages {
+            height: 300px;
+            border: 1px solid var(--text-color);
+            margin-bottom: 15px;
+            padding: 10px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            background: #050505;
+        }
 
-.room-item {
-    border: 1px solid var(--text-color);
-    padding: 10px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .message {
+            margin-bottom: 8px;
+            border-bottom: 1px dotted #333;
+            padding-bottom: 4px;
+        }
 
-/* Custom Scrollbar for Retro Feel */
-#messages::-webkit-scrollbar {
-    width: 12px;
-}
-#messages::-webkit-scrollbar-track {
-    background: #000;
-}
-#messages::-webkit-scrollbar-thumb {
-    background: #fff;
-}
+        .message strong { color: var(--text-color); text-decoration: underline; }
+
+        .room-item {
+            border: 1px solid #444;
+            padding: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hidden { display: none !important; }
+        
+        #debug { color: #ff0000; font-size: 0.8rem; margin-top: 10px; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-bar">
+        <span>STATION: TERMINAL_01</span>
+        <span>STATUS: ACTIVE</span>
+    </div>
+
+    <div class="info-section">
+        <h1>Neuralink_Node</h1>
+        <p style="color: var(--dim-text)">SECURE ENCRYPTED COMMS // NO_LOG_POLICY</p>
+    </div>
+
+    <div class="main-content">
+        <div class="side-panel" id="authPanel">
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('login')">LOGIN</div>
+                <div class="tab" onclick="switchTab('register')">SIGNUP</div>
+            </div>
+
+            <div id="login-form">
+                <div class="form-group">
+                    <label>USER_ID</label>
+                    <input type="email" id="email" class="form-control" placeholder="EMAIL">
+                </div>
+                <div class="form-group">
+                    <label>ACCESS_KEY</label>
+                    <input type="password" id="password" class="form-control" placeholder="******">
+                </div>
+                <button class="btn" onclick="signIn()">EXECUTE_LOGIN</button>
+            </div>
+
+            <div id="register-form" class="hidden">
+                <div class="form-group">
+                    <label>NEW_USER_ID</label>
+                    <input type="email" id="register-email" class="form-control" placeholder="EMAIL">
+                </div>
+                <div class="form-group">
+                    <label>NEW_ACCESS_KEY</label>
+                    <input type="password" id="register-password" class="form-control" placeholder="******">
+                </div>
+                <button class="btn" onclick="signUp()">INITIALIZE_USER</button>
+            </div>
+            <div id="debug"></div>
+        </div>
+
+        <div class="chat-area hidden" id="chatPanel">
+            <div id="join-room">
+                <label>CHANNEL_CODE</label>
+                <input type="text" id="roomCode" class="form-control" placeholder="e.g. OMEGA-4">
+                <div style="display:flex; gap: 5px;">
+                    <button class="btn" onclick="joinRoom()">CONNECT</button>
+                    <button class="btn" onclick="signOut()" style="border-style:dotted">LOGOUT</button>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <label>SAVED_NODES</label>
+                    <div id="roomList"></div>
+                </div>
+            </div>
+
+            <div id="chat" class="hidden">
+                <div style="margin-bottom: 10px; border-bottom: 1px solid #fff; padding-bottom: 5px;">
+                    NODE: <span id="currentRoomName">---</span> | <span id="onlineBadge">0</span> ONLINE
+                </div>
+                <div id="messages"></div>
+                <div style="display:flex; gap: 5px;">
+                    <input type="text" id="messageInput" class="form-control" placeholder="ENTER DATA >">
+                    <button class="btn" onclick="sendMessage()" style="width: 100px;">SEND</button>
+                </div>
+                <button class="btn" onclick="leaveRoom()" style="margin-top: 10px; font-size: 0.7rem;">DISCONNECT_NODE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
+
+<script>
+    // 🔥 Firebase Config (Keep this exactly as you had it)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBK4pJpKtFPs19-J051xR6t77SBHYrg1k8",
+        authDomain: "subpls-2c774.firebaseapp.com",
+        databaseURL: "https://subpls-2c774-default-rtdb.firebaseio.com",
+        projectId: "subpls-2c774",
+        storageBucket: "subpls-2c774.firebasestorage.app",
+        messagingSenderId: "834082653588",
+        appId: "1:834082653588:web:a7b266363aa864249f3b81"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+
+    let currentRoomCode = null;
+    let currentRoomKey = null;
+
+    // --- UI Logic ---
+    function switchTab(type) {
+        document.getElementById('login-form').classList.toggle('hidden', type !== 'login');
+        document.getElementById('register-form').classList.toggle('hidden', type !== 'register');
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        event.target.classList.add('active');
+    }
+
+    function showError(msg) {
+        const d = document.getElementById("debug");
+        d.textContent = "> ERROR: " + msg;
+        setTimeout(() => d.textContent = "", 4000);
+    }
+
+    // --- Auth Logic ---
+    function signUp() {
+        const e = document.getElementById("register-email").value;
+        const p = document.getElementById("register-password").value;
+        auth.createUserWithEmailAndPassword(e, p).catch(err => showError(err.message));
+    }
+
+    function signIn() {
+        const e = document.getElementById("email").value;
+        const p = document.getElementById("password").value;
+        auth.signInWithEmailAndPassword(e, p).catch(err => showError(err.message));
+    }
+
+    function signOut() { auth.signOut(); location.reload(); }
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            document.getElementById("authPanel").classList.add("hidden");
+            document.getElementById("chatPanel").classList.remove("hidden");
+            loadUserRooms();
+        }
+    });
+
+    // --- Encryption ---
+    async function deriveKey(code) {
+        const enc = new TextEncoder();
+        const keyMat = await crypto.subtle.importKey("raw", enc.encode(code), {name: "PBKDF2"}, false, ["deriveKey"]);
+        return await crypto.subtle.deriveKey(
+            { name: "PBKDF2", salt: enc.encode("retro-salt"), iterations: 1000, hash: "SHA-256" },
+            keyMat, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+        );
+    }
+
+    // --- Chat Logic ---
+    async function joinRoom() {
+        const code = document.getElementById("roomCode").value.toUpperCase();
+        if(!code) return showError("EMPTY_CODE");
+        currentRoomCode = code;
+        currentRoomKey = await deriveKey(code);
+        
+        document.getElementById("join-room").classList.add("hidden");
+        document.getElementById("chat").classList.remove("hidden");
+        document.getElementById("currentRoomName").textContent = code;
+        
+        // Save to user list
+        db.ref(`users/${auth.currentUser.uid}/rooms/${code}`).set(true);
+        
+        loadMessages(code);
+    }
+
+    function loadMessages(code) {
+        const mDiv = document.getElementById("messages");
+        mDiv.innerHTML = "> SYNCHRONIZING...";
+        db.ref(`rooms/${code}/messages`).on("child_added", async (snap) => {
+            if (mDiv.innerHTML.includes("SYNCHRONIZING")) mDiv.innerHTML = "";
+            const data = snap.val();
+            
+            // Decryption
+            let text;
+            try {
+                const dec = await crypto.subtle.decrypt(
+                    { name: "AES-GCM", iv: new Uint8Array(data.iv) },
+                    currentRoomKey, new Uint8Array(data.cipher)
+                );
+                text = new TextDecoder().decode(dec);
+            } catch(e) { text = "[DECRYPT_ERR: WRONG_KEY]"; }
+
+            const div = document.createElement("div");
+            div.className = "message";
+            div.innerHTML = `<strong>${data.sender.split('@')[0]}</strong>: ${text}`;
+            mDiv.appendChild(div);
+            mDiv.scrollTop = mDiv.scrollHeight;
+        });
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById("messageInput");
+        if(!input.value || !currentRoomKey) return;
+
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const cipher = await crypto.subtle.encrypt(
+            { name: "AES-GCM", iv: iv },
+            currentRoomKey, new TextEncoder().encode(input.value)
+        );
+
+        db.ref(`rooms/${currentRoomCode}/messages`).push({
+            sender: auth.currentUser.email,
+            cipher: Array.from(new Uint8Array(cipher)),
+            iv: Array.from(iv)
+        });
+        input.value = "";
+    }
+
+    function loadUserRooms() {
+        db.ref(`users/${auth.currentUser.uid}/rooms`).on("value", snap => {
+            const list = document.getElementById("roomList");
+            list.innerHTML = "";
+            if(!snap.val()) { list.innerHTML = "> NO_DATA"; return; }
+            Object.keys(snap.val()).forEach(code => {
+                const div = document.createElement("div");
+                div.className = "room-item";
+                div.innerHTML = `<span>${code}</span><button onclick="quickJoin('${code}')" style="background:#fff;color:#000;border:none;padding:2px 5px;cursor:pointer">ACCESS</button>`;
+                list.appendChild(div);
+            });
+        });
+    }
+
+    function quickJoin(c) {
+        document.getElementById("roomCode").value = c;
+        joinRoom();
+    }
+
+    function leaveRoom() { location.reload(); }
+
+    // Send on Enter
+    document.getElementById("messageInput").addEventListener("keypress", (e) => {
+        if(e.key === "Enter") sendMessage();
+    });
+</script>
+</body>
+</html>
