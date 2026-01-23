@@ -3,138 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL_CHAT</title>
+    <title>TERMINAL // NEURALINK</title>
     <style>
         :root {
             --bg: #000;
             --fg: #fff;
-            --dim: #555;
-            --border: 1px solid #fff;
+            --dim: #666;
+            --border: 2px solid #fff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', Courier, monospace; border-radius: 0 !important; }
 
-        body { background-color: var(--bg); color: var(--fg); min-height: 100vh; overflow: hidden; }
+        body {
+            background-color: var(--bg);
+            color: var(--fg);
+            height: 100vh;
+            overflow: hidden;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%;
+        }
 
-        /* Main Layout */
-        .app-container { display: flex; height: 100vh; width: 100vw; position: relative; }
-
-        /* Sidebar - Hidden by default */
+        /* Sidebar Overlay */
         .sidebar {
+            position: fixed;
+            left: -350px;
+            top: 0;
             width: 320px;
+            height: 100%;
             background: #000;
             border-right: var(--border);
-            height: 100%;
-            position: absolute;
-            left: -320px;
-            transition: 0.3s;
-            z-index: 100;
+            z-index: 1000;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             padding: 20px;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar.open { left: 0; }
 
-        /* Chat Area */
-        .chat-main { flex: 1; display: flex; flex-direction: column; transition: 0.3s; }
-        .chat-main.shifted { margin-left: 320px; }
+        /* Full Screen Containers */
+        .screen {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-        /* Header */
-        .header { padding: 15px; border-bottom: var(--border); display: flex; justify-content: space-between; align-items: center; }
-        
-        /* Buttons */
-        .btn { 
-            background: transparent; color: #fff; border: 1px solid #fff; 
-            padding: 8px 12px; cursor: pointer; text-transform: uppercase; font-size: 12px;
+        .terminal-box {
+            width: 100%;
+            max-width: 500px;
+            border: var(--border);
+            padding: 30px;
+            background: #000;
+        }
+
+        /* Chat Layout */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            border-left: var(--border);
+            border-right: var(--border);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            padding: 15px;
+            border-bottom: var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #000;
+        }
+
+        #messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #050505;
+        }
+
+        .msg { margin-bottom: 12px; font-size: 0.9rem; }
+        .msg b { text-decoration: underline; color: #fff; cursor: pointer; }
+
+        .footer {
+            padding: 15px;
+            border-top: var(--border);
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Elements */
+        .input-line {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: 1px solid #444;
+            color: #fff;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .input-line:focus { border-color: #fff; }
+
+        .btn {
+            padding: 10px 15px;
+            background: transparent;
+            color: #fff;
+            border: 1px solid #fff;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            font-size: 0.7rem;
         }
         .btn:hover { background: #fff; color: #000; }
         .btn-red { border-color: #f00; color: #f00; }
-        .btn-red:hover { background: #f00; color: #fff; }
 
-        /* Inputs */
-        .input-box { 
-            width: 100%; padding: 10px; background: #000; border: 1px solid #444; 
-            color: #fff; margin-bottom: 10px; font-size: 14px;
-        }
-
-        /* Message Area */
-        #messages { flex: 1; padding: 20px; overflow-y: auto; background: #050505; }
-        .msg { margin-bottom: 15px; font-size: 14px; line-height: 1.4; }
-        .msg b { text-decoration: underline; cursor: pointer; margin-right: 5px; }
-
-        /* Footer */
-        .footer { padding: 15px; border-top: var(--border); display: flex; gap: 10px; }
-
-        /* Profile & Avatars */
-        .avatar-main { width: 100px; height: 100px; border: var(--border); margin: 10px 0; object-fit: cover; }
+        .avatar-main { width: 80px; height: 80px; border: 1px solid #fff; margin: 10px 0; }
         .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 10px 0; }
         .avatar-grid img { width: 100%; border: 1px solid #333; cursor: pointer; }
-        .avatar-grid img.selected { border-color: #fff; }
 
-        .hidden { display: none; }
+        .hidden { display: none !important; }
 
-        /* Pages */
-        .center-screen { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            height: 100vh; width: 100vw; text-align: center;
-        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #fff; }
     </style>
 </head>
 <body>
 
     <div id="sidebar" class="sidebar">
-        <button class="btn" onclick="toggleSidebar()" style="width: 100%; margin-bottom: 20px;">BACK TO CHAT</button>
+        <h2 style="margin-bottom: 20px;">[SETTINGS]</h2>
         
-        <h3>MY PROFILE</h3>
+        <label style="font-size: 0.6rem; color: var(--dim);">CURRENT_AVATAR</label>
         <img id="myAvatarDisplay" class="avatar-main" src="https://api.dicebear.com/7.x/pixel-art/svg?seed=1">
         
-        <p style="font-size: 10px; color: #666;">CHOOSE AVATAR:</p>
+        <label style="font-size: 0.6rem; color: var(--dim);">SELECT_NEW</label>
         <div id="avatarPicker" class="avatar-grid"></div>
 
-        <input type="text" id="profileName" class="input-box" placeholder="Your Name">
-        <input type="text" id="profileBio" class="input-box" placeholder="About You">
-        <input type="text" id="profileLink" class="input-box" placeholder="Link (e.g. Instagram)">
-        <button class="btn" onclick="saveProfile()" style="width: 100%;">SAVE PROFILE</button>
+        <input type="text" id="profileName" class="input-line" placeholder="Name">
+        <input type="text" id="profileBio" class="input-line" placeholder="Bio">
+        <input type="text" id="profileLink" class="input-line" placeholder="Link">
+        <button class="btn" onclick="saveProfile()">SAVE CHANGES</button>
 
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #333;">
-
-        <h3>DANGER ZONE</h3>
-        <button class="btn" onclick="wipeText()" style="width: 100%; margin-bottom: 5px;">ERASE ALL TEXT</button>
-        <button class="btn btn-red" onclick="eraseRoom()" style="width: 100%;">DELETE ROOM</button>
-        
-        <button class="btn" onclick="signOut()" style="width: 100%; margin-top: 20px; border-color: #444;">LOG OUT</button>
-    </div>
-
-    <div id="page-login" class="center-screen">
-        <h1>LOGIN</h1>
-        <div style="width: 300px;">
-            <input type="email" id="email" class="input-box" placeholder="Email">
-            <input type="password" id="password" class="input-box" placeholder="Password">
-            <button class="btn" onclick="signIn()" style="width: 100%;">LOGIN</button>
-            <button class="btn" onclick="signUp()" style="width: 100%; margin-top: 5px; border-style: dotted;">CREATE ACCOUNT</button>
+        <div style="margin-top: auto;">
+            <button class="btn" onclick="wipeText()" style="width: 100%; margin-bottom: 10px;">WIPE TEXT</button>
+            <button class="btn btn-red" onclick="eraseRoom()" style="width: 100%; margin-bottom: 10px;">ERASE ROOM</button>
+            <button class="btn" onclick="toggleSidebar()" style="width: 100%;">CLOSE MENU</button>
         </div>
     </div>
 
-    <div id="page-lobby" class="center-screen hidden">
-        <h1>JOIN A ROOM</h1>
-        <div style="width: 300px;">
-            <input type="text" id="roomCode" class="input-box" placeholder="Room Code (e.g. Friends)">
-            <button class="btn" onclick="joinRoom()" style="width: 100%;">JOIN</button>
+    <div id="page-login" class="screen">
+        <div class="terminal-box">
+            <h2 style="text-align:center; margin-bottom: 20px;">[LOGIN_SCREEN]</h2>
+            <input type="email" id="email" class="input-line" placeholder="EMAIL">
+            <input type="password" id="password" class="input-line" placeholder="PASSWORD">
+            <button class="btn" style="width: 100%" onclick="signIn()">ACCESS</button>
+            <button class="btn" style="width: 100%; margin-top: 10px; border-style: dotted;" onclick="signUp()">REGISTER</button>
         </div>
     </div>
 
-    <div id="page-chat" class="chat-main hidden">
-        <div class="header">
-            <button class="btn" onclick="toggleSidebar()">☰ MENU</button>
-            <span id="nodeDisplay">ROOM: ---</span>
-            <button class="btn" onclick="leaveRoom()">LEAVE</button>
+    <div id="page-lobby" class="screen hidden">
+        <div class="terminal-box">
+            <h2 style="text-align:center; margin-bottom: 20px;">[JOIN_ROOM]</h2>
+            <input type="text" id="roomCode" class="input-line" placeholder="ROOM_CODE">
+            <button class="btn" style="width: 100%" onclick="joinRoom()">JOIN</button>
+            <button class="btn" style="width: 100%; margin-top: 10px; color: #444;" onclick="signOut()">LOGOUT</button>
         </div>
-        
-        <div id="messages"></div>
+    </div>
 
-        <div class="footer">
-            <input type="text" id="msgInput" class="input-box" style="margin-bottom: 0;" placeholder="Type a message...">
-            <button class="btn" onclick="sendMessage()">SEND</button>
+    <div id="page-chat" class="hidden">
+        <div class="chat-container">
+            <div class="header">
+                <button class="btn" onclick="toggleSidebar()">☰ MENU</button>
+                <span id="nodeDisplay">ROOM: ---</span>
+                <button class="btn" onclick="leaveRoom()">LEAVE</button>
+            </div>
+            <div id="messages"></div>
+            <div class="footer">
+                <input type="text" id="msgInput" class="input-line" style="margin-bottom:0" placeholder="Type message...">
+                <button class="btn" onclick="sendMessage()">SEND</button>
+            </div>
         </div>
     </div>
 
@@ -160,30 +214,26 @@
     let currentRoom = null;
     let selectedAvatar = "https://api.dicebear.com/7.x/pixel-art/svg?seed=1";
 
-    function toggleSidebar() {
-        document.getElementById('sidebar').classList.toggle('open');
-        document.getElementById('page-chat').classList.toggle('shifted');
-    }
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
 
     function showPage(id) {
-        ['page-login', 'page-lobby', 'page-chat'].forEach(p => document.getElementById(p).classList.add('hidden'));
+        document.getElementById('page-login').classList.add('hidden');
+        document.getElementById('page-lobby').classList.add('hidden');
+        document.getElementById('page-chat').classList.add('hidden');
         document.getElementById('page-' + id).classList.remove('hidden');
     }
 
-    // Avatar Selection
+    // Load Avatars
     const picker = document.getElementById("avatarPicker");
     for(let i=1; i<=8; i++) {
-        const url = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${i * 123}`;
+        const url = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${i * 99}`;
         const img = document.createElement("img");
         img.src = url;
-        img.onclick = () => {
-            selectedAvatar = url;
-            document.getElementById("myAvatarDisplay").src = url;
-        };
+        img.onclick = () => { selectedAvatar = url; document.getElementById("myAvatarDisplay").src = url; };
         picker.appendChild(img);
     }
 
-    // Auth
+    // Auth Logic
     function signUp() { auth.createUserWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(alert); }
     function signIn() { auth.signInWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(alert); }
     function signOut() { auth.signOut().then(() => location.reload()); }
@@ -193,7 +243,7 @@
         else { showPage('login'); }
     });
 
-    // Profile
+    // Profile Logic
     function saveProfile() {
         db.ref('profiles/' + auth.currentUser.uid).set({
             name: document.getElementById("profileName").value || "User",
@@ -201,7 +251,7 @@
             avatar: selectedAvatar,
             link: document.getElementById("profileLink").value || "#"
         });
-        alert("Profile Saved!");
+        alert("PROFILE_SAVED");
     }
 
     function loadMyProfile() {
@@ -217,7 +267,7 @@
         });
     }
 
-    // Room
+    // Room Logic
     function joinRoom() {
         const code = document.getElementById("roomCode").value.toUpperCase();
         if(!code) return;
@@ -227,20 +277,17 @@
         loadMessages(code);
     }
 
-    function leaveRoom() {
-        currentRoom = null;
-        showPage('lobby');
-    }
+    function leaveRoom() { currentRoom = null; showPage('lobby'); }
 
-    // Chat Actions
     function wipeText() {
-        if(confirm("Delete all messages in this room?")) db.ref(`rooms/${currentRoom}/messages`).remove();
+        if(confirm("WIPE ALL MESSAGES?")) db.ref(`rooms/${currentRoom}/messages`).remove();
     }
 
     function eraseRoom() {
-        if(confirm("Erase this entire room forever?")) {
+        if(confirm("DELETE ENTIRE ROOM?")) {
             db.ref(`rooms/${currentRoom}`).remove();
             leaveRoom();
+            toggleSidebar();
         }
     }
 
@@ -270,9 +317,7 @@
         input.value = "";
     }
 
-    document.getElementById("msgInput").addEventListener("keypress", (e) => {
-        if(e.key === "Enter") sendMessage();
-    });
+    document.getElementById("msgInput").addEventListener("keypress", (e) => { if(e.key === "Enter") sendMessage(); });
 </script>
 </body>
 </html>
