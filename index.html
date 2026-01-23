@@ -1,338 +1,179 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEURALINK CHAT // SECURE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --retro-green: #00ff00;
-            --retro-dark: #000000;
-            --retro-darker: #0a0a0a;
-            --retro-gray: #1a1a1a;
-            --retro-light-gray: #333333;
-            --glow: 0 0 10px var(--retro-green), 0 0 20px rgba(0, 255, 0, 0.3);
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: linear-gradient(125deg, var(--retro-darker), var(--retro-dark)), url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63-28c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-52 8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm48 12c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-44 4c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm52-8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-48 20c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm52-12c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-56 28c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm64-24c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-60 16c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm64-20c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%2300ff00' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-            background-attachment: fixed;
-            color: var(--retro-green);
-            min-height: 100vh;
-            font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden;
-            position: relative;
-        }
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: 1;
-        }
-        .container {
-            display: flex;
-            width: 100%;
-            max-width: 1200px;
-            min-height: 90vh;
-            margin: 20px auto;
-            border: 1px solid var(--retro-green);
-            border-radius: 0;
-            box-shadow: var(--glow);
-            position: relative;
-            z-index: 2;
-            overflow: hidden;
-        }
-        .container::before {
-            content: "NEURALINK v2.3.7";
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 10px;
-            color: var(--retro-green);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-family: 'Orbitron', monospace;
-        }
-        .info-panel {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 30px;
-            border-right: 1px solid var(--retro-green);
-            position: relative;
-            overflow: hidden;
-        }
-        .info-panel::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 20px;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, var(--retro-green), transparent);
-            animation: scan 8s linear infinite;
-        }
-        @keyframes scan {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        .info-panel h1 {
-            font-family: 'Orbitron', monospace;
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            color: var(--retro-green);
-            text-shadow: 0 0 10px var(--retro-green);
-            letter-spacing: 2px;
-        }
-        .info-panel p {
-            margin-bottom: 25px;
-            line-height: 1.6;
-            font-size: 1.1rem;
-            color: #cccccc;
-        }
-        .auth-panel, .chat-panel {
-            flex: 1;
-            padding: 30px;
-            background: rgba(10, 10, 10, 0.9);
-        }
-        .panel-header {
-            font-family: 'Orbitron', monospace;
-            text-transform: uppercase;
-            margin-bottom: 25px;
-            color: var(--retro-green);
-            letter-spacing: 3px;
-            font-size: 1.4rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .tabs {
-            display: flex;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--retro-green);
-        }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            font-family: 'Orbitron', monospace;
-            letter-spacing: 1px;
-            position: relative;
-            color: #cccccc;
-        }
-        .tab.active {
-            color: var(--retro-green);
-        }
-        .tab.active::after {
-            content: "";
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--retro-green);
-            box-shadow: 0 0 10px var(--retro-green);
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-family: 'Orbitron', monospace;
-            font-size: 0.9rem;
-            color: var(--retro-green);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid var(--retro-green);
-            color: var(--retro-green);
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        .form-control:focus {
-            outline: none;
-            border-color: var(--retro-green);
-            box-shadow: 0 0 8px var(--retro-green);
-        }
-        .btn {
-            width: 100%;
-            padding: 14px;
-            background: transparent;
-            color: var(--retro-green);
-            border: 1px solid var(--retro-green);
-            font-family: 'Orbitron', monospace;
-            font-size: 16px;
-            letter-spacing: 1px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, var(--retro-green), transparent);
-            transition: 0.5s;
-        }
-        .btn:hover {
-            box-shadow: var(--glow);
-        }
-        .btn:hover::before {
-            left: 100%;
-        }
-        .btn-danger {
-            border-color: #ff0000;
-            color: #ff0000;
-        }
-        .btn-danger:hover {
-            box-shadow: 0 0 10px #ff0000, 0 0 20px rgba(255, 0, 0, 0.4);
-        }
-        .room-actions {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        #messages {
-            height: 300px;
-            border: 1px solid var(--retro-green);
-            padding: 15px;
-            overflow-y: auto;
-            background: rgba(0, 0, 0, 0.8);
-            margin: 20px 0;
-            font-family: 'Courier New', monospace;
-            color: var(--retro-green);
-        }
-        .message {
-            margin-bottom: 12px;
-            padding: 8px;
-            border-left: 2px solid var(--retro-green);
-        }
-        .message strong {
-            color: var(--retro-green);
-        }
-        .online-badge {
-            background: rgba(0, 255, 0, 0.2);
-            color: var(--retro-green);
-            padding: 2px 10px;
-            border: 1px solid var(--retro-green);
-            border-radius: 0;
-            font-size: 12px;
-            margin-left: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .room-list {
-            margin-top: 25px;
-        }
-        .room-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px;
-            background: rgba(10, 10, 10, 0.8);
-            border: 1px solid var(--retro-green);
-            margin-bottom: 10px;
-            transition: all 0.3s;
-        }
-        .room-item:hover {
-            border-color: var(--retro-green);
-            box-shadow: 0 0 8px rgba(0, 255, 0, 0.5);
-        }
-        .hidden {
-            display: none;
-        }
-        #debug {
-            color: #ff0000;
-            min-height: 20px;
-            margin: 10px 0;
-            font-size: 14px;
-            font-family: 'Courier New', monospace;
-        }
-        .glitch {
-            position: relative;
-        }
-        .glitch::before, .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        .glitch::before {
-            left: 2px;
-            text-shadow: -2px 0 #00ff00;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-1 3s infinite linear alternate-reverse;
-        }
-        .glitch::after {
-            left: -2px;
-            text-shadow: -2px 0 #00ff00;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-2 2s infinite linear alternate-reverse;
-        }
-        @keyframes glitch-1 {
-            0% { clip: rect(30px, 9999px, 10px, 0); }
-            5% { clip: rect(20px, 9999px, 20px, 0); }
-            10% { clip: rect(50px, 9999px, 30px, 0); }
-            15% { clip: rect(40px, 9999px, 40px, 0); }
-            20% { clip: rect(60px, 9999px, 50px, 0); }
-            25% { clip: rect(30px, 9999px, 60px, 0); }
-            30% { clip: rect(70px, 9999px, 70px, 0); }
-            35% { clip: rect(50px, 9999px, 80px, 0); }
-            40% { clip: rect(80px, 9999px, 90px, 0); }
-            45% { clip: rect(60px, 9999px, 100px, 0); }
-            50% { clip: rect(90px, 9999px, 110px, 0); }
-            55% { clip: rect(70px, 9999px, 120px, 0); }
-            60% { clip: rect(100px, 9999px, 130px, 0); }
-            65% { clip: rect(80px, 9999px, 140px, 0); }
-            70% { clip: rect(110px, 9999px, 150px, 0); }
-            75% { clip: rect(90px, 9999px, 160px, 0); }
-            80% { clip: rect(120px, 9999px, 170px, 0); }
-            85% { clip: rect(100px, 9999px, 180px, 0); }
-            90% { clip: rect(130px, 9999px, 190px, 0); }
-            95% { clip: rect(110px, 9999px, 200px, 0); }
-            100% { clip: rect(140px, 9999px, 210px, 0); }
-        }
-        @keyframes glitch-2 {
-            0% { clip: rect(10px, 9999px, 30px, 0); }
-            5% { clip: rect(20px, 9999px, 40px, 0); }
-            10% { clip: rect(30px, 9999px, 50px, 0); }
-            15% { clip: rect(40px, 9999px, 60px, 0); }
-            20% { clip: rect(50px, 9999px, 70px, 0); }
-            25% { clip: rect(60px, 9999px, 80px, 0); }
-            30% { clip: rect(70px, 9999px, 90px, 0); }
-            35% { clip: rect(80px, 9999px, 100px, 0); }
-            40% { clip: rect(90px, 9999px, 110px, 0); }
-            45% { clip: rect(100px, 9999px, 120px, 0); }
-            50% { clip: rect(110px, 9999px, 130px, 0); }
-            55% { clip: rect(120px, 9999px, 140px, 0); }
-            60% { clip: rect(130px, 9999px, 150px, 0); }
-            65% { clip: rect(140px, 9999px, 160px, 0); }
-            70% { clip: rect(150px, 9999px, 170px, 0); }
-            75% { clip: rect(160px, 9999px, 180px, 0); }
+:root {
+    --bg-color: #000000;
+    --text-color: #ffffff;
+    --dim-text: #888888;
+    --border-style: 2px solid #ffffff;
+    --scanline: rgba(255, 255, 255, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border-radius: 0 !important; /* Force retro sharp edges */
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Courier New', Courier, monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* CRT Scanline Effect */
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 2px, 3px 100%;
+}
+
+/* Add a flickering animation to the whole body for realism */
+body::after {
+    content: " ";
+    display: block;
+    position: fixed;
+    top: 0; left: 0; bottom: 0; right: 0;
+    background: rgba(18, 16, 16, 0.1);
+    opacity: 0;
+    z-index: 2;
+    pointer-events: none;
+    animation: flicker 0.15s infinite;
+}
+
+@keyframes flicker {
+    0% { opacity: 0.27861; }
+    5% { opacity: 0.34769; }
+    10% { opacity: 0.23604; }
+    100% { opacity: 0.25; }
+}
+
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    border: var(--border-style);
+    background: var(--bg-color);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(255,255,255,0.1);
+}
+
+.info-panel {
+    padding: 20px;
+    border-bottom: var(--border-style);
+    text-align: center;
+}
+
+.info-panel h1 {
+    font-size: 2.5rem;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--text-color);
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.auth-panel, .chat-panel {
+    padding: 30px;
+}
+
+.panel-header {
+    background: var(--text-color);
+    color: var(--bg-color);
+    padding: 5px 10px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--text-color);
+    color: var(--text-color);
+    font-family: inherit;
+    margin-bottom: 15px;
+}
+
+.form-control:focus {
+    outline: none;
+    background: #111;
+}
+
+.btn {
+    padding: 10px 20px;
+    background: transparent;
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    cursor: pointer;
+    font-family: inherit;
+    text-transform: uppercase;
+    transition: 0.2s;
+}
+
+.btn:hover {
+    background: var(--text-color);
+    color: var(--bg-color);
+}
+
+.btn-danger {
+    border-style: dotted;
+}
+
+.tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 20px;
+}
+
+.tab {
+    padding: 10px;
+    border: 1px solid var(--text-color);
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+}
+
+.tab.active {
+    background: var(--text-color);
+    color: var(--bg-color);
+}
+
+#messages {
+    height: 350px;
+    border: 1px solid var(--text-color);
+    margin: 20px 0;
+    padding: 15px;
+    overflow-y: scroll;
+    background: #050505;
+}
+
+.message {
+    margin-bottom: 10px;
+    border-bottom: 1px solid #222;
+    padding-bottom: 5px;
+}
+
+.online-badge {
+    border: 1px solid var(--text-color);
+    padding: 2px 8px;
+    font-size: 0.8rem;
+}
+
+.room-item {
+    border: 1px solid var(--text-color);
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Custom Scrollbar for Retro Feel */
+#messages::-webkit-scrollbar {
+    width: 12px;
+}
+#messages::-webkit-scrollbar-track {
+    background: #000;
+}
+#messages::-webkit-scrollbar-thumb {
+    background: #fff;
+}
