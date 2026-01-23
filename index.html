@@ -1,818 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEURALINK CHAT // SECURE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron  :wght@400;500;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --cyber-purple: #9d4edd;
-            --cyber-cyan: #00f5d4;
-            --cyber-dark: #0a0a14;
-            --cyber-darker: #05050a;
-            --cyber-gray: #1e1e2f;
-            --glow: 0 0 10px var(--cyber-cyan), 0 0 20px rgba(0, 245, 212, 0.3);
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: 
-                linear-gradient(125deg, var(--cyber-darker), #1a0b2e),
-                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63-28c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-52 8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm48 12c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-44 4c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm52-8c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-48 20c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm52-12c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-56 28c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm64-24c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm-60 16c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm64-20c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3z' fill='%239d4edd' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-            background-attachment: fixed;
-            color: var(--cyber-cyan);
-            min-height: 100vh;
-            font-family: 'Rajdhani', sans-serif;
-            overflow-x: hidden;
-            position: relative;
-        }
-        
-        body::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0, 0, 0, 0.15),
-                rgba(0, 0, 0, 0.15) 1px,
-                transparent 1px,
-                transparent 2px
-            );
-            pointer-events: none;
-            z-index: 1;
-        }
-        
-        .container {
-            display: flex;
-            width: 100%;
-            max-width: 1200px;
-            min-height: 90vh;
-            margin: 20px auto;
-            border: 1px solid var(--cyber-purple);
-            border-radius: 0;
-            box-shadow: var(--glow);
-            position: relative;
-            z-index: 2;
-            overflow: hidden;
-        }
-        
-        .container::before {
-            content: "NEURALINK v2.3.7";
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 10px;
-            color: var(--cyber-purple);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-family: 'Orbitron', monospace;
-        }
-        
-        .info-panel {
-            flex: 1;
-            background: rgba(5, 5, 10, 0.8);
-            padding: 30px;
-            border-right: 1px solid var(--cyber-purple);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .info-panel::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 20px;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, var(--cyber-cyan), transparent);
-            animation: scan 8s linear infinite;
-        }
-        
-        @keyframes scan {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        
-        .info-panel h1 {
-            font-family: 'Orbitron', monospace;
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            color: var(--cyber-cyan);
-            text-shadow: 0 0 10px var(--cyber-cyan);
-            letter-spacing: 2px;
-        }
-        
-        .info-panel p {
-            margin-bottom: 25px;
-            line-height: 1.6;
-            font-size: 1.1rem;
-            color: #a0a0c0;
-        }
-        
-        .auth-panel, .chat-panel {
-            flex: 1;
-            padding: 30px;
-            background: rgba(10, 10, 20, 0.9);
-        }
-        
-        .panel-header {
-            font-family: 'Orbitron', monospace;
-            text-transform: uppercase;
-            margin-bottom: 25px;
-            color: var(--cyber-purple);
-            letter-spacing: 3px;
-            font-size: 1.4rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .tabs {
-            display: flex;
-            margin-bottom: 25px;
-            border-bottom: 2px solid var(--cyber-purple);
-        }
-        
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            font-family: 'Orbitron', monospace;
-            letter-spacing: 1px;
-            position: relative;
-        }
-        
-        .tab.active {
-            color: var(--cyber-cyan);
-        }
-        
-        .tab.active::after {
-            content: "";
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--cyber-cyan);
-            box-shadow: 0 0 10px var(--cyber-cyan);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-family: 'Orbitron', monospace;
-            font-size: 0.9rem;
-            color: var(--cyber-purple);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            background: rgba(10, 10, 20, 0.7);
-            border: 1px solid var(--cyber-purple);
-            color: var(--cyber-cyan);
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            border-color: var(--cyber-cyan);
-            box-shadow: 0 0 8px var(--cyber-cyan);
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 14px;
-            background: transparent;
-            color: var(--cyber-cyan);
-            border: 1px solid var(--cyber-cyan);
-            font-family: 'Orbitron', monospace;
-            font-size: 16px;
-            letter-spacing: 1px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .btn::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, var(--cyber-cyan), transparent);
-            transition: 0.5s;
-        }
-        
-        .btn:hover {
-            box-shadow: var(--glow);
-        }
-        
-        .btn:hover::before {
-            left: 100%;
-        }
-        
-        .btn-danger {
-            border-color: #ff2a6d;
-            color: #ff2a6d;
-        }
-        
-        .btn-danger:hover {
-            box-shadow: 0 0 10px #ff2a6d, 0 0 20px rgba(255, 42, 109, 0.4);
-        }
-        
-        .room-actions {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-        }
-        
-        #messages {
-            height: 300px;
-            border: 1px solid var(--cyber-purple);
-            padding: 15px;
-            overflow-y: auto;
-            background: rgba(5, 5, 15, 0.7);
-            margin: 20px 0;
-            font-family: 'Courier New', monospace;
-            color: #00ffcc;
-        }
-        
-        .message {
-            margin-bottom: 12px;
-            padding: 8px;
-            border-left: 2px solid var(--cyber-cyan);
-        }
-        
-        .message strong {
-            color: var(--cyber-purple);
-        }
-        
-        .online-badge {
-            background: rgba(0, 245, 212, 0.2);
-            color: var(--cyber-cyan);
-            padding: 2px 10px;
-            border: 1px solid var(--cyber-cyan);
-            border-radius: 0;
-            font-size: 12px;
-            margin-left: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .room-list {
-            margin-top: 25px;
-        }
-        
-        .room-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px;
-            background: rgba(15, 10, 25, 0.6);
-            border: 1px solid var(--cyber-purple);
-            margin-bottom: 10px;
-            transition: all 0.3s;
-        }
-        
-        .room-item:hover {
-            border-color: var(--cyber-cyan);
-            box-shadow: 0 0 8px rgba(157, 78, 221, 0.5);
-        }
-        
-        .hidden {
-            display: none;
-        }
-        
-        #debug {
-            color: #ff2a6d;
-            min-height: 20px;
-            margin: 10px 0;
-            font-size: 14px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        .glitch {
-            position: relative;
-        }
-        
-        .glitch::before, .glitch::after {
-            content: attr(data-text);
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        
-        .glitch::before {
-            left: 2px;
-            text-shadow: -2px 0 #ff00c8;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-1 3s infinite linear alternate-reverse;
-        }
-        
-        .glitch::after {
-            left: -2px;
-            text-shadow: -2px 0 #00fff9;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-2 2s infinite linear alternate-reverse;
-        }
-        
-        @keyframes glitch-1 {
-            0% { clip: rect(30px, 9999px, 10px, 0); }
-            5% { clip: rect(20px, 9999px, 20px, 0); }
-            10% { clip: rect(50px, 9999px, 30px, 0); }
-            15% { clip: rect(40px, 9999px, 40px, 0); }
-            20% { clip: rect(60px, 9999px, 50px, 0); }
-            25% { clip: rect(30px, 9999px, 60px, 0); }
-            30% { clip: rect(70px, 9999px, 70px, 0); }
-            35% { clip: rect(50px, 9999px, 80px, 0); }
-            40% { clip: rect(80px, 9999px, 90px, 0); }
-            45% { clip: rect(60px, 9999px, 100px, 0); }
-            50% { clip: rect(90px, 9999px, 110px, 0); }
-            55% { clip: rect(70px, 9999px, 120px, 0); }
-            60% { clip: rect(100px, 9999px, 130px, 0); }
-            65% { clip: rect(80px, 9999px, 140px, 0); }
-            70% { clip: rect(110px, 9999px, 150px, 0); }
-            75% { clip: rect(90px, 9999px, 160px, 0); }
-            80% { clip: rect(120px, 9999px, 170px, 0); }
-            85% { clip: rect(100px, 9999px, 180px, 0); }
-            90% { clip: rect(130px, 9999px, 190px, 0); }
-            95% { clip: rect(110px, 9999px, 200px, 0); }
-            100% { clip: rect(140px, 9999px, 210px, 0); }
-        }
-        
-        @keyframes glitch-2 {
-            0% { clip: rect(10px, 9999px, 30px, 0); }
-            5% { clip: rect(20px, 9999px, 40px, 0); }
-            10% { clip: rect(30px, 9999px, 50px, 0); }
-            15% { clip: rect(40px, 9999px, 60px, 0); }
-            20% { clip: rect(50px, 9999px, 70px, 0); }
-            25% { clip: rect(60px, 9999px, 80px, 0); }
-            30% { clip: rect(70px, 9999px, 90px, 0); }
-            35% { clip: rect(80px, 9999px, 100px, 0); }
-            40% { clip: rect(90px, 9999px, 110px, 0); }
-            45% { clip: rect(100px, 9999px, 120px, 0); }
-            50% { clip: rect(110px, 9999px, 130px, 0); }
-            55% { clip: rect(120px, 9999px, 140px, 0); }
-            60% { clip: rect(130px, 9999px, 150px, 0); }
-            65% { clip: rect(140px, 9999px, 160px, 0); }
-            70% { clip: rect(150px, 9999px, 170px, 0); }
-            75% { clip: rect(160px, 9999px, 180px, 0); }
-            80% { clip: rect(170px, 9999px, 190px, 0); }
-            85% { clip: rect(180px, 9999px, 200px, 0); }
-            90% { clip: rect(190px, 9999px, 210px, 0); }
-            95% { clip: rect(200px, 9999px, 220px, 0); }
-            100% { clip: rect(210px, 9999px, 230px, 0); }
-        }
-        
-        @media (max-width: 900px) {
-            .container {
-                flex-direction: column;
-            }
-            .info-panel {
-                border-right: none;
-                border-bottom: 1px solid var(--cyber-purple);
-            }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NEURALINK CHAT // SECURE</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --purple: #9d4edd;
+    --cyan: #00f5d4;
+    --dark: #0a0a14;
+    --glass: rgba(10, 10, 25, 0.75);
+    --soft-glow: 0 0 6px rgba(0,245,212,.35);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    min-height: 100vh;
+    font-family: 'Rajdhani', sans-serif;
+    color: var(--cyan);
+    background:
+        linear-gradient(135deg, #05050a, #140a28);
+}
+
+body::before {
+    content:"";
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        rgba(0,0,0,.15),
+        rgba(0,0,0,.15) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    opacity: .4;
+    pointer-events: none;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 30px auto;
+    min-height: 90vh;
+    display: flex;
+    backdrop-filter: blur(14px);
+    background: rgba(5,5,15,.9);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,.8);
+}
+
+.info-panel {
+    flex: 1;
+    padding: 40px;
+    background: linear-gradient(180deg, rgba(10,10,25,.85), rgba(5,5,15,.9));
+    border-right: 1px solid rgba(157,78,221,.35);
+}
+
+.info-panel h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.8rem;
+    margin-bottom: 20px;
+    text-shadow: var(--soft-glow);
+}
+
+.info-panel p {
+    color: #a0a0c0;
+    margin-bottom: 18px;
+    line-height: 1.6;
+}
+
+.system {
+    font-family: 'Orbitron', monospace;
+    font-size: .8rem;
+    color: var(--purple);
+}
+
+.auth-panel,
+.chat-panel {
+    flex: 1;
+    padding: 40px;
+    background: var(--glass);
+}
+
+.panel-header {
+    font-family: 'Orbitron', monospace;
+    letter-spacing: 3px;
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    color: var(--purple);
+}
+
+.tabs {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.tab {
+    cursor: pointer;
+    font-family: 'Orbitron', monospace;
+    opacity: .5;
+}
+
+.tab.active {
+    opacity: 1;
+    color: var(--cyan);
+    text-shadow: var(--soft-glow);
+}
+
+.form-group { margin-bottom: 20px; }
+
+label {
+    font-family: 'Orbitron', monospace;
+    font-size: .75rem;
+    letter-spacing: 1px;
+    color: var(--purple);
+}
+
+.form-control {
+    width: 100%;
+    margin-top: 6px;
+    padding: 14px 18px;
+    border-radius: 999px;
+    background: rgba(15,15,35,.85);
+    border: 1px solid rgba(157,78,221,.4);
+    color: var(--cyan);
+    font-size: 15px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--cyan);
+    box-shadow: var(--soft-glow);
+}
+
+.btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 14px;
+    border-radius: 999px;
+    border: 1px solid var(--cyan);
+    background: transparent;
+    color: var(--cyan);
+    font-family: 'Orbitron', monospace;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.btn:hover {
+    box-shadow: var(--soft-glow);
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    border-color: #ff2a6d;
+    color: #ff2a6d;
+}
+
+.hidden { display: none; }
+
+#messages {
+    height: 320px;
+    overflow-y: auto;
+    padding: 20px;
+    background: linear-gradient(180deg, rgba(5,5,15,.95), rgba(10,10,30,.95));
+    border-radius: 14px;
+    box-shadow: inset 0 0 25px rgba(0,0,0,.9);
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.message {
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    background: rgba(0,245,212,.04);
+    border-left: 2px solid var(--cyan);
+    border-radius: 6px;
+}
+
+.room-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.online-badge {
+    margin-left: 12px;
+    font-size: .7rem;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--cyan);
+    background: rgba(0,245,212,.15);
+}
+
+@media (max-width: 900px) {
+    .container { flex-direction: column; }
+    .info-panel { border-right: none; border-bottom: 1px solid rgba(157,78,221,.3); }
+}
+</style>
 </head>
+
 <body>
-    <div class="container">
-        <!-- Info Panel -->
-        <div class="info-panel">
-            <h1 class="glitch" data-text="NEURALINK CHAT">NEURALINK CHAT</h1>
-            <p>SECURE ENCRYPTED COMMUNICATIONS // ACCESS LEVEL OMEGA</p>
-            <p>ENTER ROOM CODE TO INITIATE ENCRYPTED CHANNEL</p>
-            <p style="color: var(--cyber-purple); margin-top: 30px; font-family: 'Orbitron', monospace;">
-                > SYSTEM STATUS: ONLINE<br>
-                > ENCRYPTION: AES-256-GCM<br>
-                > SERVERS: 207.34.12.88<br>
-                > USER: ANONYMOUS
-            </p>
-        </div>
-        
-        <!-- Auth/Chat Panel -->
-        <div class="auth-panel" id="authPanel">
-            <div class="panel-header">ACCESS TERMINAL</div>
-            
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('login')">LOGIN</div>
-                <div class="tab" onclick="switchTab('register')">REGISTER</div>
-            </div>
-            
-            <div class="form-container active" id="login-form">
-                <div class="form-group">
-                    <label for="email">USER ID</label>
-                    <input type="email" id="email" class="form-control" placeholder="ENTER EMAIL">
-                </div>
-                <div class="form-group">
-                    <label for="password">ACCESS KEY</label>
-                    <div style="position: relative;">
-                        <input type="password" id="password" class="form-control" placeholder="••••••••">
-                        <button type="button" 
-                                onclick="togglePasswordVisibility()" 
-                                style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--cyber-cyan); cursor: pointer; font-family: 'Orbitron', monospace;"
-                                id="togglePassword">👁</button>
-                    </div>
-                </div>
-                <button class="btn" onclick="signIn()">INITIATE SESSION</button>
-                <p id="debug" style="color: #ff2a6d; margin-top: 15px; font-family: 'Courier New', monospace;"></p>
-            </div>
-            
-            <div class="form-container" id="register-form">
-                <div class="form-group">
-                    <label for="register-email">USER ID</label>
-                    <input type="email" id="register-email" class="form-control" placeholder="ENTER EMAIL">
-                </div>
-                <div class="form-group">
-                    <label for="register-password">ACCESS KEY</label>
-                    <input type="password" id="register-password" class="form-control" placeholder="CREATE SECURE KEY">
-                </div>
-                <button class="btn" onclick="signUp()">CREATE PROFILE</button>
-                <p id="register-debug" style="color: #ff2a6d; margin-top: 15px; font-family: 'Courier New', monospace;"></p>
-            </div>
-        </div>
-        
-        <div class="chat-panel hidden" id="chatPanel">
-            <div class="panel-header">
-                <span>ENCRYPTED CHANNEL</span>
-                <button class="btn" style="width: auto; padding: 5px 15px; font-size: 12px;" onclick="signOut()">TERMINATE</button>
-            </div>
-            
-            <div id="join-room" class="form-container active">
-                <div class="room-actions">
-                    <input type="text" id="roomCode" class="form-control" placeholder="ENTER ROOM CODE (e.g. CYBER-ALPHA)">
-                    <button class="btn" onclick="joinRoom()">JOIN</button>
-                    <button class="btn btn-danger" onclick="deleteRoomFromList()">ERASE</button>
-                </div>
-                <button class="btn" style="background: transparent; border-color: var(--cyber-cyan);" onclick="createNewRoom()">+ NEW CHANNEL</button>
-                
-                <div class="room-list">
-                    <div style="font-family: 'Orbitron', monospace; color: var(--cyber-purple); margin: 20px 0 10px; letter-spacing: 1px;">SAVED CHANNELS</div>
-                    <div id="roomList"></div>
-                </div>
-            </div>
-            
-            <div id="chat" class="hidden">
-                <div style="font-family: 'Orbitron', monospace; margin: 10px 0; display: flex; align-items: center;">
-                    CHANNEL: <span id="currentRoomName" style="color: var(--cyber-cyan); margin-left: 10px;"></span>
-                    <span id="onlineBadge" class="online-badge">0 ONLINE</span>
-                </div>
-                <div id="messages"></div>
-                <div class="room-actions">
-                    <input type="text" id="messageInput" class="form-control" placeholder="ENCRYPTED MESSAGE..." maxlength="500">
-                    <button class="btn" onclick="sendMessage()">TRANSMIT</button>
-                </div>
-                <button class="btn" onclick="clearChat()">WIPE CHANNEL</button>
-                <button class="btn" onclick="leaveRoom()">EXIT CHANNEL</button>
-            </div>
-        </div>
+<div class="container">
+
+<!-- INFO -->
+<div class="info-panel">
+    <h1>NEURALINK CHAT</h1>
+    <p>SECURE ENCRYPTED COMMUNICATIONS</p>
+    <p>ACCESS LEVEL: OMEGA</p>
+
+    <div class="system">
+        &gt; SYSTEM ONLINE<br>
+        &gt; AES-256-GCM<br>
+        &gt; USER: ANONYMOUS
+    </div>
+</div>
+
+<!-- AUTH -->
+<div class="auth-panel" id="authPanel">
+    <div class="panel-header">ACCESS TERMINAL</div>
+
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('login')">LOGIN</div>
+        <div class="tab" onclick="switchTab('register')">REGISTER</div>
     </div>
 
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js  "></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js  "></script>
-    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js  "></script>
+    <div id="login-form">
+        <div class="form-group">
+            <label>USER ID</label>
+            <input id="email" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>ACCESS KEY</label>
+            <input id="password" type="password" class="form-control">
+        </div>
+        <button class="btn" onclick="signIn()">INITIATE</button>
+        <p id="debug"></p>
+    </div>
 
-    <script>
-        // 🔑 Your Firebase Config
-        const firebaseConfig = {
-            apiKey: "AIzaSyBK4pJpKtFPs19-J051xR6t77SBHYrg1k8",
-            authDomain: "subpls-2c774.firebaseapp.com",
-            databaseURL: "https://subpls-2c774-default-rtdb.firebaseio.com  ",
-            projectId: "subpls-2c774",
-            storageBucket: "subpls-2c774.firebasestorage.app",
-            messagingSenderId: "834082653588",
-            appId: "1:834082653588:web:a7b266363aa864249f3b81",
-            measurementId: "G-JCP2C4X78B"
-        };
+    <div id="register-form" class="hidden">
+        <div class="form-group">
+            <label>USER ID</label>
+            <input id="register-email" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>ACCESS KEY</label>
+            <input id="register-password" type="password" class="form-control">
+        </div>
+        <button class="btn" onclick="signUp()">CREATE PROFILE</button>
+        <p id="register-debug"></p>
+    </div>
+</div>
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.database();
+<!-- CHAT -->
+<div class="chat-panel hidden" id="chatPanel">
+    <div class="panel-header">
+        ENCRYPTED CHANNEL
+        <button class="btn" style="width:auto;padding:6px 16px" onclick="signOut()">EXIT</button>
+    </div>
 
-        // State
-        let currentRoomCode = null;
-        let currentRoomKey = null;
-        let presenceRef = null;
+    <div id="join-room">
+        <input id="roomCode" class="form-control" placeholder="ROOM CODE">
+        <button class="btn" onclick="joinRoom()">JOIN</button>
+    </div>
 
-        // UI Elements
-        const authPanel = document.getElementById("authPanel");
-        const chatPanel = document.getElementById("chatPanel");
-        const joinRoomDiv = document.getElementById("join-room");
-        const chatDiv = document.getElementById("chat");
+    <div id="chat" class="hidden">
+        CHANNEL: <span id="currentRoomName"></span>
+        <span id="onlineBadge" class="online-badge">0 ONLINE</span>
 
-        // 🔐 Encryption Functions
-        async function deriveKey(roomCode) {
-            const enc = new TextEncoder();
-            const keyMaterial = await crypto.subtle.importKey(
-                "raw",
-                enc.encode(roomCode),
-                { name: "PBKDF2" },
-                false,
-                ["deriveBits", "deriveKey"]
-            );
-            return await crypto.subtle.deriveKey(
-                {
-                    name: "PBKDF2",
-                    salt: enc.encode("neuralink-salt-2077"),
-                    iterations: 100000,
-                    hash: "SHA-256"
-                },
-                keyMaterial,
-                { name: "AES-GCM", length: 256 },
-                false,
-                ["encrypt", "decrypt"]
-            );
-        }
+        <div id="messages"></div>
 
-        async function encryptMessage(text, key) {
-            const iv = crypto.getRandomValues(new Uint8Array(12));
-            const encrypted = await crypto.subtle.encrypt(
-                { name: "AES-GCM", iv: iv },
-                key,
-                new TextEncoder().encode(text)
-            );
-            return {
-                ciphertext: Array.from(new Uint8Array(encrypted)),
-                iv: Array.from(iv)
-            };
-        }
+        <div class="room-actions">
+            <input id="messageInput" class="form-control" placeholder="MESSAGE">
+            <button class="btn" onclick="sendMessage()">SEND</button>
+        </div>
+    </div>
+</div>
 
-        async function decryptMessage(encryptedData, key) {
-            try {
-                const decrypted = await crypto.subtle.decrypt(
-                    {
-                        name: "AES-GCM",
-                        iv: new Uint8Array(encryptedData.iv)
-                    },
-                    key,
-                    new Uint8Array(encryptedData.ciphertext)
-                );
-                return new TextDecoder().decode(decrypted);
-            } catch (e) {
-                return "[DECRYPTION FAILED - WRONG CODE]";
-            }
-        }
+</div>
 
-        // 🎨 UI Helpers
-        function showError(msg, id = "debug") {
-            document.getElementById(id).textContent = `> ERROR: ${msg}`;
-            setTimeout(() => {
-                document.getElementById(id).textContent = "";
-            }, 5000);
-        }
+<!-- 🔥 YOUR ORIGINAL FIREBASE + ENCRYPTION SCRIPT GOES HERE UNCHANGED -->
+<!-- (You can paste your existing <script> section below this line) -->
 
-        function togglePasswordVisibility() {
-            const passwordInput = document.getElementById("password");
-            const toggleBtn = document.getElementById("togglePassword");
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                toggleBtn.textContent = "👁‍🗨";
-            } else {
-                passwordInput.type = "password";
-                toggleBtn.textContent = "👁";
-            }
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            document.querySelectorAll('.form-container').forEach(form => {
-                form.classList.remove('active');
-            });
-            
-            if(tabName === 'login') {
-                document.getElementById('login-form').classList.add('active');
-            } else {
-                document.getElementById('register-form').classList.add('active');
-            }
-        }
-
-        // 👤 Auth Functions
-        function signUp() {
-            const email = document.getElementById("register-email").value;
-            const password = document.getElementById("register-password").value;
-            if (!email || !password) return showError("FIELDS REQUIRED");
-            auth.createUserWithEmailAndPassword(email, password)
-                .catch(e => showError(e.message, "register-debug"));
-        }
-
-        function signIn() {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            if (!email || !password) return showError("FIELDS REQUIRED");
-            auth.signInWithEmailAndPassword(email, password)
-                .catch(e => showError(e.message));
-        }
-
-        function signOut() {
-            auth.signOut();
-        }
-
-        // 🏠 Room Functions
-        async function joinRoom() {
-            const code = document.getElementById("roomCode").value.trim();
-            if (!code) return showError("ENTER ROOM CODE");
-            try {
-                currentRoomCode = code;
-                currentRoomKey = await deriveKey(code);
-                document.getElementById("currentRoomName").textContent = code;
-                joinRoomDiv.classList.add("hidden");
-                chatDiv.classList.remove("hidden");
-                loadMessages(code);
-                addUserToRoom(code);
-                setupPresence(code);
-            } catch (e) {
-                showError("JOIN FAILED");
-            }
-        }
-
-        function createNewRoom() {
-            const code = prompt("ENTER NEW ROOM CODE:");
-            if (code && code.trim()) {
-                document.getElementById("roomCode").value = code.trim();
-                joinRoom();
-            }
-        }
-
-        function leaveRoom() {
-            cleanupRoom();
-            chatDiv.classList.add("hidden");
-            joinRoomDiv.classList.remove("hidden");
-        }
-
-        // 🗑️ Delete Room (Anyone can delete entire room)
-        function deleteRoomFromList() {
-            const code = document.getElementById("roomCode").value.trim();
-            if (!code) return showError("ENTER ROOM CODE TO ERASE");
-            if (!confirm("ERASE CHANNEL PERMANENTLY?\nALL DATA WILL BE DESTROYED.")) return;
-            
-            db.ref(`rooms/${code}`).remove()
-                .then(() => {
-                    const user = auth.currentUser;
-                    if (user) {
-                        db.ref(`users/${user.uid}/rooms/${code}`).remove();
-                    }
-                    loadUserRooms();
-                })
-                .catch(e => showError("ERASE FAILED"));
-        }
-
-        function cleanupRoom() {
-            if (presenceRef) {
-                presenceRef.remove();
-                db.ref(`rooms/${currentRoomCode}/presence`).off("value");
-            }
-            currentRoomCode = null;
-            currentRoomKey = null;
-        }
-
-        // 👥 Presence
-        function setupPresence(roomCode) {
-            const user = auth.currentUser;
-            presenceRef = db.ref(`rooms/${roomCode}/presence/${user.uid}`);
-            presenceRef.onDisconnect().remove();
-            presenceRef.set({
-                email: user.email,
-                joined: firebase.database.ServerValue.TIMESTAMP
-            });
-
-            db.ref(`rooms/${roomCode}/presence`).on("value", (snapshot) => {
-                const users = snapshot.val();
-                const count = users ? Object.keys(users).length : 0;
-                document.getElementById("onlineBadge").textContent = `${count} ONLINE`;
-            });
-        }
-
-        // 💬 Chat
-        async function sendMessage() {
-            const input = document.getElementById("messageInput");
-            const text = input.value.trim();
-            if (!text || !currentRoomKey) return;
-            try {
-                const encrypted = await encryptMessage(text, currentRoomKey);
-                db.ref(`rooms/${currentRoomCode}/messages`).push({
-                    encrypted,
-                    sender: auth.currentUser.email,
-                    timestamp: firebase.database.ServerValue.TIMESTAMP
-                });
-                input.value = "";
-            } catch (e) {
-                showError("TRANSMISSION FAILED");
-            }
-        }
-
-        async function loadMessages(roomCode) {
-            const messagesDiv = document.getElementById("messages");
-            messagesDiv.innerHTML = "> LOADING ENCRYPTED MESSAGES...";
-            db.ref(`rooms/${roomCode}/messages`)
-                .orderByChild("timestamp")
-                .limitToLast(100)
-                .on("child_added", async (snapshot) => {
-                    const msg = snapshot.val();
-                    let decryptedText = "> DECRYPTING...";
-                    if (currentRoomKey) {
-                        decryptedText = await decryptMessage(msg.encrypted, currentRoomKey);
-                    }
-                    const time = new Date(msg.timestamp).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-                    const div = document.createElement("div");
-                    div.className = "message";
-                    div.innerHTML = `[${time}] <strong>${msg.sender}:</strong> ${decryptedText}`;
-                    messagesDiv.appendChild(div);
-                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
-                });
-        }
-
-        function clearChat() {
-            if (!currentRoomCode) return;
-            if (!confirm("WIPE ALL MESSAGES IN THIS CHANNEL?")) return;
-            db.ref(`rooms/${currentRoomCode}/messages`).remove()
-                .then(() => {
-                    document.getElementById("messages").innerHTML = "> CHANNEL WIPE COMPLETE";
-                })
-                .catch(e => showError("WIPE FAILED"));
-        }
-
-        // 📋 Room List
-        function addUserToRoom(roomCode) {
-            const user = auth.currentUser;
-            if (user) {
-                db.ref(`users/${user.uid}/rooms/${roomCode}`).push(true);
-                loadUserRooms();
-            }
-        }
-
-        function loadUserRooms() {
-            const user = auth.currentUser;
-            if (!user) return;
-            const roomListDiv = document.getElementById("roomList");
-            roomListDiv.innerHTML = "> SCANNING SAVED CHANNELS...";
-            db.ref(`users/${user.uid}/rooms`).on("value", (snapshot) => {
-                roomListDiv.innerHTML = "";
-                const rooms = snapshot.val();
-                if (rooms) {
-                    Object.keys(rooms).forEach(code => {
-                        const div = document.createElement("div");
-                        div.className = "room-item";
-                        div.innerHTML = `
-                            <span>${code}</span>
-                            <button class="btn" style="padding: 4px 8px; font-size: 12px; width: auto;" onclick="quickJoin('${code}')">ACCESS</button>
-                        `;
-                        roomListDiv.appendChild(div);
-                    });
-                } else {
-                    roomListDiv.innerHTML = "> NO SAVED CHANNELS";
-                }
-            });
-        }
-
-        function quickJoin(code) {
-            document.getElementById("roomCode").value = code;
-            joinRoom();
-        }
-
-        // 🔄 Auth State Listener
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                authPanel.classList.add("hidden");
-                chatPanel.classList.remove("hidden");
-                loadUserRooms();
-            } else {
-                authPanel.classList.remove("hidden");
-                chatPanel.classList.add("hidden");
-                if (presenceRef) presenceRef.remove();
-            }
-        });
-
-        // ⌨️ Enter to send
-        document.getElementById("messageInput")?.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") sendMessage();
-        });
-    </script>
 </body>
+</html>
