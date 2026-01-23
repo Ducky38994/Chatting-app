@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL // PROTOCOL_V5</title>
+    <title>TERMINAL // GROUP_HUB</title>
     <style>
         :root {
             --bg: #000000;
@@ -15,7 +15,7 @@
 
         body { background-color: var(--bg); color: var(--fg); height: 100vh; overflow: hidden; }
 
-        /* Profile Menu (Drawer) */
+        /* Profile Menu Drawer */
         .sidebar {
             position: fixed; left: -350px; top: 0; width: 320px; height: 100%;
             background: #000; border-right: var(--border); z-index: 2000;
@@ -24,7 +24,7 @@
         .sidebar.open { left: 0; box-shadow: 5px 0 15px rgba(255,255,255,0.2); }
 
         /* Layout */
-        .main-layout { display: grid; grid-template-columns: 320px 1fr; height: 100vh; }
+        .main-layout { display: grid; grid-template-columns: 350px 1fr; height: 100vh; }
         .side-panel { border-right: var(--border); padding: 20px; display: flex; flex-direction: column; background: #000; }
         .chat-panel { display: flex; flex-direction: column; background: #000; }
 
@@ -40,17 +40,18 @@
             cursor: pointer; text-transform: uppercase; font-size: 11px; font-weight: bold; margin-bottom: 10px;
         }
         .btn:hover { background: #fff; color: #000; }
+        .btn-sm { padding: 2px 5px; font-size: 9px; margin: 0; width: auto; }
 
         /* Lists */
         .scroll-area { flex: 1; overflow-y: auto; border: 1px solid #333; margin-bottom: 15px; padding: 8px; }
-        .list-item { padding: 8px; border: 1px solid #222; margin-bottom: 6px; font-size: 12px; cursor: pointer; display: flex; justify-content: space-between; }
-        .list-item:hover { border-color: #fff; }
+        .list-item { padding: 10px; border: 1px solid #222; margin-bottom: 8px; font-size: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .list-item:hover { border-color: #fff; background: #111; }
 
         /* Inspector */
         .inspector-box { border: 2px solid #fff; padding: 10px; margin-top: 10px; min-height: 100px; background: #000; }
         .ins-avatar { width: 50px; height: 50px; border: 1px solid #fff; float: left; margin-right: 10px; }
 
-        /* Header/Footer */
+        /* Chat Header/Footer */
         .header { padding: 15px; border-bottom: var(--border); display: flex; justify-content: space-between; align-items: center; }
         #messages { flex: 1; padding: 20px; overflow-y: auto; }
         .footer { padding: 15px; border-top: var(--border); display: flex; gap: 10px; }
@@ -63,24 +64,24 @@
 <body>
 
     <div id="sidebar" class="sidebar">
-        <h2 style="border-bottom: 1px solid #fff; margin-bottom: 15px;">MY PROFILE</h2>
+        <h2 style="border-bottom: 1px solid #fff; margin-bottom: 15px;">MY DATA</h2>
         <img id="myAvatarDisplay" src="" style="width: 70px; border: 1px solid #fff; margin-bottom: 10px;">
         <div id="avatarPicker" style="display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 15px;"></div>
         
         <input type="text" id="profileName" class="input-line" placeholder="NAME">
         <input type="text" id="profileBio" class="input-line" placeholder="BIO / DESC">
-        <input type="text" id="profileLink" class="input-line" placeholder="LINK">
+        <input type="text" id="profileLink" class="input-line" placeholder="LINK (IG/TW)">
         
-        <button class="btn" onclick="saveProfile()">UPDATE DATA</button>
-        <button class="btn" onclick="toggleSidebar()" style="margin-top: auto; border-style: dotted;">CLOSE MENU</button>
+        <button class="btn" onclick="saveProfile()">SAVE PROFILE</button>
+        <button class="btn" onclick="toggleSidebar()" style="margin-top: auto; border-style: dotted;">BACK</button>
     </div>
 
     <div id="page-login" class="screen">
         <div style="border: var(--border); padding: 40px; width: 380px; background: #000;">
-            <h2 style="text-align: center; margin-bottom: 25px;">[ACCESS_REQUIRED]</h2>
+            <h2 style="text-align: center; margin-bottom: 25px;">[TERMINAL_AUTH]</h2>
             <input type="email" id="email" class="input-line" placeholder="EMAIL">
             <input type="password" id="password" class="input-line" placeholder="PASSWORD">
-            <button class="btn" style="width: 100%" onclick="signIn()">LOG IN</button>
+            <button class="btn" style="width: 100%" onclick="signIn()">LOGIN</button>
             <button class="btn" style="width: 100%; border-style: dotted;" onclick="signUp()">REGISTER</button>
         </div>
     </div>
@@ -88,40 +89,40 @@
     <div id="page-main" class="main-layout hidden">
         
         <div class="side-panel">
-            <button class="btn" onclick="toggleSidebar()">☰ MY PROFILE</button>
+            <button class="btn" onclick="toggleSidebar()">☰ MY SETTINGS</button>
             
-            <p style="font-size: 10px; color: #888; margin-top: 10px;">// JOIN_ROOM</p>
-            <input type="text" id="roomCode" class="input-line" placeholder="CODE">
-            <button class="btn" style="width: 100%" onclick="joinRoom()">LINK</button>
+            <p style="font-size: 10px; color: #888; margin-top: 10px;">// START_OR_JOIN_GROUP</p>
+            <input type="text" id="roomCode" class="input-line" placeholder="GROUP NAME">
+            <button class="btn" style="width: 100%" onclick="joinRoom()">ADD GROUP</button>
 
-            <p style="font-size: 10px; color: #888; margin-top: 10px;">// HAVE ACCESS TO:</p>
+            <p style="font-size: 10px; color: #888; margin-top: 10px;">// MY GROUPS:</p>
             <div id="myRooms" class="scroll-area"></div>
 
-            <p style="font-size: 10px; color: #888;">// ONLINE</p>
+            <p style="font-size: 10px; color: #888;">// GROUP MEMBERS (ONLINE)</p>
             <div id="onlineUsers" class="scroll-area"></div>
 
             <div id="inspector" class="inspector-box hidden">
+                <p style="font-size: 9px; margin-bottom: 5px;">[MEMBER_INFO]</p>
                 <img id="insAvatar" src="" class="ins-avatar">
                 <div style="font-size: 12px;">
                     <b id="insName"></b><br>
                     <span id="insBio" style="font-size: 10px; color: #aaa;"></span><br>
-                    <a id="insLink" href="#" target="_blank" style="color: #fff; font-size: 10px;">LINK</a>
+                    <a id="insLink" href="#" target="_blank" style="color: #fff; font-size: 10px;">SOCIAL LINK</a>
                 </div>
             </div>
         </div>
 
         <div class="chat-panel">
             <div class="header">
-                <span id="nodeDisplay">NODE: DISCONNECTED</span>
+                <span id="nodeDisplay">SELECT A GROUP</span>
                 <div>
-                    <button id="leaveBtn" class="btn hidden" onclick="leaveRoom()" style="margin-bottom:0; margin-right: 10px; border-color: #f00; color: #f00;">LEAVE ROOM</button>
-                    <button class="btn" onclick="wipeText()" style="margin-bottom:0; padding: 5px 10px;">WIPE TEXT</button>
-                    <button class="btn" onclick="signOut()" style="margin-bottom:0; padding: 5px 10px; border-color: #444;">LOGOUT</button>
+                    <button class="btn" onclick="wipeText()" style="margin-bottom:0; padding: 5px 10px; border-color: #444;">CLEAR CHAT</button>
+                    <button class="btn" onclick="signOut()" style="margin-bottom:0; padding: 5px 10px;">LOGOUT</button>
                 </div>
             </div>
             <div id="messages"></div>
             <div class="footer">
-                <input type="text" id="msgInput" class="input-line" style="margin-bottom:0" placeholder="Type message...">
+                <input type="text" id="msgInput" class="input-line" style="margin-bottom:0" placeholder="Message...">
                 <button class="btn" onclick="sendMessage()" style="margin-bottom:0; width: 100px;">SEND</button>
             </div>
         </div>
@@ -178,11 +179,10 @@
         }
     });
 
-    // Profile Logic
     function saveProfile() {
         db.ref('profiles/' + auth.currentUser.uid).set({
             name: document.getElementById("profileName").value || "USER",
-            bio: document.getElementById("profileBio").value || "",
+            bio: document.getElementById("profileBio").value || "No bio.",
             avatar: selectedAvatar,
             link: document.getElementById("profileLink").value || "#"
         });
@@ -202,29 +202,34 @@
         });
     }
 
-    // Room Logic
+    // Room / Group Management
     function joinRoom() {
         const code = document.getElementById("roomCode").value.toUpperCase();
         if(!code) return;
         currentRoom = code;
         db.ref(`user_access/${auth.currentUser.uid}/${code}`).set(true);
-        document.getElementById("nodeDisplay").innerText = "NODE: " + code;
-        document.getElementById("leaveBtn").classList.remove("hidden");
-        
-        db.ref(`presence/${code}/${auth.currentUser.uid}`).set({ name: document.getElementById("profileName").value || "USER" });
-        db.ref(`presence/${code}/${auth.currentUser.uid}`).onDisconnect().remove();
-
-        loadMessages(code);
-        syncOnline(code);
+        enterGroup(code);
     }
 
-    function leaveRoom() {
-        if(currentRoom) db.ref(`presence/${currentRoom}/${auth.currentUser.uid}`).remove();
-        currentRoom = null;
-        document.getElementById("nodeDisplay").innerText = "NODE: DISCONNECTED";
-        document.getElementById("messages").innerHTML = "";
-        document.getElementById("onlineUsers").innerHTML = "";
-        document.getElementById("leaveBtn").classList.add("hidden");
+    function removeRoom(code, event) {
+        event.stopPropagation();
+        if(confirm(`Remove group "${code}" from your list?`)) {
+            db.ref(`user_access/${auth.currentUser.uid}/${code}`).remove();
+            if(currentRoom === code) {
+                currentRoom = null;
+                document.getElementById("nodeDisplay").innerText = "SELECT A GROUP";
+                document.getElementById("messages").innerHTML = "";
+            }
+        }
+    }
+
+    function enterGroup(code) {
+        currentRoom = code;
+        document.getElementById("nodeDisplay").innerText = "GROUP: " + code;
+        db.ref(`presence/${code}/${auth.currentUser.uid}`).set({ name: document.getElementById("profileName").value || "USER" });
+        db.ref(`presence/${code}/${auth.currentUser.uid}`).onDisconnect().remove();
+        loadMessages(code);
+        syncOnline(code);
     }
 
     function loadMyAccessList() {
@@ -234,8 +239,8 @@
             snap.forEach(c => {
                 const div = document.createElement("div");
                 div.className = "list-item";
-                div.innerHTML = `<span>${c.key}</span> <span>[ACCESS]</span>`;
-                div.onclick = () => { document.getElementById("roomCode").value = c.key; joinRoom(); };
+                div.innerHTML = `<span>${c.key}</span> <button class="btn btn-sm" onclick="removeRoom('${c.key}', event)">X</button>`;
+                div.onclick = () => enterGroup(c.key);
                 list.appendChild(div);
             });
         });
@@ -267,7 +272,7 @@
         });
     }
 
-    function wipeText() { if(currentRoom && confirm("Wipe history?")) db.ref(`rooms/${currentRoom}/messages`).remove(); }
+    function wipeText() { if(currentRoom && confirm("Clear chat for everyone?")) db.ref(`rooms/${currentRoom}/messages`).remove(); }
 
     function loadMessages(code) {
         const mDiv = document.getElementById("messages");
