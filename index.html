@@ -3,198 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL // NEURALINK_SECURE</title>
+    <title>NEURALINK // TERMINAL_B&W</title>
     <style>
         :root {
-            --bg-color: #000000;
-            --text-color: #ffffff;
-            --dim-text: #666666;
+            --bg: #000000;
+            --fg: #ffffff;
+            --dim: #666666;
             --border: 2px solid #ffffff;
-            --flicker: rgba(255, 255, 255, 0.02);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            border-radius: 0 !important;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: var(--bg);
+            color: var(--fg);
             font-family: 'Courier New', Courier, monospace;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow-x: hidden;
-            /* Scanline Overlay */
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            /* CRT Scanline Effect */
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
             background-size: 100% 3px, 3px 100%;
         }
 
-        /* CRT Flicker effect */
-        body::after {
-            content: " ";
-            display: block;
-            position: fixed;
-            top: 0; left: 0; bottom: 0; right: 0;
-            background: rgba(255, 255, 255, 0.03);
-            opacity: 0;
-            z-index: 10;
-            pointer-events: none;
-            animation: flicker 0.1s infinite;
-        }
-
-        @keyframes flicker {
-            0% { opacity: 0.1; }
-            50% { opacity: 0.2; }
-            100% { opacity: 0.1; }
-        }
-
-        .container {
-            width: 95%;
-            max-width: 900px;
-            border: var(--border);
-            background: var(--bg-color);
-            position: relative;
-            z-index: 5;
-            box-shadow: 0 0 15px rgba(255,255,255,0.1);
-        }
-
-        .header-bar {
-            background: var(--text-color);
-            color: var(--bg-color);
-            padding: 5px 15px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-        }
-
-        .info-section {
-            padding: 20px;
-            border-bottom: 1px solid var(--text-color);
-        }
-
-        .info-section h1 {
-            font-size: 2rem;
-            text-transform: uppercase;
-            margin-bottom: 5px;
-            letter-spacing: 4px;
-        }
-
-        .main-content {
-            display: flex;
-            min-height: 400px;
-        }
-
-        @media (max-width: 700px) {
-            .main-content { flex-direction: column; }
-        }
-
-        .side-panel {
-            flex: 1;
-            padding: 20px;
-            border-right: 1px solid var(--text-color);
-        }
-
-        .chat-area {
-            flex: 2;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .tabs {
-            display: flex;
-            margin-bottom: 20px;
-            border: 1px solid var(--text-color);
-        }
-
-        .tab {
-            flex: 1;
-            padding: 8px;
-            text-align: center;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        .tab.active {
-            background: var(--text-color);
-            color: var(--bg-color);
-        }
-
-        .form-group { margin-bottom: 15px; }
+        .container { width: 95%; max-width: 1100px; border: var(--border); background: var(--bg); position: relative; box-shadow: 0 0 20px rgba(255,255,255,0.1); }
         
-        label { 
-            display: block; 
-            font-size: 0.8rem; 
-            margin-bottom: 5px; 
-            color: var(--dim-text);
-        }
+        .header-bar { background: var(--fg); color: var(--bg); padding: 5px 15px; font-weight: bold; display: flex; justify-content: space-between; font-size: 0.8rem; }
+        
+        .layout { display: grid; grid-template-columns: 260px 1fr 220px; min-height: 600px; }
+        @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
 
-        .form-control {
-            width: 100%;
-            padding: 10px;
-            background: transparent;
-            border: 1px solid var(--text-color);
-            color: var(--text-color);
-            font-family: inherit;
-        }
+        .panel { padding: 20px; border: 1px solid #222; overflow-y: auto; }
+        .left-panel { border-right: 1px solid var(--fg); }
+        .right-panel { border-left: 1px solid var(--fg); font-size: 0.8rem; }
 
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background: transparent;
-            color: var(--text-color);
-            border: 1px solid var(--text-color);
-            cursor: pointer;
-            font-family: inherit;
-            text-transform: uppercase;
-            font-weight: bold;
-            margin-top: 10px;
-        }
+        /* Profile Elements */
+        .avatar-preview { width: 80px; height: 80px; border: 1px solid #fff; margin-bottom: 10px; object-fit: cover; background: #111; display: block; }
+        .form-control { width: 100%; padding: 8px; background: #000; border: 1px solid #555; color: #fff; font-family: inherit; margin-bottom: 12px; font-size: 0.8rem; }
+        .form-control:focus { outline: none; border-color: #fff; }
 
-        .btn:hover {
-            background: var(--text-color);
-            color: var(--bg-color);
-        }
+        /* Chat Window */
+        #messages { height: 400px; border: 1px solid #333; padding: 15px; overflow-y: auto; margin-bottom: 10px; background: #050505; }
+        .msg { margin-bottom: 10px; font-size: 0.9rem; line-height: 1.4; border-bottom: 1px dotted #222; padding-bottom: 5px; }
+        .msg-sender { font-weight: bold; cursor: pointer; text-decoration: underline; margin-right: 8px; }
+        .sys-msg { color: var(--dim); font-style: italic; text-align: center; font-size: 0.8rem; margin: 10px 0; }
 
-        #messages {
-            height: 300px;
-            border: 1px solid var(--text-color);
-            margin-bottom: 15px;
-            padding: 10px;
-            overflow-y: auto;
-            font-size: 0.9rem;
-            background: #050505;
-        }
+        /* Buttons */
+        .btn { width: 100%; padding: 10px; background: transparent; color: #fff; border: 1px solid #fff; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; font-weight: bold; transition: 0.2s; }
+        .btn:hover { background: #fff; color: #000; }
+        .wipe-btn { background: none; border: 1px solid #444; color: #444; font-size: 0.6rem; padding: 3px 8px; cursor: pointer; }
+        .wipe-btn:hover { border-color: #ff0000; color: #ff0000; }
 
-        .message {
-            margin-bottom: 8px;
-            border-bottom: 1px dotted #333;
-            padding-bottom: 4px;
-        }
-
-        .message strong { color: var(--text-color); text-decoration: underline; }
-
-        .room-item {
-            border: 1px solid #444;
-            padding: 8px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* Presence */
+        .active-user { padding: 8px 0; border-bottom: 1px solid #222; display: flex; align-items: center; gap: 10px; }
+        .status-dot { width: 6px; height: 6px; background: #fff; box-shadow: 0 0 5px #fff; }
+        .user-link { cursor: pointer; }
+        .user-link:hover { text-decoration: underline; }
 
         .hidden { display: none !important; }
         
-        #debug { color: #ff0000; font-size: 0.8rem; margin-top: 10px; }
-
-        ::-webkit-scrollbar { width: 8px; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: #fff; }
     </style>
@@ -203,73 +74,70 @@
 
 <div class="container">
     <div class="header-bar">
-        <span>STATION: TERMINAL_01</span>
-        <span>STATUS: ACTIVE</span>
+        <span>STATION_ID: TERMINAL_ALPHA</span>
+        <span id="sys-clock">00:00:00</span>
     </div>
 
-    <div class="info-section">
-        <h1>Neuralink_Node</h1>
-        <p style="color: var(--dim-text)">SECURE ENCRYPTED COMMS // NO_LOG_POLICY</p>
+    <div id="authScreen" style="max-width: 400px; margin: 80px auto; padding: 20px; border: 1px solid #fff;">
+        <h2 style="text-align: center; margin-bottom: 20px;">[IDENT_VERIFICATION]</h2>
+        <input type="email" id="email" class="form-control" placeholder="USER_EMAIL">
+        <input type="password" id="password" class="form-control" placeholder="ACCESS_KEY">
+        <button class="btn" onclick="signIn()">LOG_IN</button>
+        <button class="btn" onclick="signUp()" style="margin-top:10px; border-style:dotted; color: #888; border-color: #888;">INIT_NEW_ID</button>
+        <div id="auth-err" style="color: red; font-size: 0.7rem; margin-top: 10px; text-align: center;"></div>
     </div>
 
-    <div class="main-content">
-        <div class="side-panel" id="authPanel">
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('login')">LOGIN</div>
-                <div class="tab" onclick="switchTab('register')">SIGNUP</div>
+    <div id="mainInterface" class="layout hidden">
+        
+        <div class="panel left-panel">
+            <p style="font-size: 0.7rem; color: var(--dim); margin-bottom: 15px;">// USER_IDENTITY_MODULE</p>
+            <img id="myAvatar" class="avatar-preview" src="https://via.placeholder.com/80?text=ID">
+            <label style="font-size: 0.6rem;">DISPLAY_NAME</label>
+            <input type="text" id="profileName" class="form-control" placeholder="Handle">
+            <label style="font-size: 0.6rem;">BIO_DATA</label>
+            <input type="text" id="profileBio" class="form-control" placeholder="Status/Bio">
+            <label style="font-size: 0.6rem;">AVATAR_URL</label>
+            <input type="text" id="profileAvatar" class="form-control" placeholder="https://...">
+            <label style="font-size: 0.6rem;">EXT_LINK</label>
+            <input type="text" id="profileLink" class="form-control" placeholder="Portfolio/Social">
+            <button class="btn" onclick="saveProfile()">UPDATE_IDENTITY</button>
+            
+            <div style="margin-top: 30px;">
+                <p style="font-size: 0.7rem; color: var(--dim); margin-bottom: 10px;">// NETWORK_CONTROL</p>
+                <input type="text" id="roomCode" class="form-control" placeholder="NODE_ROOM_CODE">
+                <button class="btn" onclick="joinRoom()">LINK_TO_NODE</button>
+                <button class="btn" onclick="signOut()" style="margin-top: 10px; color: #666; border-color: #333;">LOG_OUT</button>
             </div>
-
-            <div id="login-form">
-                <div class="form-group">
-                    <label>USER_ID</label>
-                    <input type="email" id="email" class="form-control" placeholder="EMAIL">
-                </div>
-                <div class="form-group">
-                    <label>ACCESS_KEY</label>
-                    <input type="password" id="password" class="form-control" placeholder="******">
-                </div>
-                <button class="btn" onclick="signIn()">EXECUTE_LOGIN</button>
-            </div>
-
-            <div id="register-form" class="hidden">
-                <div class="form-group">
-                    <label>NEW_USER_ID</label>
-                    <input type="email" id="register-email" class="form-control" placeholder="EMAIL">
-                </div>
-                <div class="form-group">
-                    <label>NEW_ACCESS_KEY</label>
-                    <input type="password" id="register-password" class="form-control" placeholder="******">
-                </div>
-                <button class="btn" onclick="signUp()">INITIALIZE_USER</button>
-            </div>
-            <div id="debug"></div>
         </div>
 
-        <div class="chat-area hidden" id="chatPanel">
-            <div id="join-room">
-                <label>CHANNEL_CODE</label>
-                <input type="text" id="roomCode" class="form-control" placeholder="e.g. OMEGA-4">
-                <div style="display:flex; gap: 5px;">
-                    <button class="btn" onclick="joinRoom()">CONNECT</button>
-                    <button class="btn" onclick="signOut()" style="border-style:dotted">LOGOUT</button>
-                </div>
-                
-                <div style="margin-top: 20px;">
-                    <label>SAVED_NODES</label>
-                    <div id="roomList"></div>
-                </div>
-            </div>
-
-            <div id="chat" class="hidden">
-                <div style="margin-bottom: 10px; border-bottom: 1px solid #fff; padding-bottom: 5px;">
-                    NODE: <span id="currentRoomName">---</span> | <span id="onlineBadge">0</span> ONLINE
+        <div class="panel">
+            <div id="chatWindow" class="hidden">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <p style="font-size: 0.8rem; font-weight: bold;">NODE: <span id="nodeDisplay">---</span></p>
+                    <button class="wipe-btn" onclick="wipeChat()">[PURGE_NODE_HISTORY]</button>
                 </div>
                 <div id="messages"></div>
-                <div style="display:flex; gap: 5px;">
-                    <input type="text" id="messageInput" class="form-control" placeholder="ENTER DATA >">
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="msgInput" class="form-control" placeholder="INPUT DATA..." style="margin-bottom:0">
                     <button class="btn" onclick="sendMessage()" style="width: 100px;">SEND</button>
                 </div>
-                <button class="btn" onclick="leaveRoom()" style="margin-top: 10px; font-size: 0.7rem;">DISCONNECT_NODE</button>
+            </div>
+            <div id="welcomeMsg" style="text-align:center; padding-top: 150px; color: #333;">
+                [AWAITING_NODE_LINK...]
+            </div>
+        </div>
+
+        <div class="panel right-panel">
+            <p style="color: var(--dim); margin-bottom: 15px;">// ACTIVE_IDENTITIES</p>
+            <div id="presenceList"></div>
+            
+            <div id="inspectPanel" class="hidden" style="margin-top: 40px; border: 1px solid #fff; padding: 15px; background: #0a0a0a;">
+                <p style="font-size: 0.6rem; color: var(--dim); margin-bottom: 10px;">[ID_INSPECTION]</p>
+                <img id="insAvatar" src="" style="width: 100%; border: 1px solid #fff; margin-bottom: 10px;">
+                <p id="insName" style="font-weight: bold; font-size: 1rem;"></p>
+                <p id="insBio" style="font-size: 0.75rem; margin: 10px 0; color: #ccc;"></p>
+                <a id="insLink" href="#" target="_blank" style="color: #fff; font-size: 0.7rem; text-decoration: underline;">EXTERNAL_LINK</a>
+                <button class="btn" onclick="document.getElementById('inspectPanel').classList.add('hidden')" style="margin-top: 15px; border-color: #444; font-size: 0.5rem;">CLOSE</button>
             </div>
         </div>
     </div>
@@ -280,7 +148,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 
 <script>
-    // 🔥 Firebase Config (Keep this exactly as you had it)
+    // --- FIREBASE CONFIGURATION ---
     const firebaseConfig = {
         apiKey: "AIzaSyBK4pJpKtFPs19-J051xR6t77SBHYrg1k8",
         authDomain: "subpls-2c774.firebaseapp.com",
@@ -294,140 +162,175 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
+    
+    let currentRoom = null;
 
-    let currentRoomCode = null;
-    let currentRoomKey = null;
-
-    // --- UI Logic ---
-    function switchTab(type) {
-        document.getElementById('login-form').classList.toggle('hidden', type !== 'login');
-        document.getElementById('register-form').classList.toggle('hidden', type !== 'register');
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        event.target.classList.add('active');
+    // --- AUTHENTICATION ---
+    function signUp() { 
+        const e = document.getElementById("email").value;
+        const p = document.getElementById("password").value;
+        auth.createUserWithEmailAndPassword(e, p).catch(err => document.getElementById("auth-err").textContent = err.message);
     }
-
-    function showError(msg) {
-        const d = document.getElementById("debug");
-        d.textContent = "> ERROR: " + msg;
-        setTimeout(() => d.textContent = "", 4000);
-    }
-
-    // --- Auth Logic ---
-    function signUp() {
-        const e = document.getElementById("register-email").value;
-        const p = document.getElementById("register-password").value;
-        auth.createUserWithEmailAndPassword(e, p).catch(err => showError(err.message));
-    }
-
     function signIn() {
         const e = document.getElementById("email").value;
         const p = document.getElementById("password").value;
-        auth.signInWithEmailAndPassword(e, p).catch(err => showError(err.message));
+        auth.signInWithEmailAndPassword(e, p).catch(err => document.getElementById("auth-err").textContent = err.message);
     }
-
-    function signOut() { auth.signOut(); location.reload(); }
+    function signOut() {
+        if(currentRoom) db.ref(`presence/${currentRoom}/${auth.currentUser.uid}`).remove();
+        auth.signOut().then(() => location.reload());
+    }
 
     auth.onAuthStateChanged(user => {
         if (user) {
-            document.getElementById("authPanel").classList.add("hidden");
-            document.getElementById("chatPanel").classList.remove("hidden");
-            loadUserRooms();
+            document.getElementById("authScreen").classList.add("hidden");
+            document.getElementById("mainInterface").classList.remove("hidden");
+            loadMyProfile();
         }
     });
 
-    // --- Encryption ---
-    async function deriveKey(code) {
-        const enc = new TextEncoder();
-        const keyMat = await crypto.subtle.importKey("raw", enc.encode(code), {name: "PBKDF2"}, false, ["deriveKey"]);
-        return await crypto.subtle.deriveKey(
-            { name: "PBKDF2", salt: enc.encode("retro-salt"), iterations: 1000, hash: "SHA-256" },
-            keyMat, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
-        );
+    // --- PROFILE MANAGEMENT ---
+    function saveProfile() {
+        const uid = auth.currentUser.uid;
+        const name = document.getElementById("profileName").value || "ANONYMOUS";
+        db.ref('profiles/' + uid).set({
+            name: name,
+            bio: document.getElementById("profileBio").value || "No bio data available.",
+            avatar: document.getElementById("profileAvatar").value || "https://via.placeholder.com/80?text=ID",
+            link: document.getElementById("profileLink").value || "#"
+        });
+        // If in a room, update presence name too
+        if(currentRoom) db.ref(`presence/${currentRoom}/${uid}/name`).set(name);
+        alert("IDENTITY_UPDATED");
     }
 
-    // --- Chat Logic ---
-    async function joinRoom() {
+    function loadMyProfile() {
+        db.ref('profiles/' + auth.currentUser.uid).on('value', snap => {
+            const data = snap.val();
+            if(data) {
+                document.getElementById("profileName").value = data.name;
+                document.getElementById("profileBio").value = data.bio;
+                document.getElementById("profileAvatar").value = data.avatar;
+                document.getElementById("profileLink").value = data.link;
+                document.getElementById("myAvatar").src = data.avatar;
+            }
+        });
+    }
+
+    function inspectProfile(uid) {
+        db.ref('profiles/' + uid).once('value', snap => {
+            const data = snap.val();
+            if(!data) return;
+            document.getElementById("inspectPanel").classList.remove("hidden");
+            document.getElementById("insName").textContent = data.name;
+            document.getElementById("insBio").textContent = data.bio;
+            document.getElementById("insAvatar").src = data.avatar;
+            document.getElementById("insLink").href = data.link;
+            document.getElementById("insLink").textContent = data.link === "#" ? "NO_LINK" : "EXTERNAL_DATA_LINK";
+        });
+    }
+
+    // --- ROOMS & LIVE PRESENCE ---
+    function joinRoom() {
         const code = document.getElementById("roomCode").value.toUpperCase();
-        if(!code) return showError("EMPTY_CODE");
-        currentRoomCode = code;
-        currentRoomKey = await deriveKey(code);
+        if(!code) return;
         
-        document.getElementById("join-room").classList.add("hidden");
-        document.getElementById("chat").classList.remove("hidden");
-        document.getElementById("currentRoomName").textContent = code;
+        // Cleanup old room if switching
+        if(currentRoom) {
+            db.ref(`presence/${currentRoom}/${auth.currentUser.uid}`).remove();
+            db.ref(`rooms/${currentRoom}/messages`).off();
+            db.ref(`presence/${currentRoom}`).off();
+        }
+
+        currentRoom = code;
+        document.getElementById("nodeDisplay").textContent = code;
+        document.getElementById("welcomeMsg").classList.add("hidden");
+        document.getElementById("chatWindow").classList.remove("hidden");
         
-        // Save to user list
-        db.ref(`users/${auth.currentUser.uid}/rooms/${code}`).set(true);
-        
+        // Presence Logic
+        const presenceRef = db.ref(`presence/${code}/${auth.currentUser.uid}`);
+        presenceRef.set({ 
+            name: document.getElementById("profileName").value || "GUEST_" + auth.currentUser.uid.substring(0,4), 
+            online: true 
+        });
+        presenceRef.onDisconnect().remove();
+
+        syncPresence(code);
         loadMessages(code);
     }
 
-    function loadMessages(code) {
-        const mDiv = document.getElementById("messages");
-        mDiv.innerHTML = "> SYNCHRONIZING...";
-        db.ref(`rooms/${code}/messages`).on("child_added", async (snap) => {
-            if (mDiv.innerHTML.includes("SYNCHRONIZING")) mDiv.innerHTML = "";
-            const data = snap.val();
-            
-            // Decryption
-            let text;
-            try {
-                const dec = await crypto.subtle.decrypt(
-                    { name: "AES-GCM", iv: new Uint8Array(data.iv) },
-                    currentRoomKey, new Uint8Array(data.cipher)
-                );
-                text = new TextDecoder().decode(dec);
-            } catch(e) { text = "[DECRYPT_ERR: WRONG_KEY]"; }
-
-            const div = document.createElement("div");
-            div.className = "message";
-            div.innerHTML = `<strong>${data.sender.split('@')[0]}</strong>: ${text}`;
-            mDiv.appendChild(div);
-            mDiv.scrollTop = mDiv.scrollHeight;
-        });
-    }
-
-    async function sendMessage() {
-        const input = document.getElementById("messageInput");
-        if(!input.value || !currentRoomKey) return;
-
-        const iv = crypto.getRandomValues(new Uint8Array(12));
-        const cipher = await crypto.subtle.encrypt(
-            { name: "AES-GCM", iv: iv },
-            currentRoomKey, new TextEncoder().encode(input.value)
-        );
-
-        db.ref(`rooms/${currentRoomCode}/messages`).push({
-            sender: auth.currentUser.email,
-            cipher: Array.from(new Uint8Array(cipher)),
-            iv: Array.from(iv)
-        });
-        input.value = "";
-    }
-
-    function loadUserRooms() {
-        db.ref(`users/${auth.currentUser.uid}/rooms`).on("value", snap => {
-            const list = document.getElementById("roomList");
+    function syncPresence(code) {
+        db.ref(`presence/${code}`).on('value', snap => {
+            const list = document.getElementById("presenceList");
             list.innerHTML = "";
-            if(!snap.val()) { list.innerHTML = "> NO_DATA"; return; }
-            Object.keys(snap.val()).forEach(code => {
+            snap.forEach(child => {
+                const user = child.val();
                 const div = document.createElement("div");
-                div.className = "room-item";
-                div.innerHTML = `<span>${code}</span><button onclick="quickJoin('${code}')" style="background:#fff;color:#000;border:none;padding:2px 5px;cursor:pointer">ACCESS</button>`;
+                div.className = "active-user";
+                div.innerHTML = `<div class="status-dot"></div> <span class="user-link" onclick="inspectProfile('${child.key}')">${user.name}</span>`;
                 list.appendChild(div);
             });
         });
     }
 
-    function quickJoin(c) {
-        document.getElementById("roomCode").value = c;
-        joinRoom();
+    // --- MESSAGING ---
+    function loadMessages(code) {
+        const mDiv = document.getElementById("messages");
+        mDiv.innerHTML = "<p class='sys-msg'>// ENCRYPTED_CHANNEL_ESTABLISHED</p>";
+        db.ref(`rooms/${code}/messages`).on("child_added", snap => {
+            const data = snap.val();
+            const div = document.createElement("div");
+            
+            if(data.type === 'system') {
+                div.className = "sys-msg";
+                div.innerHTML = `> ${data.text}`;
+            } else {
+                div.className = "msg";
+                div.innerHTML = `<span class="msg-sender" onclick="inspectProfile('${data.uid}')">${data.name}</span>: ${data.text}`;
+            }
+            
+            mDiv.appendChild(div);
+            mDiv.scrollTop = mDiv.scrollHeight;
+        });
+
+        // Handle deletions (Wipe)
+        db.ref(`rooms/${code}/messages`).on("child_removed", () => {
+            mDiv.innerHTML = "<p class='sys-msg'>// NODE_HISTORY_PURGED_BY_USER</p>";
+        });
     }
 
-    function leaveRoom() { location.reload(); }
+    function sendMessage() {
+        const input = document.getElementById("msgInput");
+        if(!input.value || !currentRoom) return;
+        db.ref(`rooms/${currentRoom}/messages`).push({
+            uid: auth.currentUser.uid,
+            name: document.getElementById("profileName").value || "Anonymous",
+            text: input.value,
+            timestamp: Date.now()
+        });
+        input.value = "";
+    }
 
-    // Send on Enter
-    document.getElementById("messageInput").addEventListener("keypress", (e) => {
+    function wipeChat() {
+        if(!currentRoom) return;
+        if(confirm("PERMANENTLY WIPE ALL DATA IN NODE: " + currentRoom + "?")) {
+            const name = document.getElementById("profileName").value || "Unknown";
+            db.ref(`rooms/${currentRoom}/messages`).remove().then(() => {
+                // Send a system alert after wipe
+                db.ref(`rooms/${currentRoom}/messages`).push({
+                    type: 'system',
+                    text: `CHANNEL PURGED BY ${name.toUpperCase()}`
+                });
+            });
+        }
+    }
+
+    // --- UTILITIES ---
+    setInterval(() => {
+        document.getElementById("sys-clock").textContent = new Date().toLocaleTimeString();
+    }, 1000);
+
+    document.getElementById("msgInput").addEventListener("keypress", (e) => {
         if(e.key === "Enter") sendMessage();
     });
 </script>
