@@ -3,144 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEURALINK // TERMINAL_V3</title>
+    <title>TERMINAL_CHAT</title>
     <style>
         :root {
             --bg: #000;
             --fg: #fff;
             --dim: #555;
-            --border: 2px solid #fff;
+            --border: 1px solid #fff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
 
-        body {
-            background-color: var(--bg);
-            color: var(--fg);
-            font-family: 'Courier New', Courier, monospace;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%), 
-                        linear-gradient(90deg, rgba(255, 0, 0, 0.02), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.02));
-            background-size: 100% 3px, 3px 100%;
+        body { background-color: var(--bg); color: var(--fg); min-height: 100vh; overflow: hidden; }
+
+        /* Main Layout */
+        .app-container { display: flex; height: 100vh; width: 100vw; position: relative; }
+
+        /* Sidebar - Hidden by default */
+        .sidebar {
+            width: 320px;
+            background: #000;
+            border-right: var(--border);
+            height: 100%;
+            position: absolute;
+            left: -320px;
+            transition: 0.3s;
+            z-index: 100;
+            padding: 20px;
+            overflow-y: auto;
         }
 
-        .container { width: 95%; max-width: 1100px; border: var(--border); background: var(--bg); position: relative; }
-        .header-bar { background: var(--fg); color: var(--bg); padding: 5px 15px; font-weight: bold; display: flex; justify-content: space-between; font-size: 0.8rem; }
+        .sidebar.open { left: 0; }
+
+        /* Chat Area */
+        .chat-main { flex: 1; display: flex; flex-direction: column; transition: 0.3s; }
+        .chat-main.shifted { margin-left: 320px; }
+
+        /* Header */
+        .header { padding: 15px; border-bottom: var(--border); display: flex; justify-content: space-between; align-items: center; }
         
-        .panel { padding: 20px; }
-        .layout { display: grid; grid-template-columns: 280px 1fr 220px; min-height: 600px; }
-        @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
-
-        /* UI Elements */
-        .form-control { width: 100%; padding: 10px; background: #000; border: 1px solid #444; color: #fff; font-family: inherit; margin-bottom: 12px; font-size: 0.8rem; }
-        .btn { width: 100%; padding: 10px; background: transparent; color: #fff; border: 1px solid #fff; cursor: pointer; text-transform: uppercase; font-size: 0.7rem; font-weight: bold; margin-bottom: 5px; }
+        /* Buttons */
+        .btn { 
+            background: transparent; color: #fff; border: 1px solid #fff; 
+            padding: 8px 12px; cursor: pointer; text-transform: uppercase; font-size: 12px;
+        }
         .btn:hover { background: #fff; color: #000; }
-        .btn-danger { border-color: #f00; color: #f00; }
-        .btn-danger:hover { background: #f00; color: #fff; }
+        .btn-red { border-color: #f00; color: #f00; }
+        .btn-red:hover { background: #f00; color: #fff; }
 
-        /* Avatar Gallery */
-        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 10px; }
-        .avatar-opt { width: 100%; border: 1px solid #333; cursor: pointer; filter: grayscale(1); }
-        .avatar-opt:hover, .avatar-opt.selected { border-color: #fff; filter: grayscale(0); }
-        .current-avatar { width: 80px; height: 80px; border: 1px solid #fff; margin-bottom: 10px; object-fit: cover; }
+        /* Inputs */
+        .input-box { 
+            width: 100%; padding: 10px; background: #000; border: 1px solid #444; 
+            color: #fff; margin-bottom: 10px; font-size: 14px;
+        }
 
-        /* Chat Window */
-        #messages { height: 420px; border: 1px solid #222; padding: 15px; overflow-y: auto; background: #050505; margin-bottom: 10px; }
-        .msg { margin-bottom: 10px; font-size: 0.85rem; border-bottom: 1px dotted #222; padding-bottom: 5px; }
-        .msg-sender { font-weight: bold; cursor: pointer; text-decoration: underline; margin-right: 8px; }
+        /* Message Area */
+        #messages { flex: 1; padding: 20px; overflow-y: auto; background: #050505; }
+        .msg { margin-bottom: 15px; font-size: 14px; line-height: 1.4; }
+        .msg b { text-decoration: underline; cursor: pointer; margin-right: 5px; }
 
-        /* Navigation */
-        .hidden { display: none !important; }
-        .page-title { text-align: center; margin-bottom: 30px; letter-spacing: 5px; }
+        /* Footer */
+        .footer { padding: 15px; border-top: var(--border); display: flex; gap: 10px; }
 
-        .presence-item { padding: 5px 0; border-bottom: 1px solid #111; font-size: 0.75rem; cursor: pointer; }
-        .presence-item:hover { color: #888; }
+        /* Profile & Avatars */
+        .avatar-main { width: 100px; height: 100px; border: var(--border); margin: 10px 0; object-fit: cover; }
+        .avatar-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin: 10px 0; }
+        .avatar-grid img { width: 100%; border: 1px solid #333; cursor: pointer; }
+        .avatar-grid img.selected { border-color: #fff; }
+
+        .hidden { display: none; }
+
+        /* Pages */
+        .center-screen { 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            height: 100vh; width: 100vw; text-align: center;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header-bar">
-        <span>STATION: TERMINAL_V3</span>
-        <span id="sys-clock">00:00:00</span>
-    </div>
-
-    <div id="page-login" class="panel" style="max-width: 400px; margin: 80px auto;">
-        <h2 class="page-title">[AUTH_REQUIRED]</h2>
-        <input type="email" id="email" class="form-control" placeholder="EMAIL_IDENT">
-        <input type="password" id="password" class="form-control" placeholder="ACCESS_KEY">
-        <button class="btn" onclick="signIn()">CONNECT</button>
-        <button class="btn" onclick="signUp()" style="border-style:dotted; margin-top:10px;">CREATE_NEW_ID</button>
-    </div>
-
-    <div id="page-lobby" class="panel hidden" style="max-width: 500px; margin: 60px auto;">
-        <h2 class="page-title">[NODE_SELECTION]</h2>
-        <div style="border: 1px solid #fff; padding: 20px;">
-            <label style="font-size: 0.7rem; color: #666;">ENTER_TARGET_NODE_CODE</label>
-            <input type="text" id="roomCode" class="form-control" placeholder="e.g. OMEGA_STATION">
-            <button class="btn" onclick="joinRoom()">INITIATE_LINK</button>
-            <button class="btn" onclick="signOut()" style="border-color:#333; color:#333; margin-top:20px;">DISCONNECT_STATION</button>
-        </div>
-    </div>
-
-    <div id="page-chat" class="layout hidden">
+    <div id="sidebar" class="sidebar">
+        <button class="btn" onclick="toggleSidebar()" style="width: 100%; margin-bottom: 20px;">BACK TO CHAT</button>
         
-        <div class="panel" style="border-right: 1px solid #fff;">
-            <p style="font-size: 0.7rem; color: var(--dim); margin-bottom: 10px;">// IDENTITY_CORE</p>
-            <img id="myAvatarDisplay" class="current-avatar" src="https://api.dicebear.com/7.x/pixel-art/svg?seed=1">
-            
-            <label style="font-size: 0.6rem;">PRESET_AVATARS</label>
-            <div class="avatar-grid" id="avatarPicker">
-                </div>
+        <h3>MY PROFILE</h3>
+        <img id="myAvatarDisplay" class="avatar-main" src="https://api.dicebear.com/7.x/pixel-art/svg?seed=1">
+        
+        <p style="font-size: 10px; color: #666;">CHOOSE AVATAR:</p>
+        <div id="avatarPicker" class="avatar-grid"></div>
 
-            <input type="text" id="profileName" class="form-control" placeholder="HANDLE">
-            <input type="text" id="profileBio" class="form-control" placeholder="BIO_DATA">
-            <input type="text" id="profileLink" class="form-control" placeholder="EXT_LINK">
-            <button class="btn" onclick="saveProfile()">UPDATE_ID</button>
-            
-            <div style="margin-top: 40px; border-top: 1px solid #222; padding-top: 20px;">
-                <button class="btn" onclick="navigateTo('lobby')">EXIT_TO_LOBBY</button>
-            </div>
-        </div>
+        <input type="text" id="profileName" class="input-box" placeholder="Your Name">
+        <input type="text" id="profileBio" class="input-box" placeholder="About You">
+        <input type="text" id="profileLink" class="input-box" placeholder="Link (e.g. Instagram)">
+        <button class="btn" onclick="saveProfile()" style="width: 100%;">SAVE PROFILE</button>
 
-        <div class="panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span id="nodeDisplay" style="font-weight: bold;">NODE: ---</span>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn" onclick="wipeText()" style="font-size: 0.5rem; width: auto; border-color: #444;">WIPE_TEXT</button>
-                    <button class="btn btn-danger" onclick="eraseRoom()" style="font-size: 0.5rem; width: auto;">ERASE_ROOM</button>
-                </div>
-            </div>
-            <div id="messages"></div>
-            <div style="display: flex; gap: 5px;">
-                <input type="text" id="msgInput" class="form-control" placeholder="ENTER DATA >" style="margin-bottom:0">
-                <button class="btn" onclick="sendMessage()" style="width: 80px;">SEND</button>
-            </div>
-        </div>
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #333;">
 
-        <div class="panel" style="border-left: 1px solid #fff;">
-            <p style="font-size: 0.7rem; color: var(--dim); margin-bottom: 10px;">// ACTIVE_ID</p>
-            <div id="presenceList"></div>
+        <h3>DANGER ZONE</h3>
+        <button class="btn" onclick="wipeText()" style="width: 100%; margin-bottom: 5px;">ERASE ALL TEXT</button>
+        <button class="btn btn-red" onclick="eraseRoom()" style="width: 100%;">DELETE ROOM</button>
+        
+        <button class="btn" onclick="signOut()" style="width: 100%; margin-top: 20px; border-color: #444;">LOG OUT</button>
+    </div>
 
-            <div id="inspectPanel" class="hidden" style="margin-top: 30px; border: 1px solid #fff; padding: 10px;">
-                <img id="insAvatar" src="" style="width: 100%; border: 1px solid #fff;">
-                <p id="insName" style="font-weight: bold; margin: 5px 0;"></p>
-                <p id="insBio" style="font-size: 0.7rem; color: #888; margin-bottom: 10px;"></p>
-                <a id="insLink" href="#" target="_blank" style="color: #fff; font-size: 0.6rem;">EXT_DATA_LINK</a>
-            </div>
+    <div id="page-login" class="center-screen">
+        <h1>LOGIN</h1>
+        <div style="width: 300px;">
+            <input type="email" id="email" class="input-box" placeholder="Email">
+            <input type="password" id="password" class="input-box" placeholder="Password">
+            <button class="btn" onclick="signIn()" style="width: 100%;">LOGIN</button>
+            <button class="btn" onclick="signUp()" style="width: 100%; margin-top: 5px; border-style: dotted;">CREATE ACCOUNT</button>
         </div>
     </div>
-</div>
+
+    <div id="page-lobby" class="center-screen hidden">
+        <h1>JOIN A ROOM</h1>
+        <div style="width: 300px;">
+            <input type="text" id="roomCode" class="input-box" placeholder="Room Code (e.g. Friends)">
+            <button class="btn" onclick="joinRoom()" style="width: 100%;">JOIN</button>
+        </div>
+    </div>
+
+    <div id="page-chat" class="chat-main hidden">
+        <div class="header">
+            <button class="btn" onclick="toggleSidebar()">☰ MENU</button>
+            <span id="nodeDisplay">ROOM: ---</span>
+            <button class="btn" onclick="leaveRoom()">LEAVE</button>
+        </div>
+        
+        <div id="messages"></div>
+
+        <div class="footer">
+            <input type="text" id="msgInput" class="input-box" style="margin-bottom: 0;" placeholder="Type a message...">
+            <button class="btn" onclick="sendMessage()">SEND</button>
+        </div>
+    </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 
 <script>
-    // 🔥 FIREBASE CONFIG (YOURS)
     const firebaseConfig = {
         apiKey: "AIzaSyBK4pJpKtFPs19-J051xR6t77SBHYrg1k8",
         authDomain: "subpls-2c774.firebaseapp.com",
@@ -158,131 +160,90 @@
     let currentRoom = null;
     let selectedAvatar = "https://api.dicebear.com/7.x/pixel-art/svg?seed=1";
 
-    // --- NAVIGATION ---
-    function navigateTo(pageId) {
-        document.getElementById('page-login').classList.add('hidden');
-        document.getElementById('page-lobby').classList.add('hidden');
-        document.getElementById('page-chat').classList.add('hidden');
-        document.getElementById('page-' + pageId).classList.remove('hidden');
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('open');
+        document.getElementById('page-chat').classList.toggle('shifted');
     }
 
-    // --- AVATAR GALLERY ---
-    function initAvatars() {
-        const picker = document.getElementById("avatarPicker");
-        for(let i=1; i<=8; i++) {
-            const url = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${i * 55}`;
-            const img = document.createElement("img");
-            img.src = url;
-            img.className = "avatar-opt";
-            img.onclick = () => {
-                selectedAvatar = url;
-                document.getElementById("myAvatarDisplay").src = url;
-                document.querySelectorAll(".avatar-opt").forEach(el => el.classList.remove("selected"));
-                img.classList.add("selected");
-            };
-            picker.appendChild(img);
-        }
+    function showPage(id) {
+        ['page-login', 'page-lobby', 'page-chat'].forEach(p => document.getElementById(p).classList.add('hidden'));
+        document.getElementById('page-' + id).classList.remove('hidden');
     }
-    initAvatars();
 
-    // --- AUTH ---
+    // Avatar Selection
+    const picker = document.getElementById("avatarPicker");
+    for(let i=1; i<=8; i++) {
+        const url = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${i * 123}`;
+        const img = document.createElement("img");
+        img.src = url;
+        img.onclick = () => {
+            selectedAvatar = url;
+            document.getElementById("myAvatarDisplay").src = url;
+        };
+        picker.appendChild(img);
+    }
+
+    // Auth
     function signUp() { auth.createUserWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(alert); }
     function signIn() { auth.signInWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(alert); }
     function signOut() { auth.signOut().then(() => location.reload()); }
 
     auth.onAuthStateChanged(user => {
-        if (user) {
-            navigateTo('lobby');
-            loadMyProfile();
-        } else {
-            navigateTo('login');
-        }
+        if (user) { showPage('lobby'); loadMyProfile(); }
+        else { showPage('login'); }
     });
 
-    // --- PROFILE ---
+    // Profile
     function saveProfile() {
-        const uid = auth.currentUser.uid;
-        db.ref('profiles/' + uid).set({
-            name: document.getElementById("profileName").value || "GUEST",
-            bio: document.getElementById("profileBio").value || "...",
+        db.ref('profiles/' + auth.currentUser.uid).set({
+            name: document.getElementById("profileName").value || "User",
+            bio: document.getElementById("profileBio").value || "",
             avatar: selectedAvatar,
             link: document.getElementById("profileLink").value || "#"
         });
-        alert("ID_UPDATED");
+        alert("Profile Saved!");
     }
 
     function loadMyProfile() {
         db.ref('profiles/' + auth.currentUser.uid).on('value', snap => {
-            const data = snap.val();
-            if(data) {
-                document.getElementById("profileName").value = data.name;
-                document.getElementById("profileBio").value = data.bio;
-                document.getElementById("profileLink").value = data.link;
-                document.getElementById("myAvatarDisplay").src = data.avatar;
-                selectedAvatar = data.avatar;
+            const d = snap.val();
+            if(d) {
+                document.getElementById("profileName").value = d.name;
+                document.getElementById("profileBio").value = d.bio;
+                document.getElementById("profileLink").value = d.link;
+                document.getElementById("myAvatarDisplay").src = d.avatar;
+                selectedAvatar = d.avatar;
             }
         });
     }
 
-    // --- ROOM LOGIC ---
+    // Room
     function joinRoom() {
         const code = document.getElementById("roomCode").value.toUpperCase();
         if(!code) return;
         currentRoom = code;
-        document.getElementById("nodeDisplay").textContent = "NODE: " + code;
-        navigateTo('chat');
-        
-        // Presence
-        const pRef = db.ref(`presence/${code}/${auth.currentUser.uid}`);
-        pRef.set({ name: document.getElementById("profileName").value || "GUEST" });
-        pRef.onDisconnect().remove();
-
+        document.getElementById("nodeDisplay").innerText = "ROOM: " + code;
+        showPage('chat');
         loadMessages(code);
-        syncPresence(code);
     }
 
-    function syncPresence(code) {
-        db.ref(`presence/${code}`).on('value', snap => {
-            const list = document.getElementById("presenceList");
-            list.innerHTML = "";
-            snap.forEach(c => {
-                const div = document.createElement("div");
-                div.className = "presence-item";
-                div.textContent = "> " + c.val().name;
-                div.onclick = () => inspectProfile(c.key);
-                list.appendChild(div);
-            });
-        });
+    function leaveRoom() {
+        currentRoom = null;
+        showPage('lobby');
     }
 
-    function inspectProfile(uid) {
-        db.ref('profiles/' + uid).once('value', snap => {
-            const d = snap.val();
-            if(!d) return;
-            document.getElementById("inspectPanel").classList.remove("hidden");
-            document.getElementById("insName").textContent = d.name;
-            document.getElementById("insBio").textContent = d.bio;
-            document.getElementById("insAvatar").src = d.avatar;
-            document.getElementById("insLink").href = d.link;
-        });
-    }
-
-    // --- DESTRUCTION OPTIONS ---
+    // Chat Actions
     function wipeText() {
-        if(confirm("PURGE ALL TEXT DATA IN NODE?")) {
-            db.ref(`rooms/${currentRoom}/messages`).remove();
-        }
+        if(confirm("Delete all messages in this room?")) db.ref(`rooms/${currentRoom}/messages`).remove();
     }
 
     function eraseRoom() {
-        if(confirm("TOTAL DESTRUCTION: ERASE ROOM AND ALL HISTORY?")) {
+        if(confirm("Erase this entire room forever?")) {
             db.ref(`rooms/${currentRoom}`).remove();
-            db.ref(`presence/${currentRoom}`).remove();
-            navigateTo('lobby');
+            leaveRoom();
         }
     }
 
-    // --- MESSAGING ---
     function loadMessages(code) {
         const mDiv = document.getElementById("messages");
         db.ref(`rooms/${code}/messages`).on("value", snap => {
@@ -291,7 +252,7 @@
                 const d = m.val();
                 const div = document.createElement("div");
                 div.className = "msg";
-                div.innerHTML = `<span class="msg-sender" onclick="inspectProfile('${d.uid}')">${d.name}</span>: ${d.text}`;
+                div.innerHTML = `<b>${d.name}</b>: ${d.text}`;
                 mDiv.appendChild(div);
             });
             mDiv.scrollTop = mDiv.scrollHeight;
@@ -303,13 +264,15 @@
         if(!input.value) return;
         db.ref(`rooms/${currentRoom}/messages`).push({
             uid: auth.currentUser.uid,
-            name: document.getElementById("profileName").value || "GUEST",
+            name: document.getElementById("profileName").value || "User",
             text: input.value
         });
         input.value = "";
     }
 
-    setInterval(() => { document.getElementById("sys-clock").textContent = new Date().toLocaleTimeString(); }, 1000);
+    document.getElementById("msgInput").addEventListener("keypress", (e) => {
+        if(e.key === "Enter") sendMessage();
+    });
 </script>
 </body>
 </html>
