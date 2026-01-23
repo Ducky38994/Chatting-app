@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL // GROUP_HUB</title>
+    <title>TERMINAL // GROUP_SYSTEM</title>
     <style>
         :root {
             --bg: #000000;
@@ -15,18 +15,13 @@
 
         body { background-color: var(--bg); color: var(--fg); height: 100vh; overflow: hidden; }
 
-        /* Profile Menu Drawer */
+        /* Sidebar Drawer */
         .sidebar {
             position: fixed; left: -350px; top: 0; width: 320px; height: 100%;
             background: #000; border-right: var(--border); z-index: 2000;
-            transition: 0.3s ease; padding: 25px; display: flex; flex-direction: column;
+            transition: 0.3s ease; padding: 25px;
         }
-        .sidebar.open { left: 0; box-shadow: 5px 0 15px rgba(255,255,255,0.2); }
-
-        /* Layout */
-        .main-layout { display: grid; grid-template-columns: 350px 1fr; height: 100vh; }
-        .side-panel { border-right: var(--border); padding: 20px; display: flex; flex-direction: column; background: #000; }
-        .chat-panel { display: flex; flex-direction: column; background: #000; }
+        .sidebar.open { left: 0; }
 
         /* High Visibility Black Text Boxes */
         .input-line { 
@@ -40,90 +35,85 @@
             cursor: pointer; text-transform: uppercase; font-size: 11px; font-weight: bold; margin-bottom: 10px;
         }
         .btn:hover { background: #fff; color: #000; }
-        .btn-sm { padding: 2px 5px; font-size: 9px; margin: 0; width: auto; }
 
-        /* Lists */
-        .scroll-area { flex: 1; overflow-y: auto; border: 1px solid #333; margin-bottom: 15px; padding: 8px; }
-        .list-item { padding: 10px; border: 1px solid #222; margin-bottom: 8px; font-size: 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .list-item:hover { border-color: #fff; background: #111; }
+        /* Layouts */
+        .screen { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .hub-box { width: 100%; max-width: 500px; border: var(--border); padding: 30px; }
 
-        /* Inspector */
-        .inspector-box { border: 2px solid #fff; padding: 10px; margin-top: 10px; min-height: 100px; background: #000; }
-        .ins-avatar { width: 50px; height: 50px; border: 1px solid #fff; float: left; margin-right: 10px; }
+        .chat-layout { display: grid; grid-template-columns: 300px 1fr; height: 100vh; }
+        .side-panel { border-right: var(--border); padding: 15px; display: flex; flex-direction: column; }
+        
+        /* Chat UI */
+        #messages { flex: 1; padding: 20px; overflow-y: auto; background: #050505; }
+        .msg-row { display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-start; }
+        .msg-avatar { width: 35px; height: 35px; border: 1px solid #fff; flex-shrink: 0; }
+        .msg-content { font-size: 0.9rem; }
+        .msg-name { display: block; font-size: 0.7rem; text-decoration: underline; margin-bottom: 2px; }
 
-        /* Chat Header/Footer */
-        .header { padding: 15px; border-bottom: var(--border); display: flex; justify-content: space-between; align-items: center; }
-        #messages { flex: 1; padding: 20px; overflow-y: auto; }
-        .footer { padding: 15px; border-top: var(--border); display: flex; gap: 10px; }
+        .list-item { padding: 10px; border: 1px solid #333; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .list-item:hover { border-color: #fff; }
 
         .hidden { display: none !important; }
-        .screen { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; }
-        .avatar-opt { width: 100%; border: 1px solid #444; cursor: pointer; margin-bottom: 5px; }
+        .avatar-opt { width: 100%; border: 1px solid #333; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="sidebar" class="sidebar">
-        <h2 style="border-bottom: 1px solid #fff; margin-bottom: 15px;">MY DATA</h2>
-        <img id="myAvatarDisplay" src="" style="width: 70px; border: 1px solid #fff; margin-bottom: 10px;">
-        <div id="avatarPicker" style="display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 15px;"></div>
-        
-        <input type="text" id="profileName" class="input-line" placeholder="NAME">
-        <input type="text" id="profileBio" class="input-line" placeholder="BIO / DESC">
-        <input type="text" id="profileLink" class="input-line" placeholder="LINK (IG/TW)">
-        
-        <button class="btn" onclick="saveProfile()">SAVE PROFILE</button>
-        <button class="btn" onclick="toggleSidebar()" style="margin-top: auto; border-style: dotted;">BACK</button>
+        <h3>MY IDENTITY</h3>
+        <img id="myAvatarDisplay" src="" style="width: 60px; border: 1px solid #fff; margin: 10px 0;">
+        <div id="avatarPicker" style="display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 10px;"></div>
+        <input type="text" id="profileName" class="input-line" placeholder="DISPLAY NAME">
+        <input type="text" id="profileBio" class="input-line" placeholder="BIO">
+        <input type="text" id="profileLink" class="input-line" placeholder="LINK">
+        <button class="btn" style="width:100%" onclick="saveProfile()">SAVE</button>
+        <button class="btn" style="width:100%; margin-top:20px;" onclick="toggleSidebar()">CLOSE</button>
     </div>
 
     <div id="page-login" class="screen">
-        <div style="border: var(--border); padding: 40px; width: 380px; background: #000;">
-            <h2 style="text-align: center; margin-bottom: 25px;">[TERMINAL_AUTH]</h2>
+        <div class="hub-box">
+            <h2 style="text-align:center; margin-bottom:20px;">[LOGIN]</h2>
             <input type="email" id="email" class="input-line" placeholder="EMAIL">
             <input type="password" id="password" class="input-line" placeholder="PASSWORD">
-            <button class="btn" style="width: 100%" onclick="signIn()">LOGIN</button>
-            <button class="btn" style="width: 100%; border-style: dotted;" onclick="signUp()">REGISTER</button>
+            <button class="btn" style="width:100%" onclick="signIn()">ACCESS</button>
+            <button class="btn" style="width:100%; border-style: dotted;" onclick="signUp()">REGISTER</button>
         </div>
     </div>
 
-    <div id="page-main" class="main-layout hidden">
-        
-        <div class="side-panel">
-            <button class="btn" onclick="toggleSidebar()">☰ MY SETTINGS</button>
+    <div id="page-hub" class="screen hidden">
+        <div class="hub-box">
+            <h2 style="margin-bottom:10px;">GROUP_MANAGER</h2>
+            <button class="btn" style="width:100%" onclick="toggleSidebar()">⚙️ MY PROFILE</button>
             
-            <p style="font-size: 10px; color: #888; margin-top: 10px;">// START_OR_JOIN_GROUP</p>
+            <p style="font-size: 10px; color: #888; margin-top: 15px;">+ CREATE / JOIN NEW GROUP</p>
             <input type="text" id="roomCode" class="input-line" placeholder="GROUP NAME">
-            <button class="btn" style="width: 100%" onclick="joinRoom()">ADD GROUP</button>
+            <button class="btn" style="width:100%" onclick="joinRoom()">ENTER GROUP</button>
 
-            <p style="font-size: 10px; color: #888; margin-top: 10px;">// MY GROUPS:</p>
-            <div id="myRooms" class="scroll-area"></div>
+            <p style="font-size: 10px; color: #888; margin-top: 20px;">AVAILABLE_GROUPS:</p>
+            <div id="myRooms" style="max-height: 200px; overflow-y: auto;"></div>
+            
+            <button class="btn" onclick="signOut()" style="width:100%; margin-top: 10px; color: #444;">LOGOUT</button>
+        </div>
+    </div>
 
-            <p style="font-size: 10px; color: #888;">// GROUP MEMBERS (ONLINE)</p>
-            <div id="onlineUsers" class="scroll-area"></div>
-
-            <div id="inspector" class="inspector-box hidden">
-                <p style="font-size: 9px; margin-bottom: 5px;">[MEMBER_INFO]</p>
-                <img id="insAvatar" src="" class="ins-avatar">
-                <div style="font-size: 12px;">
-                    <b id="insName"></b><br>
-                    <span id="insBio" style="font-size: 10px; color: #aaa;"></span><br>
-                    <a id="insLink" href="#" target="_blank" style="color: #fff; font-size: 10px;">SOCIAL LINK</a>
-                </div>
+    <div id="page-chat" class="chat-layout hidden">
+        <div class="side-panel">
+            <button class="btn" onclick="leaveChat()" style="border-color: #f00; color: #f00;">← LEAVE GROUP</button>
+            <p style="font-size: 10px; color: #888; margin-top: 20px;">GROUP MEMBERS:</p>
+            <div id="onlineUsers" style="flex:1; overflow-y:auto;"></div>
+            
+            <div id="inspector" class="hidden" style="border:1px solid #fff; padding:10px; font-size:12px;">
+                <img id="insAvatar" src="" style="width:40px; border:1px solid #fff; float:left; margin-right:8px;">
+                <b id="insName"></b><br><span id="insBio" style="font-size:10px; color:#aaa;"></span>
             </div>
         </div>
-
-        <div class="chat-panel">
-            <div class="header">
-                <span id="nodeDisplay">SELECT A GROUP</span>
-                <div>
-                    <button class="btn" onclick="wipeText()" style="margin-bottom:0; padding: 5px 10px; border-color: #444;">CLEAR CHAT</button>
-                    <button class="btn" onclick="signOut()" style="margin-bottom:0; padding: 5px 10px;">LOGOUT</button>
-                </div>
-            </div>
+        
+        <div style="display:flex; flex-direction:column;">
+            <div style="padding:15px; border-bottom: var(--border); font-weight:bold;" id="activeGroupName">NODE: ---</div>
             <div id="messages"></div>
-            <div class="footer">
-                <input type="text" id="msgInput" class="input-line" style="margin-bottom:0" placeholder="Message...">
-                <button class="btn" onclick="sendMessage()" style="margin-bottom:0; width: 100px;">SEND</button>
+            <div style="padding:15px; border-top: var(--border); display:flex; gap:10px;">
+                <input type="text" id="msgInput" class="input-line" style="margin-bottom:0" placeholder="Type a message...">
+                <button class="btn" style="width:100px; margin-bottom:0" onclick="sendMessage()">SEND</button>
             </div>
         </div>
     </div>
@@ -151,11 +141,15 @@
     let selectedAvatar = "https://api.dicebear.com/7.x/pixel-art/svg?seed=1";
 
     function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+    function showPage(id) {
+        ['page-login', 'page-hub', 'page-chat'].forEach(p => document.getElementById(p).classList.add('hidden'));
+        document.getElementById('page-' + id).classList.remove('hidden');
+    }
 
     // Avatar Selection
     const picker = document.getElementById("avatarPicker");
     for(let i=1; i<=8; i++) {
-        const url = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${i * 50}`;
+        const url = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${i * 33}`;
         const img = document.createElement("img");
         img.src = url; img.className = "avatar-opt";
         img.onclick = () => { selectedAvatar = url; document.getElementById("myAvatarDisplay").src = url; };
@@ -168,25 +162,18 @@
     function signOut() { auth.signOut().then(() => location.reload()); }
 
     auth.onAuthStateChanged(user => {
-        if (user) { 
-            document.getElementById('page-login').classList.add('hidden');
-            document.getElementById('page-main').classList.remove('hidden');
-            loadMyProfile(); 
-            loadMyAccessList(); 
-        } else {
-            document.getElementById('page-login').classList.remove('hidden');
-            document.getElementById('page-main').classList.add('hidden');
-        }
+        if (user) { showPage('hub'); loadMyProfile(); loadAccessList(); }
+        else { showPage('login'); }
     });
 
     function saveProfile() {
         db.ref('profiles/' + auth.currentUser.uid).set({
             name: document.getElementById("profileName").value || "USER",
-            bio: document.getElementById("profileBio").value || "No bio.",
+            bio: document.getElementById("profileBio").value || "",
             avatar: selectedAvatar,
             link: document.getElementById("profileLink").value || "#"
         });
-        alert("PROFILE UPDATED");
+        alert("UPDATED");
     }
 
     function loadMyProfile() {
@@ -202,47 +189,73 @@
         });
     }
 
-    // Room / Group Management
+    // Group Hub Logic
     function joinRoom() {
         const code = document.getElementById("roomCode").value.toUpperCase();
         if(!code) return;
-        currentRoom = code;
         db.ref(`user_access/${auth.currentUser.uid}/${code}`).set(true);
-        enterGroup(code);
+        enterChat(code);
     }
 
-    function removeRoom(code, event) {
-        event.stopPropagation();
-        if(confirm(`Remove group "${code}" from your list?`)) {
-            db.ref(`user_access/${auth.currentUser.uid}/${code}`).remove();
-            if(currentRoom === code) {
-                currentRoom = null;
-                document.getElementById("nodeDisplay").innerText = "SELECT A GROUP";
-                document.getElementById("messages").innerHTML = "";
-            }
-        }
-    }
-
-    function enterGroup(code) {
-        currentRoom = code;
-        document.getElementById("nodeDisplay").innerText = "GROUP: " + code;
-        db.ref(`presence/${code}/${auth.currentUser.uid}`).set({ name: document.getElementById("profileName").value || "USER" });
-        db.ref(`presence/${code}/${auth.currentUser.uid}`).onDisconnect().remove();
-        loadMessages(code);
-        syncOnline(code);
-    }
-
-    function loadMyAccessList() {
+    function loadAccessList() {
         db.ref(`user_access/${auth.currentUser.uid}`).on('value', snap => {
             const list = document.getElementById("myRooms");
             list.innerHTML = "";
             snap.forEach(c => {
                 const div = document.createElement("div");
                 div.className = "list-item";
-                div.innerHTML = `<span>${c.key}</span> <button class="btn btn-sm" onclick="removeRoom('${c.key}', event)">X</button>`;
-                div.onclick = () => enterGroup(c.key);
+                div.innerHTML = `<span>${c.key}</span> <button class="btn" style="padding:2px 5px; margin:0; font-size:9px;" onclick="deleteGroup('${c.key}', event)">DELETE</button>`;
+                div.onclick = () => enterChat(c.key);
                 list.appendChild(div);
             });
+        });
+    }
+
+    function deleteGroup(code, e) {
+        e.stopPropagation();
+        if(confirm("Remove this group?")) db.ref(`user_access/${auth.currentUser.uid}/${code}`).remove();
+    }
+
+    // Chat Logic
+    function enterChat(code) {
+        currentRoom = code;
+        showPage('chat');
+        document.getElementById("activeGroupName").innerText = "GROUP: " + code;
+        
+        db.ref(`presence/${code}/${auth.currentUser.uid}`).set({ 
+            name: document.getElementById("profileName").value || "USER",
+            avatar: selectedAvatar 
+        });
+        db.ref(`presence/${code}/${auth.currentUser.uid}`).onDisconnect().remove();
+
+        loadMessages(code);
+        syncOnline(code);
+    }
+
+    function leaveChat() {
+        if(currentRoom) db.ref(`presence/${currentRoom}/${auth.currentUser.uid}`).remove();
+        currentRoom = null;
+        showPage('hub');
+    }
+
+    function loadMessages(code) {
+        const mDiv = document.getElementById("messages");
+        db.ref(`rooms/${code}/messages`).on("value", snap => {
+            mDiv.innerHTML = "";
+            snap.forEach(m => {
+                const d = m.val();
+                const row = document.createElement("div");
+                row.className = "msg-row";
+                row.innerHTML = `
+                    <img src="${d.avatar || 'https://api.dicebear.com/7.x/pixel-art/svg?seed=0'}" class="msg-avatar">
+                    <div class="msg-content">
+                        <span class="msg-name">${d.name}</span>
+                        ${d.text}
+                    </div>
+                `;
+                mDiv.appendChild(row);
+            });
+            mDiv.scrollTop = mDiv.scrollHeight;
         });
     }
 
@@ -254,47 +267,24 @@
                 const div = document.createElement("div");
                 div.className = "list-item";
                 div.innerHTML = `<span>> ${c.val().name}</span>`;
-                div.onclick = () => inspectUser(c.key);
+                div.onclick = () => {
+                    const d = c.val();
+                    document.getElementById("inspector").classList.remove("hidden");
+                    document.getElementById("insName").innerText = d.name;
+                    document.getElementById("insAvatar").src = d.avatar;
+                };
                 list.appendChild(div);
             });
         });
     }
 
-    function inspectUser(uid) {
-        db.ref('profiles/' + uid).once('value', snap => {
-            const d = snap.val();
-            if(!d) return;
-            document.getElementById("inspector").classList.remove("hidden");
-            document.getElementById("insName").innerText = d.name;
-            document.getElementById("insBio").innerText = d.bio;
-            document.getElementById("insAvatar").src = d.avatar;
-            document.getElementById("insLink").href = d.link;
-        });
-    }
-
-    function wipeText() { if(currentRoom && confirm("Clear chat for everyone?")) db.ref(`rooms/${currentRoom}/messages`).remove(); }
-
-    function loadMessages(code) {
-        const mDiv = document.getElementById("messages");
-        db.ref(`rooms/${code}/messages`).on("value", snap => {
-            mDiv.innerHTML = "";
-            snap.forEach(m => {
-                const d = m.val();
-                const div = document.createElement("div");
-                div.innerHTML = `<b style="cursor:pointer;" onclick="inspectUser('${d.uid}')">${d.name}</b>: ${d.text}`;
-                div.style.marginBottom = "8px";
-                mDiv.appendChild(div);
-            });
-            mDiv.scrollTop = mDiv.scrollHeight;
-        });
-    }
-
     function sendMessage() {
         const input = document.getElementById("msgInput");
-        if(!input || !currentRoom || !input.value) return;
+        if(!input.value || !currentRoom) return;
         db.ref(`rooms/${currentRoom}/messages`).push({
             uid: auth.currentUser.uid,
             name: document.getElementById("profileName").value || "USER",
+            avatar: selectedAvatar,
             text: input.value
         });
         input.value = "";
