@@ -290,3 +290,22 @@ function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('o
 
 function signIn(){ showLoading("ACCESSING..."); auth.signInWithEmailAndPassword(document.getElementById("email").value,document.getElementById("password").value).catch(err=>{ alert(err.message); hideLoading(); }); }
 function signUp(){ showLoading("REGISTERING..."); auth.createUserWithEmailAnd
+                  AndPassword(document.getElementById("email").value, document.getElementById("password").value)
+  .then(() => { hideLoading(); })
+  .catch(err => { alert(err.message); hideLoading(); });
+}
+
+function signOut() {
+  auth.signOut();
+}
+
+// Remove Members tab logic – already done by not including it
+// Exit button is on the right in mobile header – done
+
+// Hide/Show sidebar toggle already implemented with toggleSidebar()
+// This allows hiding the menu cleanly
+</script>
+
+</body>
+</html>
+
