@@ -6,65 +6,58 @@
 <title>Glow Stone // Cross-Platform</title>
 <style>
 :root {
-  --bg: #000000;
-  --fg: #ffffff;
-  --border: 2px solid #ffffff;
+  --bg: #000;
+  --fg: #fff;
+  --border: 2px solid #fff;
   --accent: #00f5d4;
 }
 
-/* Essential Reset */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; border-radius: 0 !important; }
+/* Reset */
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Courier New', monospace; border-radius:0 !important; }
 
-body { background-color: var(--bg); color: var(--fg); height: 100vh; width: 100vw; overflow: hidden; }
+body { background:var(--bg); color:var(--fg); height:100vh; width:100vw; overflow:hidden; }
 
-/* Loading Screen */
+/* Loading */
 #loading-screen {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--accent);
+  position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9999;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--accent);
 }
-.spinner { width: 30px; height: 30px; border: 3px solid #111; border-top: 3px solid var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 15px; }
-@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+.spinner { width:30px; height:30px; border:3px solid #111; border-top:3px solid var(--accent); border-radius:50%; animation:spin 0.8s linear infinite; margin-bottom:15px; }
+@keyframes spin { 0% { transform:rotate(0deg); } 100% { transform:rotate(360deg); } }
 
-/* Sidebar Drawer */
-.sidebar { position: fixed; left: -100%; top: 0; width: 85%; max-width: 320px; height: 100%; background: #000; border-right: var(--border); z-index: 3000; transition: 0.3s ease; padding: 25px; }
-.sidebar.open { left: 0; box-shadow: 10px 0 50px rgba(255,255,255,0.2); }
+/* Sidebar */
+.sidebar { position:fixed; left:-100%; top:0; width:85%; max-width:320px; height:100%; background:#000; border-right:var(--border); z-index:3000; transition:0.3s; padding:25px; }
+.sidebar.open { left:0; box-shadow:10px 0 50px rgba(255,255,255,0.2); }
+.input-line { width:100%; padding:12px; background:#000; color:#fff; border:2px solid #fff; margin-bottom:12px; outline:none; font-size:16px; }
+.btn { padding:12px; background:transparent; color:#fff; border:2px solid #fff; cursor:pointer; text-transform:uppercase; font-size:11px; font-weight:bold; transition:0.2s; }
+.btn:hover { background:#fff; color:#000; }
 
-.input-line { width: 100%; padding: 12px; background: #000 !important; color: #fff !important; border: 2px solid #fff !important; margin-bottom: 12px; outline: none; font-size: 16px; }
-.btn { padding: 12px; background: transparent; color: #fff; border: 2px solid #fff; cursor: pointer; text-transform: uppercase; font-size: 11px; font-weight: bold; transition: 0.2s; }
-.btn:hover { background: #fff; color: #000; }
+.screen { width:100%; height:100vh; display:flex; align-items:center; justify-content:center; padding:15px; }
+.hub-box { width:100%; max-width:500px; border:var(--border); padding:25px; background:#000; text-align:center; }
 
-.screen { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 15px; }
-.hub-box { width: 100%; max-width: 500px; border: var(--border); padding: 25px; background: #000; text-align:center; }
+.chat-layout { display:grid; grid-template-columns:300px 1fr; height:100vh; width:100vw; }
+.side-panel { border-right:var(--border); padding:15px; display:flex; flex-direction:column; background:#000; }
+.chat-main { display:flex; flex-direction:column; height:100vh; overflow:hidden; }
 
-.chat-layout { display: grid; grid-template-columns: 300px 1fr; height: 100vh; width: 100vw; }
-.side-panel { border-right: var(--border); padding: 15px; display: flex; flex-direction: column; background: #000; }
-.chat-main { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+#messages { flex:1; padding:15px; overflow-y:auto; background:#050505; display:flex; flex-direction:column; }
+.msg-row { display:flex; gap:10px; margin-bottom:15px; align-items:flex-start; max-width:95%; }
+.msg-avatar { width:38px; height:38px; border:1px solid #fff; flex-shrink:0; }
+.msg-bubble { background:#000; border:1px solid #333; padding:10px; flex:1; }
+.msg-name { display:block; font-size:0.7rem; color:var(--accent); margin-bottom:4px; font-weight:bold; }
+.msg-text { font-size:0.95rem; line-height:1.4; word-break:break-word; }
 
-#messages { flex: 1; padding: 15px; overflow-y: auto; background: #050505; display: flex; flex-direction: column; }
-.msg-row { display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-start; max-width: 95%; }
-.msg-avatar { width: 38px; height: 38px; border: 1px solid #fff; flex-shrink: 0; }
-.msg-bubble { background: #000; border: 1px solid #333; padding: 10px; flex: 1; }
-.msg-name { display: block; font-size: 0.7rem; color: var(--accent); margin-bottom: 4px; font-weight: bold; }
-.msg-text { font-size: 0.95rem; line-height: 1.4; word-break: break-word; }
+.mobile-header { display:flex; padding:10px 15px; border-bottom:var(--border); justify-content:space-between; align-items:center; background:#000; }
+.mobile-header svg { height:24px; width:24px; fill:var(--accent); }
 
-.mobile-header { display: flex; padding: 10px 15px; border-bottom: var(--border); justify-content: space-between; align-items: center; background: #000; }
-.mobile-header svg { height: 24px; width: 24px; fill: var(--accent); }
-
-@media (max-width: 850px) {
-  .chat-layout { grid-template-columns: 1fr; }
-  .side-panel { position: fixed; left: -100%; width: 280px; z-index: 2500; height: 100%; transition: 0.3s; }
-  .side-panel.active { left: 0; border-right: var(--border); }
+@media (max-width:850px){
+  .chat-layout { grid-template-columns:1fr; }
+  .side-panel { position:fixed; left:-100%; width:280px; z-index:2500; height:100%; transition:0.3s; }
+  .side-panel.active { left:0; border-right:var(--border); }
+  .input-container { position:fixed; bottom:0; width:100%; z-index:2000; display:flex; gap:10px; background:#000; padding:10px; border-top:var(--border); }
+  #messages { padding-bottom:70px; }
 }
-.hidden { display: none !important; }
 
-/* Input container fixed for mobile */
-.input-container {
-  display:flex; gap:10px; background:#000; padding:10px; border-top:var(--border); 
-}
-@media(max-width:850px){
-  .input-container { position: fixed; bottom:0; width: 100%; z-index: 2000; }
-  #messages { padding-bottom:70px; } /* leave space for fixed input */
-}
+.hidden { display:none !important; }
 </style>
 </head>
 <body>
@@ -105,7 +98,6 @@ body { background-color: var(--bg); color: var(--fg); height: 100vh; width: 100v
     <p style="font-size:10px; color:#888; margin-top:20px;">+ NEW CONNECTION</p>
     <input type="text" id="roomCode" class="input-line" placeholder="GROUP NAME">
     <button class="btn" style="width:100%" onclick="joinRoom()">Join</button>
-    <p style="font-size:10px; color:#888; margin-top:25px;"</p>
     <div id="myRooms" style="max-height:200px; overflow-y:auto; margin-top:10px; border-top:1px solid #222;"></div>
     <button class="btn" onclick="signOut()" style="width:100%; margin-top:20px; border-color:#444; color:#666;">TERMINATE SESSION</button>
   </div>
@@ -120,7 +112,6 @@ body { background-color: var(--bg); color: var(--fg); height: 100vh; width: 100v
 
   <div class="chat-main">
     <div class="mobile-header">
-      <!-- Logo SVG -->
       <svg viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" stroke="#00f5d4" stroke-width="4" fill="none"/><circle cx="32" cy="32" r="10" fill="#00f5d4"/></svg>
       <span id="activeGroupNameMobile" style="font-size:12px; font-weight:bold;">NODE: ---</span>
       <button class="btn" style="padding:5px 10px; border-color:#ff0055;" onclick="leaveChat()">EXIT</button>
@@ -170,9 +161,7 @@ auth.onAuthStateChanged(user => {
 
 function loadMyProfile(){
   const user = auth.currentUser; if(!user) return;
-  const fallback = setTimeout(hideLoading,4000);
   db.ref('profiles/'+user.uid).on('value',snap=>{
-    clearTimeout(fallback);
     const data=snap.val();
     if(data){
       document.getElementById("profileName").value=data.name||"";
@@ -192,7 +181,7 @@ function saveProfile(){
   db.ref('profiles/'+user.uid).set({name,bio,avatar:selectedAvatar}).then(()=>{document.getElementById('sidebar').classList.remove('open');});
 }
 
-// Chat logic
+// --- CHAT LOGIC ---
 let currentRoom=null;
 
 function loadAccessList(){
@@ -248,15 +237,9 @@ function loadMessages(code){
   });
 }
 
-function scrollToBottom(){
-  const mDiv=document.getElementById("messages");
-  if(mDiv.lastChild){ mDiv.lastChild.scrollIntoView({behavior:"smooth", block:"end"}); }
-}
+function scrollToBottom(){ const mDiv=document.getElementById("messages"); if(mDiv.lastChild){ mDiv.lastChild.scrollIntoView({behavior:"smooth", block:"end"}); } }
 
-// Mobile keyboard fix
-if(window.visualViewport){
-  window.visualViewport.addEventListener('resize',()=>{ setTimeout(()=>scrollToBottom(),50); });
-}
+if(window.visualViewport){ window.visualViewport.addEventListener('resize',()=>{ setTimeout(()=>scrollToBottom(),50); }); }
 document.getElementById("msgInput").addEventListener("focus",()=>{ setTimeout(()=>scrollToBottom(),100); });
 
 function joinRoom(){
@@ -283,29 +266,34 @@ function sendMessage(){
   db.ref(`rooms/${currentRoom}/messages`).push({name:document.getElementById("profileName").value||"ANON",avatar:selectedAvatar,text:input.value});
   input.value="";
 }
-
 document.getElementById("msgInput").addEventListener("keypress",(e)=>{ if(e.key==="Enter") sendMessage(); });
 
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
 
-function signIn(){ showLoading("ACCESSING..."); auth.signInWithEmailAndPassword(document.getElementById("email").value,document.getElementById("password").value).catch(err=>{ alert(err.message); hideLoading(); }); }
-function signUp(){ showLoading("REGISTERING..."); auth.createUserWithEmailAnd
-                  AndPassword(document.getElementById("email").value, document.getElementById("password").value)
-  .then(() => { hideLoading(); })
-  .catch(err => { alert(err.message); hideLoading(); });
+// --- AUTH ---
+function signIn(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  if(!email || !password){ alert("Enter email and password"); return; }
+
+  showLoading("ACCESSING...");
+  auth.signInWithEmailAndPassword(email,password)
+      .catch(err=>{ alert(err.message); hideLoading(); });
 }
 
-function signOut() {
-  auth.signOut();
+function signUp(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  if(!email || !password){ alert("Enter email and password"); return; }
+
+  showLoading("REGISTERING...");
+  auth.createUserWithEmailAndPassword(email,password)
+    .then(()=>{ hideLoading(); showPage('hub'); loadMyProfile(); loadAccessList(); })
+    .catch(err=>{ alert(err.message); hideLoading(); });
 }
 
-// Remove Members tab logic – already done by not including it
-// Exit button is on the right in mobile header – done
-
-// Hide/Show sidebar toggle already implemented with toggleSidebar()
-// This allows hiding the menu cleanly
+function signOut(){ auth.signOut(); }
 </script>
 
 </body>
 </html>
-
