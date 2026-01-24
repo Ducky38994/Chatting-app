@@ -37,8 +37,8 @@ body { background-color: var(--bg); color: var(--fg); height: 100vh; width: 100v
 /* Chat Layout */
 .chat-layout { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
 .chat-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: var(--border); font-weight: bold; font-size: 12px; }
-.chat-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #050505; }
-#messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; }
+.chat-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #050505; padding-bottom: 60px; } /* padding-bottom = height of chat input wrapper */
+#messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; scroll-behavior: smooth; }
 .msg-row { display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-start; max-width: 95%; }
 .msg-avatar { width: 38px; height: 38px; border: 1px solid #fff; flex-shrink: 0; }
 .msg-bubble { background: #000; border: 1px solid #333; padding: 10px; flex: 1; }
@@ -204,7 +204,7 @@ function enterChat(code){
   currentRoom = code; showPage('chat');
   document.getElementById("activeGroupName").innerText = "NODE: " + code;
   db.ref(`presence/${code}/${auth.currentUser.uid}`).set({ name: document.getElementById("profileName").value || "ANON", avatar: selectedAvatar });
-  db.ref(`presence/${code}/${auth.currentUser.uid}`).onDisconnect().remove();
+  db.ref(`presence/${currentRoom}/${auth.currentUser.uid}`).onDisconnect().remove();
   loadMessages(code);
 }
 
@@ -219,7 +219,8 @@ function loadMessages(code){
       row.innerHTML = `<img src="${d.avatar}" class="msg-avatar"><div class="msg-bubble"><span class="msg-name">${d.name}</span><div class="msg-text">${d.text}</div></div>`;
       mDiv.appendChild(row);
     });
-    mDiv.scrollTop = mDiv.scrollHeight;
+    // Scroll to last message
+    if(mDiv.lastChild) mDiv.lastChild.scrollIntoView({ behavior: "smooth", block: "end" });
   });
 }
 
@@ -253,6 +254,7 @@ function sendMessage(){
   });
   input.value = "";
 }
+
 document.getElementById("msgInput").addEventListener("keypress",(e)=>{ if(e.key==="Enter") sendMessage(); });
 
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
