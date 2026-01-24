@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TERMINAL // CROSS_PLATFORM</title>
+    <title>TERMINAL // CHROME_ONLY_STORAGE</title>
     <style>
         :root {
             --bg: #000000;
@@ -80,11 +80,12 @@
 
     <div id="loading-screen">
         <div class="spinner"></div>
-        <div id="loading-text">BOOTING_CORE...</div>
+        <div id="loading-text">SYNCING_CLOUD_DATA...</div>
     </div>
 
     <div id="sidebar" class="sidebar">
         <h3>CONFIG_IDENTITY</h3>
+        <p id="browser-status" style="font-size: 9px; color: var(--accent); margin-bottom: 10px;">STORAGE_AUTH: PENDING...</p>
         <img id="myAvatarDisplay" src="" style="width: 60px; border: 1px solid #fff; margin: 15px 0;">
         <div id="avatarPicker" style="display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 15px;"></div>
         <input type="text" id="profileName" class="input-line" placeholder="DISPLAY NAME">
@@ -155,21 +156,37 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.database();
-    
-    // INSTANT LOCAL STORAGE RESTORE (Browser-side)
-    let selectedAvatar = localStorage.getItem('localAvatar') || "https://api.dicebear.com/7.x/pixel-art/svg?seed=1";
+
+    // STRICT CHROME-ONLY CHECK
+    function isPureChrome() {
+        const ua = navigator.userAgent;
+        const isChromium = ua.includes("Chrome");
+        const isOpera = ua.includes("OPR") || ua.includes("Opera");
+        const isEdge = ua.includes("Edg");
+        const isBrave = (navigator.brave && typeof navigator.brave.isBrave === 'function');
+        
+        // Only return true if it is Chromium-based but NOT Opera, Edge, or Brave
+        return isChromium && !isOpera && !isEdge && !isBrave;
+    }
+
+    const chromeOnly = isPureChrome();
+    document.getElementById('browser-status').innerText = chromeOnly ? "CHROME_DETECTED: STORAGE_ACTIVE" : "NON_CHROME: PERSISTENCE_DISABLED";
+
+    let selectedAvatar = "https://api.dicebear.com/7.x/pixel-art/svg?seed=1";
+
+    // Immediate LocalStorage check (Chrome Only)
+    if (chromeOnly) {
+        selectedAvatar = localStorage.getItem('localAvatar') || selectedAvatar;
+        document.getElementById("profileName").value = localStorage.getItem('localName') || "";
+        document.getElementById("profileBio").value = localStorage.getItem('localBio') || "";
+    }
     document.getElementById("myAvatarDisplay").src = selectedAvatar;
-    document.getElementById("profileName").value = localStorage.getItem('localName') || "";
-    document.getElementById("profileBio").value = localStorage.getItem('localBio') || "";
 
     function hideLoading() { document.getElementById('loading-screen').classList.add('hidden'); }
     function showLoading(text) { 
         document.getElementById('loading-text').innerText = text;
         document.getElementById('loading-screen').classList.remove('hidden'); 
     }
-
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-    function toggleChatSidebar() { document.getElementById('chat-sidebar').classList.toggle('active'); }
 
     function showPage(id) {
         ['page-login', 'page-hub', 'page-chat'].forEach(p => {
@@ -182,7 +199,7 @@
     auth.onAuthStateChanged(user => {
         if (user) { 
             showPage('hub');
-            loadMyProfile(); 
+            if (chromeOnly) syncCloudIdentity();
             loadAccessList(); 
         } else { 
             showPage('login'); 
@@ -190,15 +207,13 @@
         }
     });
 
-    function loadMyProfile() {
+    function syncCloudIdentity() {
         const user = auth.currentUser;
         if (!user) return;
         
-        // Fetch from Database to sync across devices, but Browser data is already visible
-        db.ref('profiles/' + user.uid).once('value').then(snap => {
+        db.ref('profiles/' + user.uid).on('value', snap => {
             const data = snap.val();
-            if (data) {
-                // Sync Local with Cloud if Cloud exists
+            if (data && chromeOnly) {
                 document.getElementById("profileName").value = data.name || "ANON";
                 document.getElementById("profileBio").value = data.bio || "";
                 if (data.avatar) {
@@ -210,7 +225,7 @@
                 localStorage.setItem('localBio', data.bio || "");
             }
             hideLoading();
-        }).catch(hideLoading);
+        });
     }
 
     function saveProfile() {
@@ -220,29 +235,25 @@
         const name = document.getElementById("profileName").value || "ANON";
         const bio = document.getElementById("profileBio").value || "";
 
-        // INSTANT BROWSER SAVE
-        localStorage.setItem('localAvatar', selectedAvatar);
-        localStorage.setItem('localName', name);
-        localStorage.setItem('localBio', bio);
-
-        // CLOUD SYNC
-        db.ref('profiles/' + user.uid).update({
-            name: name,
-            bio: bio,
-            avatar: selectedAvatar
-        }).then(() => { 
-            toggleSidebar(); 
-        });
+        if (chromeOnly) {
+            localStorage.setItem('localAvatar', selectedAvatar);
+            localStorage.setItem('localName', name);
+            localStorage.setItem('localBio', bio);
+            
+            db.ref('profiles/' + user.uid).set({
+                name: name,
+                bio: bio,
+                avatar: selectedAvatar
+            }).then(() => { 
+                document.getElementById('sidebar').classList.remove('open');
+            });
+        } else {
+            alert("STORAGE REJECTED: Identity persistence is restricted to Chrome.");
+            document.getElementById('sidebar').classList.remove('open');
+        }
     }
 
-    function joinRoom() {
-        const code = document.getElementById("roomCode").value.toUpperCase().trim();
-        if(!code) return;
-        db.ref(`user_access/${auth.currentUser.uid}/${code}`).set(true);
-        enterChat(code);
-        document.getElementById("roomCode").value = "";
-    }
-
+    // Boilerplate Chat & Node Functions
     function loadAccessList() {
         db.ref(`user_access/${auth.currentUser.uid}`).on('value', snap => {
             const list = document.getElementById("myRooms");
@@ -294,12 +305,6 @@
         });
     }
 
-    function leaveChat() {
-        if(currentRoom) db.ref(`presence/${currentRoom}/${auth.currentUser.uid}`).remove();
-        currentRoom = null;
-        showPage('hub');
-    }
-
     function loadMessages(code) {
         const mDiv = document.getElementById("messages");
         db.ref(`rooms/${code}/messages`).on("value", snap => {
@@ -313,6 +318,20 @@
             });
             mDiv.scrollTop = mDiv.scrollHeight;
         });
+    }
+
+    function joinRoom() {
+        const code = document.getElementById("roomCode").value.toUpperCase().trim();
+        if(!code) return;
+        db.ref(`user_access/${auth.currentUser.uid}/${code}`).set(true);
+        enterChat(code);
+        document.getElementById("roomCode").value = "";
+    }
+
+    function leaveChat() {
+        if(currentRoom) db.ref(`presence/${currentRoom}/${auth.currentUser.uid}`).remove();
+        currentRoom = null;
+        showPage('hub');
     }
 
     const picker = document.getElementById("avatarPicker");
@@ -339,15 +358,11 @@
     }
 
     document.getElementById("msgInput").addEventListener("keypress", (e) => { if(e.key === "Enter") sendMessage(); });
-    function signIn() { 
-        showLoading("ACCESSING..."); 
-        auth.signInWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(err => { alert(err.message); hideLoading(); }); 
-    }
-    function signUp() { 
-        showLoading("REGISTERING..."); 
-        auth.createUserWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(err => { alert(err.message); hideLoading(); }); 
-    }
-    function signOut() { auth.signOut().then(() => location.reload()); }
+    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+    function toggleChatSidebar() { document.getElementById('chat-sidebar').classList.toggle('active'); }
+    function signIn() { showLoading("ACCESSING..."); auth.signInWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(err => { alert(err.message); hideLoading(); }); }
+    function signUp() { showLoading("REGISTERING..."); auth.createUserWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(err => { alert(err.message); hideLoading(); }); }
+    function signOut() { auth.signOut().then(() => { if(chromeOnly) localStorage.clear(); location.reload(); }); }
 </script>
 </body>
 </html>
