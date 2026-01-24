@@ -1,142 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TERMINAL // CROSS_PLATFORM</title>
-    <style>
-        :root {
-            --bg: #000000;
-            --fg: #ffffff;
-            --border: 2px solid #ffffff;
-            --accent: #00f5d4;
-        }
-
-        /* Essential Reset */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; border-radius: 0 !important; }
-        body { background-color: var(--bg); color: var(--fg); height: 100vh; width: 100vw; overflow: hidden; }
-
-        /* Loading Screen */
-        #loading-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; color: var(--accent);
-        }
-        .spinner {
-            width: 30px; height: 30px; border: 3px solid #111;
-            border-top: 3px solid var(--accent); border-radius: 50% !important;
-            animation: spin 0.8s linear infinite; margin-bottom: 15px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Sidebar Drawer */
-        .sidebar {
-            position: fixed; left: -100%; top: 0; width: 85%; max-width: 320px; height: 100%;
-            background: #000; border-right: var(--border); z-index: 3000;
-            transition: 0.3s ease; padding: 25px;
-        }
-        .sidebar.open { left: 0; box-shadow: 10px 0 50px rgba(255,255,255,0.2); }
-
-        .input-line { 
-            width: 100%; padding: 12px; 
-            background: #000 !important; color: #fff !important; 
-            border: 2px solid #fff !important; margin-bottom: 12px; outline: none; font-size: 16px;
-        }
-
-        .btn { 
-            padding: 12px; background: transparent; color: #fff; border: 2px solid #fff; 
-            cursor: pointer; text-transform: uppercase; font-size: 11px; font-weight: bold; transition: 0.2s;
-        }
-        .btn:hover { background: #fff; color: #000; }
-
-        .screen { width: 100%; height: 100vh; display: flex; align-items: center; justify-content: center; padding: 15px; }
-        .hub-box { width: 100%; max-width: 500px; border: var(--border); padding: 25px; background: #000; }
-
-        .chat-layout { display: grid; grid-template-columns: 300px 1fr; height: 100vh; width: 100vw; }
-        .side-panel { border-right: var(--border); padding: 15px; display: flex; flex-direction: column; background: #000; }
-        .chat-main { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        
-        #messages { flex: 1; padding: 15px; overflow-y: auto; background: #050505; display: flex; flex-direction: column; }
-        .msg-row { display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-start; max-width: 95%; }
-        .msg-avatar { width: 38px; height: 38px; border: 1px solid #fff; flex-shrink: 0; }
-        .msg-bubble { background: #000; border: 1px solid #333; padding: 10px; flex: 1; }
-        .msg-name { display: block; font-size: 0.7rem; color: var(--accent); margin-bottom: 4px; font-weight: bold; }
-        .msg-text { font-size: 0.95rem; line-height: 1.4; word-break: break-word; }
-
-        .list-item { padding: 12px; border: 1px solid #222; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        
-        @media (max-width: 850px) {
-            .chat-layout { grid-template-columns: 1fr; }
-            .side-panel { position: fixed; left: -100%; width: 280px; z-index: 2500; height: 100%; transition: 0.3s; }
-            .side-panel.active { left: 0; border-right: var(--border); }
-            .mobile-header { display: flex !important; }
-        }
-
-        .mobile-header { display: none; padding: 10px 15px; border-bottom: var(--border); justify-content: space-between; align-items: center; background: #000; }
-        .hidden { display: none !important; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat Terminal</title>
+<style>
+body { margin:0; padding:0; font-family: monospace; background: #000; color: #fff; }
+#messages { height: 70vh; overflow-y:auto; border: 1px solid #555; padding:10px; }
+.msg { margin-bottom:10px; }
+input, button { padding:8px; margin-top:5px; }
+</style>
 </head>
 <body>
 
-    <div id="loading-screen">
-        <div class="spinner"></div>
-        <div id="loading-text">SYNCING_IDENTITY...</div>
-    </div>
+<h2>Chat Terminal</h2>
 
-    <div id="sidebar" class="sidebar">
-        <h3>CONFIG_IDENTITY</h3>
-        <img id="myAvatarDisplay" src="" style="width: 60px; border: 1px solid #fff; margin: 15px 0;">
-        <div id="avatarPicker" style="display: grid; grid-template-columns: repeat(4,1fr); gap: 5px; margin-bottom: 15px;"></div>
-        <input type="text" id="profileName" class="input-line" placeholder="DISPLAY NAME">
-        <input type="text" id="profileBio" class="input-line" placeholder="BIO">
-        <button class="btn" style="width:100%" onclick="saveProfile()">SAVE CHANGES</button>
-        <button class="btn" style="width:100%; margin-top:15px; border-color: #555;" onclick="toggleSidebar()">BACK</button>
-    </div>
+<div id="messages"></div>
 
-    <div id="page-login" class="screen hidden">
-        <div class="hub-box">
-            <h2 style="text-align:center; margin-bottom:20px;">[SYS_ACCESS]</h2>
-            <input type="email" id="email" class="input-line" placeholder="EMAIL">
-            <input type="password" id="password" class="input-line" placeholder="PASSWORD">
-            <button class="btn" style="width:100%" onclick="signIn()">ACCESS</button>
-            <button class="btn" style="width:100%; border-style: dotted; margin-top: 10px;" onclick="signUp()">REGISTER</button>
-        </div>
-    </div>
+<input type="text" id="msgInput" placeholder="Type a message...">
+<button id="sendBtn">Send</button>
 
-    <div id="page-hub" class="screen hidden">
-        <div class="hub-box">
-            <h2 style="margin-bottom:15px;">NODE_MANAGER</h2>
-            <button class="btn" style="width:100%" onclick="toggleSidebar()">⚙️ PROFILE SETTINGS</button>
-            <p style="font-size: 10px; color: #888; margin-top: 20px;">+ NEW CONNECTION</p>
-            <input type="text" id="roomCode" class="input-line" placeholder="GROUP NAME">
-            <button class="btn" style="width:100%" onclick="joinRoom()">LINK START</button>
-            <p style="font-size: 10px; color: #888; margin-top: 25px;">AVAILABLE_NODES:</p>
-            <div id="myRooms" style="max-height: 200px; overflow-y: auto; margin-top:10px; border-top: 1px solid #222;"></div>
-            <button class="btn" onclick="signOut()" style="width:100%; margin-top: 20px; border-color: #444; color: #666;">TERMINATE SESSION</button>
-        </div>
-    </div>
-
-    <div id="page-chat" class="chat-layout hidden">
-        <div id="chat-sidebar" class="side-panel">
-            <button class="btn" onclick="leaveChat()" style="border-color: #ff0055; color: #ff0055;">← EXIT NODE</button>
-            <p style="font-size: 10px; color: #888; margin-top: 25px;">ONLINE_ENTITIES:</p>
-            <div id="onlineUsers" style="flex:1; overflow-y:auto; margin-top:10px;"></div>
-        </div>
-        <div class="chat-main">
-            <div class="mobile-header">
-                <button class="btn" style="padding: 5px 10px;" onclick="toggleChatSidebar()">MEMBERS</button>
-                <span id="activeGroupNameMobile" style="font-size: 12px; font-weight: bold;">NODE: ---</span>
-                <button class="btn" style="padding: 5px 10px; border-color:#ff0055;" onclick="leaveChat()">EXIT</button>
-            </div>
-            <div style="padding:15px; border-bottom: var(--border); font-weight:bold;" id="activeGroupName">NODE: ---</div>
-            <div id="messages"></div>
-            <div style="padding:15px; border-top: var(--border); display:flex; gap:10px; background: #000;">
-                <input type="text" id="msgInput" class="input-line" style="margin-bottom:0" placeholder="Transmission...">
-                <button class="btn" style="width:80px; margin:0" onclick="sendMessage()">SEND</button>
-            </div>
-        </div>
-    </div>
-    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging-compat.js"></script>
@@ -158,40 +42,79 @@ const auth = firebase.auth();
 const db = firebase.database();
 const messaging = firebase.messaging();
 
-/* REGISTER SERVICE WORKER */
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/firebase-messaging-sw.js');
+let localMessages = JSON.parse(localStorage.getItem('localMessages') || '[]');
+
+function renderMessages() {
+    const container = document.getElementById('messages');
+    container.innerHTML = '';
+    localMessages.forEach(m => {
+        const div = document.createElement('div');
+        div.className = 'msg';
+        div.innerText = `${m.name}: ${m.text}`;
+        container.appendChild(div);
+    });
+    container.scrollTop = container.scrollHeight;
 }
 
-/* ENABLE PUSH */
-async function enablePushNotifications() {
-    try {
-        const permission = await Notification.requestPermission();
-        if (permission !== 'granted') return;
+// Sign in anonymously
+auth.signInAnonymously().catch(console.error);
 
-        const token = await messaging.getToken();
+let userName = 'User' + Math.floor(Math.random()*1000);
 
-        if (auth.currentUser && token) {
-            db.ref(`fcmTokens/${auth.currentUser.uid}/${token}`).set(true);
+function pushMessageLocally(msg) {
+    localMessages.push(msg);
+    localStorage.setItem('localMessages', JSON.stringify(localMessages));
+    renderMessages();
+}
+
+// Load from Firebase
+db.ref('chat/messages').on('child_added', snap => {
+    const msg = snap.val();
+    pushMessageLocally(msg);
+    // Show notification if permission granted
+    if (Notification.permission === 'granted') {
+        if (document.hidden) {
+            new Notification(`${msg.name}`, { body: msg.text });
         }
-    } catch (err) {
-        console.error("Push error:", err);
     }
-}
-
-/* AUTO ENABLE AFTER LOGIN */
-auth.onAuthStateChanged(user => {
-    if (user) enablePushNotifications();
 });
 
-/* FOREGROUND NOTIFICATION */
+// Send message
+document.getElementById('sendBtn').addEventListener('click', () => {
+    const input = document.getElementById('msgInput');
+    if (!input.value) return;
+    const msg = { name: userName, text: input.value, timestamp: Date.now() };
+    db.ref('chat/messages').push(msg);
+    input.value = '';
+});
+
+// Ask notification permission
+if ('Notification' in window && Notification.permission !== 'granted') {
+    Notification.requestPermission();
+}
+
+// Render existing local messages
+renderMessages();
+
+// Service worker registration for background notifications
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    .then(() => console.log('Service worker registered'));
+}
+
+// Get FCM token
+messaging.getToken().then(token => {
+    console.log("FCM token:", token);
+}).catch(console.error);
+
 messaging.onMessage(payload => {
-    new Notification(payload.notification.title, {
-        body: payload.notification.body,
-        icon: payload.notification.icon
-    });
+    if (Notification.permission === 'granted') {
+        new Notification(payload.notification.title, {
+            body: payload.notification.body,
+            icon: payload.notification.icon
+        });
+    }
 });
 </script>
-
 </body>
 </html>
