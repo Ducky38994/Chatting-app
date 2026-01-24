@@ -1,32 +1,29 @@
-const functions = require("firebase-functions");
-const admin = require("firebase-admin");
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
 
 admin.initializeApp();
 
 exports.notifyOnMessage = functions.database
-.ref("/rooms/{roomId}/messages/{msgId}")
+.ref('/chat/messages/{msgId}')
 .onCreate(async (snap, context) => {
-
     const msg = snap.val();
-    const roomId = context.params.roomId;
+    if (!msg) return null;
 
-    if (!msg || !msg.text) return null;
-
-    const tokensSnap = await admin.database().ref("fcmTokens").once("value");
+    const tokensSnap = await admin.database().ref('fcmTokens').once('value');
     if (!tokensSnap.exists()) return null;
 
     const tokens = [];
     tokensSnap.forEach(user => {
-        user.forEach(token => tokens.push(token.key));
+        user.forEach(t => tokens.push(t.key));
     });
 
     if (!tokens.length) return null;
 
     const payload = {
         notification: {
-            title: `NODE: ${roomId}`,
-            body: `${msg.name}: ${msg.text}`,
-            icon: msg.avatar
+            title: `Chat Message from ${msg.name}`,
+            body: msg.text,
+            icon: 'https://via.placeholder.com/50'
         }
     };
 
