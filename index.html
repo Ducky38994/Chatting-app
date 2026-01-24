@@ -155,40 +155,54 @@ function hideLoading(){ document.getElementById('loading-screen').classList.add(
 function showLoading(text){ document.getElementById('loading-text').innerText=text; document.getElementById('loading-screen').classList.remove('hidden'); }
 function showPage(id){ ['login','hub','chat'].forEach(p=>document.getElementById('page-'+p).classList.add('hidden')); document.getElementById('page-'+id).classList.remove('hidden'); }
 
+let messagesRef = null;
+
 auth.onAuthStateChanged(user => {
-  if(user){ showPage('hub'); loadMyProfile(); loadAccessList(); } else { showPage('login'); hideLoading(); }
+  hideLoading();
+  if(user){ 
+    showPage('hub'); 
+    loadMyProfile(); 
+    loadAccessList(); 
+  } else { 
+    showPage('login'); 
+  }
 });
 
 function loadMyProfile(){
-  const user = auth.currentUser; if(!user) return;
-  db.ref('profiles/'+user.uid).on('value',snap=>{
-    const data=snap.val();
+  const user = auth.currentUser; 
+  if(!user) return;
+  db.ref('profiles/'+user.uid).once('value').then(snap=>{
+    const data = snap.val();
     if(data){
       document.getElementById("profileName").value=data.name||"";
       document.getElementById("profileBio").value=data.bio||"";
       if(data.avatar){ selectedAvatar=data.avatar; document.getElementById("myAvatarDisplay").src=data.avatar; localStorage.setItem('localAvatar',data.avatar); }
-      localStorage.setItem('localName',data.name||""); localStorage.setItem('localBio',data.bio||"");
+      localStorage.setItem('localName',data.name||""); 
+      localStorage.setItem('localBio',data.bio||"");
     }
-    hideLoading();
   });
 }
 
 function saveProfile(){
-  const user=auth.currentUser; if(!user) return;
-  const name=document.getElementById("profileName").value||"ANON";
-  const bio=document.getElementById("profileBio").value||"";
-  localStorage.setItem('localAvatar',selectedAvatar); localStorage.setItem('localName',name); localStorage.setItem('localBio',bio);
+  const user = auth.currentUser; if(!user) return;
+  const name = document.getElementById("profileName").value||"ANON";
+  const bio = document.getElementById("profileBio").value||"";
+  localStorage.setItem('localAvatar',selectedAvatar); 
+  localStorage.setItem('localName',name); 
+  localStorage.setItem('localBio',bio);
   db.ref('profiles/'+user.uid).set({name,bio,avatar:selectedAvatar}).then(()=>{document.getElementById('sidebar').classList.remove('open');});
 }
 
 // --- CHAT LOGIC ---
-let currentRoom=null;
+let currentRoom = null;
 
 function loadAccessList(){
-  db.ref(`user_access/${auth.currentUser.uid}`).on('value',snap=>{
-    const list=document.getElementById("myRooms"); list.innerHTML="";
+  const uid = auth.currentUser.uid;
+  db.ref(`user_access/${uid}`).once('value').then(snap=>{
+    const list = document.getElementById("myRooms"); list.innerHTML="";
     snap.forEach(c=>{
-      const div=document.createElement("div"); div.className="list-item";
+      const div = document.createElement("div"); 
+      div.className="list-item";
       div.innerHTML=`<span>> ${c.key}</span><button class="btn" style="padding:4px 8px; font-size:9px;" onclick="deleteGroup('${c.key}',event)">REMOVE</button>`;
       div.onclick=()=>enterChat(c.key);
       list.appendChild(div);
@@ -199,18 +213,21 @@ function loadAccessList(){
 function deleteGroup(code,event){ event.stopPropagation(); if(confirm(`TERMINATE NODE ${code}?`)){ db.ref(`user_access/${auth.currentUser.uid}/${code}`).remove(); } }
 
 function enterChat(code){
-  currentRoom=code;
+  currentRoom = code;
   showPage('chat');
   document.getElementById("activeGroupName").innerText="NODE: "+code;
   document.getElementById("activeGroupNameMobile").innerText=code;
-  db.ref(`presence/${code}/${auth.currentUser.uid}`).set({name:document.getElementById("profileName").value||"ANON",avatar:selectedAvatar});
-  db.ref(`presence/${code}/${auth.currentUser.uid}`).onDisconnect().remove();
+
+  const uid = auth.currentUser.uid;
+  db.ref(`presence/${code}/${uid}`).set({name:document.getElementById("profileName").value||"ANON",avatar:selectedAvatar});
+  db.ref(`presence/${code}/${uid}`).onDisconnect().remove();
+
   loadMessages(code);
   syncOnline(code);
 }
 
 function syncOnline(code){
-  const onlineDiv=document.getElementById("onlineUsers");
+  const onlineDiv = document.getElementById("onlineUsers");
   db.ref(`presence/${code}`).on('value',snap=>{
     onlineDiv.innerHTML="";
     snap.forEach(u=>{
@@ -224,15 +241,23 @@ function syncOnline(code){
 }
 
 function loadMessages(code){
-  const mDiv=document.getElementById("messages");
-  db.ref(`rooms/${code}/messages`).on("value",snap=>{
-    mDiv.innerHTML="";
-    snap.forEach(m=>{
-      const d=m.val();
-      const row=document.createElement("div"); row.className="msg-row";
-      row.innerHTML=`<img src="${d.avatar}" class="msg-avatar"><div class="msg-bubble"><span class="msg-name">${d.name}</span><div class="msg-text">${d.text}</div></div>`;
-      mDiv.appendChild(row);
-    });
+  const mDiv = document.getElementById("messages");
+  mDiv.innerHTML = "";
+
+  if(messagesRef) messagesRef.off();
+  messagesRef = db.ref(`rooms/${code}/messages`).limitToLast(100);
+
+  messagesRef.on("child_added", snap=>{
+    const d = snap.val();
+    const row = document.createElement("div");
+    row.className = "msg-row";
+    row.innerHTML = `
+      <img src="${d.avatar}" class="msg-avatar">
+      <div class="msg-bubble">
+        <span class="msg-name">${d.name}</span>
+        <div class="msg-text">${d.text}</div>
+      </div>`;
+    mDiv.appendChild(row);
     scrollToBottom();
   });
 }
@@ -243,14 +268,21 @@ if(window.visualViewport){ window.visualViewport.addEventListener('resize',()=>{
 document.getElementById("msgInput").addEventListener("focus",()=>{ setTimeout(()=>scrollToBottom(),100); });
 
 function joinRoom(){
-  const code=document.getElementById("roomCode").value.toUpperCase().trim();
+  const code = document.getElementById("roomCode").value.toUpperCase().trim();
   if(!code) return;
   db.ref(`user_access/${auth.currentUser.uid}/${code}`).set(true);
   enterChat(code);
   document.getElementById("roomCode").value="";
 }
 
-function leaveChat(){ if(currentRoom) db.ref(`presence/${currentRoom}/${auth.currentUser.uid}`).remove(); currentRoom=null; showPage('hub'); }
+function leaveChat(){ 
+  if(currentRoom){
+    db.ref(`presence/${currentRoom}/${auth.currentUser.uid}`).remove(); 
+    if(messagesRef) messagesRef.off();
+  } 
+  currentRoom = null; 
+  showPage('hub'); 
+}
 
 const picker=document.getElementById("avatarPicker");
 for(let i=1;i<=8;i++){
