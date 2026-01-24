@@ -136,215 +136,62 @@
             </div>
         </div>
     </div>
-
-<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-messaging-compat.js"></script>
 
 <script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyBK4pJpKtFPs19-J051xR6t77SBHYrg1k8",
-        authDomain: "subpls-2c774.firebaseapp.com",
-        databaseURL: "https://subpls-2c774-default-rtdb.firebaseio.com",
-        projectId: "subpls-2c774",
-        storageBucket: "subpls-2c774.firebasestorage.app",
-        messagingSenderId: "834082653588",
-        appId: "1:834082653588:web:a7b266363aa864249f3b81"
-    };
+const firebaseConfig = {
+    apiKey: "AIzaSyBK4pJpKtFPs19-J051xR6t77SBHYrg1k8",
+    authDomain: "subpls-2c774.firebaseapp.com",
+    databaseURL: "https://subpls-2c774-default-rtdb.firebaseio.com",
+    projectId: "subpls-2c774",
+    storageBucket: "subpls-2c774.firebasestorage.app",
+    messagingSenderId: "834082653588",
+    appId: "1:834082653588:web:a7b266363aa864249f3b81"
+};
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
+firebase.initializeApp(firebaseConfig);
 
-    // 1. IMMEDIATE RESTORE (Instant UI)
-    let selectedAvatar = localStorage.getItem('localAvatar') || "https://api.dicebear.com/7.x/pixel-art/svg?seed=1";
-    document.getElementById("myAvatarDisplay").src = selectedAvatar;
-    document.getElementById("profileName").value = localStorage.getItem('localName') || "";
-    document.getElementById("profileBio").value = localStorage.getItem('localBio') || "";
+const auth = firebase.auth();
+const db = firebase.database();
+const messaging = firebase.messaging();
 
-    function hideLoading() { document.getElementById('loading-screen').classList.add('hidden'); }
-    function showLoading(text) { 
-        document.getElementById('loading-text').innerText = text;
-        document.getElementById('loading-screen').classList.remove('hidden'); 
-    }
+/* REGISTER SERVICE WORKER */
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/firebase-messaging-sw.js');
+}
 
-    function showPage(id) {
-        ['page-login', 'page-hub', 'page-chat'].forEach(p => {
-            const el = document.getElementById(p);
-            if(el) el.classList.add('hidden');
-        });
-        document.getElementById('page-' + id).classList.remove('hidden');
-    }
+/* ENABLE PUSH */
+async function enablePushNotifications() {
+    try {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') return;
 
-    auth.onAuthStateChanged(user => {
-        if (user) { 
-            showPage('hub');
-            loadMyProfile(); // Sync from Cloud
-            loadAccessList(); 
-        } else { 
-            showPage('login'); 
-            hideLoading();
+        const token = await messaging.getToken();
+
+        if (auth.currentUser && token) {
+            db.ref(`fcmTokens/${auth.currentUser.uid}/${token}`).set(true);
         }
+    } catch (err) {
+        console.error("Push error:", err);
+    }
+}
+
+/* AUTO ENABLE AFTER LOGIN */
+auth.onAuthStateChanged(user => {
+    if (user) enablePushNotifications();
+});
+
+/* FOREGROUND NOTIFICATION */
+messaging.onMessage(payload => {
+    new Notification(payload.notification.title, {
+        body: payload.notification.body,
+        icon: payload.notification.icon
     });
-
-    // 2. CLOUD SYNC LOGIC
-    function loadMyProfile() {
-        const user = auth.currentUser;
-        if (!user) return;
-        
-        // Safety timeout to hide loading if DB is stuck
-        const fallback = setTimeout(hideLoading, 4000);
-
-        db.ref('profiles/' + user.uid).on('value', snap => {
-            clearTimeout(fallback);
-            const data = snap.val();
-            if (data) {
-                document.getElementById("profileName").value = data.name || "";
-                document.getElementById("profileBio").value = data.bio || "";
-                if (data.avatar) {
-                    selectedAvatar = data.avatar; 
-                    document.getElementById("myAvatarDisplay").src = data.avatar;
-                    localStorage.setItem('localAvatar', data.avatar);
-                }
-                localStorage.setItem('localName', data.name || "");
-                localStorage.setItem('localBio', data.bio || "");
-            }
-            hideLoading();
-        });
-    }
-
-    function saveProfile() {
-        const user = auth.currentUser;
-        if(!user) return;
-
-        const name = document.getElementById("profileName").value || "ANON";
-        const bio = document.getElementById("profileBio").value || "";
-
-        // SAVE BOTH PLACES
-        localStorage.setItem('localAvatar', selectedAvatar);
-        localStorage.setItem('localName', name);
-        localStorage.setItem('localBio', bio);
-        
-        db.ref('profiles/' + user.uid).set({
-            name: name,
-            bio: bio,
-            avatar: selectedAvatar
-        }).then(() => { 
-            document.getElementById('sidebar').classList.remove('open');
-        });
-    }
-
-    // Node & Chat Logic
-    function loadAccessList() {
-        db.ref(`user_access/${auth.currentUser.uid}`).on('value', snap => {
-            const list = document.getElementById("myRooms");
-            list.innerHTML = "";
-            snap.forEach(c => {
-                const div = document.createElement("div");
-                div.className = "list-item";
-                div.innerHTML = `<span>> ${c.key}</span> <button class="btn" style="padding:4px 8px; font-size:9px;" onclick="deleteGroup('${c.key}', event)">REMOVE</button>`;
-                div.onclick = () => enterChat(c.key);
-                list.appendChild(div);
-            });
-        });
-    }
-
-    function deleteGroup(code, event) {
-        event.stopPropagation();
-        if(confirm(`TERMINATE NODE ${code}?`)) {
-            db.ref(`user_access/${auth.currentUser.uid}/${code}`).remove();
-        }
-    }
-
-    function enterChat(code) {
-        currentRoom = code;
-        showPage('chat');
-        document.getElementById("activeGroupName").innerText = "NODE: " + code;
-        document.getElementById("activeGroupNameMobile").innerText = code;
-        
-        db.ref(`presence/${code}/${auth.currentUser.uid}`).set({ 
-            name: document.getElementById("profileName").value || "ANON",
-            avatar: selectedAvatar 
-        });
-        db.ref(`presence/${code}/${auth.currentUser.uid}`).onDisconnect().remove();
-
-        loadMessages(code);
-        syncOnline(code);
-    }
-
-    function syncOnline(code) {
-        const onlineDiv = document.getElementById("onlineUsers");
-        db.ref(`presence/${code}`).on('value', snap => {
-            onlineDiv.innerHTML = "";
-            snap.forEach(u => {
-                const d = u.val();
-                const div = document.createElement("div");
-                div.style = "display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:12px;";
-                div.innerHTML = `<img src="${d.avatar}" style="width:24px; border:1px solid #444;"> <span>${d.name}</span>`;
-                onlineDiv.appendChild(div);
-            });
-        });
-    }
-
-    function loadMessages(code) {
-        const mDiv = document.getElementById("messages");
-        db.ref(`rooms/${code}/messages`).on("value", snap => {
-            mDiv.innerHTML = "";
-            snap.forEach(m => {
-                const d = m.val();
-                const row = document.createElement("div");
-                row.className = "msg-row";
-                row.innerHTML = `<img src="${d.avatar}" class="msg-avatar"><div class="msg-bubble"><span class="msg-name">${d.name}</span><div class="msg-text">${d.text}</div></div>`;
-                mDiv.appendChild(row);
-            });
-            mDiv.scrollTop = mDiv.scrollHeight;
-        });
-    }
-
-    function joinRoom() {
-        const code = document.getElementById("roomCode").value.toUpperCase().trim();
-        if(!code) return;
-        db.ref(`user_access/${auth.currentUser.uid}/${code}`).set(true);
-        enterChat(code);
-        document.getElementById("roomCode").value = "";
-    }
-
-    function leaveChat() {
-        if(currentRoom) db.ref(`presence/${currentRoom}/${auth.currentUser.uid}`).remove();
-        currentRoom = null;
-        showPage('hub');
-    }
-
-    // Avatar Picker
-    const picker = document.getElementById("avatarPicker");
-    for(let i=1; i<=8; i++) {
-        const url = `https://api.dicebear.com/7.x/pixel-art/svg?seed=${i * 88}`;
-        const img = document.createElement("img");
-        img.src = url; img.style.width="100%"; img.style.cursor="pointer";
-        img.onclick = () => { 
-            selectedAvatar = url; 
-            document.getElementById("myAvatarDisplay").src = url; 
-        };
-        picker.appendChild(img);
-    }
-
-    function sendMessage() {
-        const input = document.getElementById("msgInput");
-        if(!input.value || !currentRoom) return;
-        db.ref(`rooms/${currentRoom}/messages`).push({
-            name: document.getElementById("profileName").value || "ANON",
-            avatar: selectedAvatar,
-            text: input.value
-        });
-        input.value = "";
-    }
-
-    document.getElementById("msgInput").addEventListener("keypress", (e) => { if(e.key === "Enter") sendMessage(); });
-    function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
-    function toggleChatSidebar() { document.getElementById('chat-sidebar').classList.toggle('active'); }
-    function signIn() { showLoading("ACCESSING..."); auth.signInWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(err => { alert(err.message); hideLoading(); }); }
-    function signUp() { showLoading("REGISTERING..."); auth.createUserWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(err => { alert(err.message); hideLoading(); }); }
-    function signOut() { auth.signOut().then(() => { localStorage.clear(); location.reload(); }); }
+});
 </script>
+
 </body>
 </html>
