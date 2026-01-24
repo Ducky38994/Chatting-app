@@ -35,26 +35,15 @@ body { background-color: var(--bg); color: var(--fg); height: 100vh; width: 100v
 .hub-box { width: 100%; max-width: 500px; border: var(--border); padding: 25px; background: #000; }
 
 /* Chat Layout */
-.chat-layout { display: grid; grid-template-columns: 300px 1fr; height: 100vh; width: 100vw; }
-.side-panel { border-right: var(--border); padding: 15px; display: flex; flex-direction: column; background: #000; }
-.chat-main { display: flex; flex-direction: column; height: 100vh; overflow: hidden; position: relative; }
-#messages { flex: 1; padding: 15px; overflow-y: auto; background: #050505; display: flex; flex-direction: column; }
+.chat-layout { display: flex; flex-direction: column; height: 100vh; width: 100vw; }
+.chat-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; border-bottom: var(--border); font-weight: bold; font-size: 12px; }
+.chat-main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #050505; }
+#messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; }
 .msg-row { display: flex; gap: 10px; margin-bottom: 15px; align-items: flex-start; max-width: 95%; }
 .msg-avatar { width: 38px; height: 38px; border: 1px solid #fff; flex-shrink: 0; }
 .msg-bubble { background: #000; border: 1px solid #333; padding: 10px; flex: 1; }
 .msg-name { display: block; font-size: 0.7rem; color: var(--accent); margin-bottom: 4px; font-weight: bold; }
 .msg-text { font-size: 0.95rem; line-height: 1.4; word-break: break-word; }
-
-/* Sidebar Items */
-.list-item { padding: 12px; border: 1px solid #222; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-
-/* Mobile Adjustments */
-@media (max-width: 850px) {
-  .chat-layout { grid-template-columns: 1fr; }
-  .side-panel { position: fixed; left: -100%; width: 280px; z-index: 2500; height: 100%; transition: 0.3s; }
-  .side-panel.active { left: 0; border-right: var(--border); }
-  .mobile-header { display: flex !important; }
-}
 
 /* Mobile Chat Input */
 #chatInputWrapper {
@@ -70,6 +59,9 @@ body { background-color: var(--bg); color: var(--fg); height: 100vh; width: 100v
   z-index: 2000;
 }
 #chatInputWrapper input { flex: 1; margin-bottom: 0; }
+
+/* Sidebar Items */
+.list-item { padding: 12px; border: 1px solid #222; margin-bottom: 8px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
 .hidden { display: none !important; }
 </style>
 </head>
@@ -119,24 +111,15 @@ body { background-color: var(--bg); color: var(--fg); height: 100vh; width: 100v
 
 <!-- Chat -->
 <div id="page-chat" class="chat-layout hidden">
-  <div id="chat-sidebar" class="side-panel">
-    <button class="btn" onclick="leaveChat()" style="border-color: #ff0055; color: #ff0055;">← EXIT NODE</button>
-    <p style="font-size: 10px; color: #888; margin-top: 25px;">ONLINE_ENTITIES:</p>
-    <div id="onlineUsers" style="flex:1; overflow-y:auto; margin-top:10px;"></div>
+  <div class="chat-header">
+    <span id="activeGroupName">NODE: ---</span>
+    <button class="btn" style="border-color:#ff0055; color:#ff0055; padding:5px 10px;" onclick="leaveChat()">EXIT</button>
   </div>
   <div class="chat-main">
-    <div class="mobile-header">
-      <button class="btn" style="padding: 5px 10px;" onclick="toggleChatSidebar()">MEMBERS</button>
-      <span id="activeGroupNameMobile" style="font-size: 12px; font-weight: bold;">NODE: ---</span>
-      <button class="btn" style="padding: 5px 10px; border-color:#ff0055;" onclick="leaveChat()">EXIT</button>
-    </div>
-    <div style="padding:15px; border-bottom: var(--border); font-weight:bold;" id="activeGroupName">NODE: ---</div>
     <div id="messages"></div>
-    <!-- Chat Input Fixed for Mobile -->
     <div id="chatInputWrapper">
       <input type="text" id="msgInput" class="input-line" placeholder="Transmission...">
       <button class="btn" style="width:80px;" onclick="sendMessage()">SEND</button>
-      <button class="btn" style="width:50px; font-size:10px;" onclick="toggleChatSidebar()">☰</button>
     </div>
   </div>
 </div>
@@ -170,10 +153,7 @@ function showLoading(text) { document.getElementById('loading-text').innerText =
 function showPage(id) { ['page-login','page-hub','page-chat'].forEach(p => document.getElementById(p).classList.add('hidden')); document.getElementById('page-' + id).classList.remove('hidden'); }
 
 // Auth
-auth.onAuthStateChanged(user => {
-  if(user) { showPage('hub'); loadMyProfile(); loadAccessList(); }
-  else { showPage('login'); hideLoading(); }
-});
+auth.onAuthStateChanged(user => { if(user){ showPage('hub'); loadMyProfile(); loadAccessList(); } else { showPage('login'); hideLoading(); } });
 
 function loadMyProfile() {
   const user = auth.currentUser; if(!user) return;
@@ -223,24 +203,9 @@ function deleteGroup(code, event){ event.stopPropagation(); if(confirm(`TERMINAT
 function enterChat(code){
   currentRoom = code; showPage('chat');
   document.getElementById("activeGroupName").innerText = "NODE: " + code;
-  document.getElementById("activeGroupNameMobile").innerText = code;
   db.ref(`presence/${code}/${auth.currentUser.uid}`).set({ name: document.getElementById("profileName").value || "ANON", avatar: selectedAvatar });
   db.ref(`presence/${code}/${auth.currentUser.uid}`).onDisconnect().remove();
-  loadMessages(code); syncOnline(code);
-}
-
-function syncOnline(code){
-  const onlineDiv = document.getElementById("onlineUsers");
-  db.ref(`presence/${code}`).on('value', snap => {
-    onlineDiv.innerHTML = "";
-    snap.forEach(u => {
-      const d = u.val();
-      const div = document.createElement("div");
-      div.style = "display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:12px;";
-      div.innerHTML = `<img src="${d.avatar}" style="width:24px; border:1px solid #444;"><span>${d.name}</span>`;
-      onlineDiv.appendChild(div);
-    });
-  });
+  loadMessages(code);
 }
 
 function loadMessages(code){
@@ -291,8 +256,6 @@ function sendMessage(){
 document.getElementById("msgInput").addEventListener("keypress",(e)=>{ if(e.key==="Enter") sendMessage(); });
 
 function toggleSidebar(){ document.getElementById('sidebar').classList.toggle('open'); }
-function toggleChatSidebar(){ document.getElementById('chat-sidebar').classList.toggle('active'); }
-
 function signIn(){ showLoading("ACCESSING..."); auth.signInWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(err=>{ alert(err.message); hideLoading(); }); }
 function signUp(){ showLoading("REGISTERING..."); auth.createUserWithEmailAndPassword(document.getElementById("email").value, document.getElementById("password").value).catch(err=>{ alert(err.message); hideLoading(); }); }
 function signOut(){ auth.signOut(); }
